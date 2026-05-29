@@ -25,7 +25,7 @@ import { hash } from "bcryptjs";
 import QRCode from "qrcode";
 
 const adapter = new PrismaPg({
-  connectionString: "postgresql://postgres.cjinnwjtxlxyhrbbkutz:Ankitech%40999@aws-1-ap-south-1.pooler.supabase.com:5432/postgres",
+  connectionString: process.env.DIRECT_URL ?? process.env.DATABASE_URL ?? "postgresql://postgres.cjinnwjtxlxyhrbbkutz:Ankitech%40999@aws-1-ap-south-1.pooler.supabase.com:5432/postgres",
 });
 const prisma = new PrismaClient({ adapter });
 
