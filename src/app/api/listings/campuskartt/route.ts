@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { ProductCategory } from "@prisma/client";
 
 const WEBHOOK_SECRET = process.env.CAMPUSKARTT_WEBHOOK_SECRET || "ck-eco-webhook-secret-2024";
 
@@ -68,7 +69,7 @@ export async function POST(req: NextRequest) {
     const dummyProduct = await prismaClient.product.create({
       data: {
         dppId:         `CK-${externalId}`,
-        category:      ecoCategory as any,
+        category:      ecoCategory as ProductCategory,
         brand:         "CampusKartt",
         model:         title,
         status:        "LISTED",

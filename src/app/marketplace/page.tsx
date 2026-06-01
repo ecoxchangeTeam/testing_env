@@ -33,6 +33,7 @@ interface Listing {
   product: {
     dppId: string;
     category: string;
+    name?: string;
     brand?: string;
     model?: string;
     conditionScore: number;
@@ -62,7 +63,8 @@ const CATEGORY_LABELS: Record<string, string> = {
   ACADEMIC_EQUIPMENT: "Academic",
 };
 
-const CK_URL = "https://www.campuskartt.in";
+const CK_URL =
+  process.env.NEXT_PUBLIC_CAMPUSKARTT_URL ?? "https://www.campuskartt.in";
 
 // SSO Buy Now: gets a CampusKartt session then opens the listing directly
 async function buyOnCampusKartt(listingId: string) {
@@ -234,7 +236,7 @@ export default function MarketplacePage() {
 
                       <div className="mb-3">
                         <h3 className="text-[14px] font-semibold text-white leading-tight mb-0.5">
-                          {listing.product.model}
+                          {listing.product.name || listing.product.model}
                         </h3>
                         <div className="font-mono text-[10px] text-zinc-600">CK-{listing.externalId}</div>
                       </div>
@@ -319,7 +321,7 @@ export default function MarketplacePage() {
 
                     <div className="mb-3">
                       <h3 className="text-[14px] font-semibold text-white leading-tight mb-0.5">
-                        {listing.product.brand} {listing.product.model}
+                        {listing.product.name || `${listing.product.brand} ${listing.product.model}`}
                       </h3>
                       <div className="font-mono text-[10px] text-zinc-600">{listing.product.dppId}</div>
                     </div>

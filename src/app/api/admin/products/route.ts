@@ -22,6 +22,7 @@ export async function GET(request: Request) {
   if (search) {
     where.OR = [
       { dppId: { contains: search, mode: "insensitive" } },
+      { name: { contains: search, mode: "insensitive" } },
       { brand: { contains: search, mode: "insensitive" } },
       { model: { contains: search, mode: "insensitive" } },
     ];

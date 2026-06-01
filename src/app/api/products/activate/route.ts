@@ -103,7 +103,30 @@ export async function PUT(request: Request) {
   }
 
   const body = await request.json();
-  const { category, brand, model, serialNumber, color } = body;
+  const {
+    category,
+    brand,
+    model,
+    serialNumber,
+    color,
+    author,
+    edition,
+    isbn,
+    warranty,
+    frameNumber,
+  } = body;
+  let { name } = body;
+
+  if (!name || typeof name !== "string") {
+    return NextResponse.json({ error: "Product Name is required" }, { status: 400 });
+  }
+  name = name.trim();
+  if (name.length < 3) {
+    return NextResponse.json({ error: "Product Name must be at least 3 characters long" }, { status: 400 });
+  }
+  if (name.length > 100) {
+    return NextResponse.json({ error: "Product Name must be under 100 characters long" }, { status: 400 });
+  }
 
   if (!category) {
     return NextResponse.json({ error: "Category required" }, { status: 400 });
@@ -124,10 +147,16 @@ export async function PUT(request: Request) {
       qrCodeUrl: qrPng,
       qrCodeSvg: qrSticker,
       category,
+      name,
       brand,
       model,
       serialNumber,
       color,
+      author,
+      edition,
+      isbn,
+      warranty,
+      frameNumber,
       status: "UNCLAIMED",
     },
   });
@@ -138,7 +167,7 @@ export async function PUT(request: Request) {
       adminId: session.user.id,
       productId: product.id,
       actionType: "QR_ISSUED",
-      notes: `QR generated for ${category} - ${brand} ${model}`,
+      notes: `QR generated for ${product.name} (${category})`,
     },
   });
 

@@ -4,6 +4,7 @@ import { useState, useEffect, use } from "react";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { Logo } from "@/components/ui/logo";
 import {
   QrCode,
   Upload,
@@ -24,6 +25,7 @@ interface Product {
   dppId: string;
   status: string;
   category: string;
+  name?: string;
   brand?: string;
   model?: string;
   qrCodeUrl?: string;
@@ -167,9 +169,8 @@ export default function ActivatePage({
       <div className="relative max-w-lg mx-auto">
         {/* Header */}
         <div className="text-center mb-8">
-          <Link href="/" className="inline-flex items-center gap-2 mb-6">
-            <QrCode className="w-5 h-5 text-emerald-400" />
-            <span className="text-sm font-semibold">Eco<span className="text-emerald-400">X</span>change</span>
+          <Link href="/" className="inline-flex items-center mb-6">
+            <Logo height={28} />
           </Link>
 
           {alreadyClaimed ? (
@@ -202,9 +203,9 @@ export default function ActivatePage({
               <div>
                 <div className="mono-tag mb-1">Product Detected</div>
                 <h2 className="text-white font-semibold">
-                  {product.brand && product.model
+                  {product.name || (product.brand && product.model
                     ? `${product.brand} ${product.model}`
-                    : getCategoryLabel(product.category)}
+                    : getCategoryLabel(product.category))}
                 </h2>
                 <div className="text-zinc-500 text-sm">{getCategoryLabel(product.category)}</div>
               </div>

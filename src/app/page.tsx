@@ -18,6 +18,7 @@ import {
   Globe,
 } from "lucide-react";
 import { Navbar } from "@/components/layout/navbar";
+import { Logo } from "@/components/ui/logo";
 
 // ─────────────────────────────────────────────
 // HERO SECTION
@@ -613,12 +614,9 @@ function Footer() {
     <footer className="border-t border-[#141414] py-12">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
-          <div className="flex items-center gap-2">
-            <QrCode className="w-4 h-4 text-emerald-400" />
-            <span className="text-sm font-semibold">
-              Eco<span className="text-emerald-400">X</span>change
-            </span>
-            <span className="text-zinc-600 text-sm ml-2">
+          <div className="flex items-center gap-4">
+            <Logo height={22} />
+            <span className="text-zinc-600 text-sm border-l border-zinc-800 pl-4 py-0.5">
               Digital Product Passport Infrastructure
             </span>
           </div>

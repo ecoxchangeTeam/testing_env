@@ -16,6 +16,25 @@ const CK_CATEGORY_MAP: Record<string, string> = {
   electronics: "LAPTOP", sports: "OTHER",
 };
 
+interface CampusKarttUser {
+  full_name?: string | null;
+  university?: string | null;
+}
+
+interface CampusKarttRow {
+  id: string | number;
+  price: string | number;
+  description?: string | null;
+  created_at: string;
+  photo_url?: string | null;
+  category?: string | null;
+  title?: string | null;
+  condition?: string | null;
+  reuse_count?: number | null;
+  university?: string | null;
+  users?: CampusKarttUser | null;
+}
+
 async function fetchCampusKarttListings() {
   try {
     const res = await fetch(
@@ -30,10 +49,10 @@ async function fetchCampusKarttListings() {
       }
     );
     if (!res.ok) return [];
-    const rows: any[] = await res.json();
+    const rows = (await res.json()) as CampusKarttRow[];
 
     return rows.map((row) => {
-      const condScore = CK_CONDITION_SCORE[row.condition] ?? 60;
+      const condScore = (row.condition ? CK_CONDITION_SCORE[row.condition] : null) ?? 60;
       const trustScore = Math.max(
         30,
         Math.round(condScore * 0.5 + (row.reuse_count ?? 0) * 5)
@@ -52,7 +71,8 @@ async function fetchCampusKarttListings() {
         externalTrustScore: trustScore,
         product: {
           dppId:      `CK-${row.id}`,
-          category:   CK_CATEGORY_MAP[row.category] ?? "OTHER",
+          category:   (row.category ? CK_CATEGORY_MAP[row.category] : null) ?? "OTHER",
+          name:       row.title ?? "CampusKartt Product",
           brand:      "CampusKartt",
           model:      row.title,
           conditionScore: condScore,
@@ -101,6 +121,7 @@ export async function GET(request: Request) {
           select: {
             dppId: true,
             category: true,
+            name: true,
             brand: true,
             model: true,
             conditionScore: true,

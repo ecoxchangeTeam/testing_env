@@ -41,6 +41,7 @@ interface AdminData {
     id: string;
     dppId: string;
     category: string;
+    name?: string;
     brand?: string;
     model?: string;
     status: string;
@@ -66,7 +67,7 @@ interface AdminData {
     notes?: string;
     createdAt: string;
     admin: { name: string };
-    product?: { dppId: string; brand?: string; model?: string };
+    product?: { dppId: string; name?: string; brand?: string; model?: string };
   }>;
 }
 
@@ -103,25 +104,38 @@ export default function AdminDashboardPage() {
   const [data, setData] = useState<AdminData | null>(null);
   const [loading, setLoading] = useState(true);
   const [actionLoading, setActionLoading] = useState<string | null>(null);
-  const [activeSection, setActiveSection] = useState<"overview" | "products" | "users" | "qr">("overview");
-  const [newQr, setNewQr] = useState({ category: "LAPTOP", brand: "", model: "", serialNumber: "" });
+  const [activeSection, setActiveSection] = useState<"overview" | "products" | "users" | "qr">(() => {
+    if (typeof window !== "undefined") {
+      const params = new URLSearchParams(window.location.search);
+      const sec = params.get("section");
+      if (sec === "products" || sec === "users" || sec === "qr") {
+        return sec;
+      }
+    }
+    return "overview";
+  });
+  const [newQr, setNewQr] = useState({
+    category: "LAPTOP",
+    subType: "BOOK",
+    name: "",
+    brand: "",
+    model: "",
+    serialNumber: "",
+    color: "",
+    author: "",
+    edition: "",
+    isbn: "",
+    warranty: "",
+    frameNumber: "",
+  });
+  const [qrError, setQrError] = useState("");
+  const [formErrors, setFormErrors] = useState<Record<string, string>>({});
   const [generatedQr, setGeneratedQr] = useState<{ qrSticker: string; dppId: string; qrPng: string } | null>(null);
   const [generatingQr, setGeneratingQr] = useState(false);
   const [productSearch, setProductSearch] = useState("");
 
-  useEffect(() => {
-    if (status === "unauthenticated") { router.push("/sign-in"); return; }
-    if (status === "authenticated" && !(session?.user as { isAdmin?: boolean })?.isAdmin) {
-      router.push("/dashboard");
-    }
-  }, [status, session, router]);
-
-  useEffect(() => {
-    if (!(session?.user as { isAdmin?: boolean })?.isAdmin) return;
-    fetchData();
-  }, [session]);
-
   async function fetchData() {
+    await Promise.resolve();
     setLoading(true);
     try {
       const res = await fetch("/api/admin/stats");
@@ -133,6 +147,19 @@ export default function AdminDashboardPage() {
       setLoading(false);
     }
   }
+
+  useEffect(() => {
+    if (status === "unauthenticated") { router.push("/sign-in"); return; }
+    if (status === "authenticated" && !(session?.user as { isAdmin?: boolean })?.isAdmin) {
+      router.push("/dashboard");
+    }
+  }, [status, session, router]);
+
+  useEffect(() => {
+    if (!(session?.user as { isAdmin?: boolean })?.isAdmin) return;
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    fetchData();
+  }, [session]);
 
   async function handleProductAction(productId: string, action: string) {
     setActionLoading(productId);
@@ -148,20 +175,71 @@ export default function AdminDashboardPage() {
     }
   }
 
+  const validateForm = () => {
+    const errors: Record<string, string> = {};
+    if (!newQr.name.trim()) {
+      errors.name = "Product Name is required";
+    } else if (newQr.name.trim().length < 3) {
+      errors.name = "Product Name must be at least 3 characters long";
+    } else if (newQr.name.trim().length > 100) {
+      errors.name = "Product Name must be under 100 characters long";
+    }
+    setFormErrors(errors);
+    return Object.keys(errors).length === 0;
+  };
+
   async function handleGenerateQr() {
-    if (!newQr.category) return;
+    setQrError("");
+    setGeneratedQr(null);
+    if (!validateForm()) return;
     setGeneratingQr(true);
     try {
+      const isAcademic = newQr.category === "ACADEMIC_EQUIPMENT";
+      const isBook = isAcademic && newQr.subType === "BOOK";
+      const isCycle = newQr.category === "CYCLE";
+      const isLaptop = newQr.category === "LAPTOP";
+
+      const payload = {
+        category: newQr.category,
+        name: newQr.name.trim(),
+        brand: (isBook || isCycle) ? (isCycle ? newQr.brand : undefined) : newQr.brand,
+        model: (isBook || isCycle) ? undefined : newQr.model,
+        serialNumber: isLaptop ? newQr.serialNumber : undefined,
+        color: isCycle ? newQr.color : undefined,
+        author: isBook ? newQr.author : undefined,
+        edition: isBook ? newQr.edition : undefined,
+        isbn: isBook ? newQr.isbn : undefined,
+        warranty: (!isLaptop && !isBook && !isCycle && newQr.category !== "ACADEMIC_EQUIPMENT") ? newQr.warranty : undefined,
+        frameNumber: isCycle ? newQr.frameNumber : undefined,
+      };
+
       const res = await fetch("/api/products/activate", {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(newQr),
+        body: JSON.stringify(payload),
       });
+      const d = await res.json();
       if (res.ok) {
-        const d = await res.json();
         setGeneratedQr({ qrSticker: d.qrSticker, dppId: d.product.dppId, qrPng: d.qrPng });
+        setNewQr((prev) => ({
+          ...prev,
+          name: "",
+          brand: "",
+          model: "",
+          serialNumber: "",
+          color: "",
+          author: "",
+          edition: "",
+          isbn: "",
+          warranty: "",
+          frameNumber: "",
+        }));
         await fetchData();
+      } else {
+        setQrError(d.error || "Failed to generate QR");
       }
+    } catch {
+      setQrError("A network error occurred. Please try again.");
     } finally {
       setGeneratingQr(false);
     }
@@ -346,7 +424,7 @@ export default function AdminDashboardPage() {
                           <div className="text-xs text-zinc-300">
                             <span className="font-medium">{action.admin.name}</span>{" "}
                             {action.actionType.replace(/_/g, " ").toLowerCase()}
-                            {action.product && ` · ${action.product.brand} ${action.product.model}`}
+                            {action.product && ` · ${action.product.name || `${action.product.brand} ${action.product.model}`}`}
                           </div>
                           {action.notes && <div className="text-xs text-zinc-600 truncate">{action.notes}</div>}
                         </div>
@@ -394,7 +472,7 @@ export default function AdminDashboardPage() {
                               <span>{getCategoryIcon(product.category)}</span>
                               <div>
                                 <div className="text-sm text-zinc-200">
-                                  {product.brand} {product.model}
+                                  {product.name || `${product.brand} ${product.model}`}
                                 </div>
                                 <div className="text-xs text-zinc-600">{product.category}</div>
                               </div>
@@ -504,56 +582,250 @@ export default function AdminDashboardPage() {
             {/* QR ISSUANCE */}
             {activeSection === "qr" && (
               <div className="space-y-5">
-                <div className="bg-[#0f0f0f] border border-[#1f1f1f] rounded-xl p-6">
-                  <div className="mono-tag mb-4">Generate New Product QR</div>
-                  <div className="grid sm:grid-cols-2 gap-4 mb-5">
+                <div className="bg-[#0f0f0f] border border-[#1f1f1f] rounded-2xl p-6">
+                  <div className="flex items-center justify-between mb-6 pb-4 border-b border-[#1f1f1f]">
                     <div>
-                      <label className="block text-xs text-zinc-400 mb-1.5">Category *</label>
+                      <h2 className="text-base font-semibold text-white">Generate Product DPP & QR Code</h2>
+                      <p className="text-xs text-zinc-500 mt-0.5">Configure product properties to issue a secure digital passport.</p>
+                    </div>
+                    <span className="mono-tag bg-emerald-500/10 text-emerald-400 border-emerald-500/15">SaaS Admin</span>
+                  </div>
+
+                  {qrError && (
+                    <div className="mb-5 p-4 rounded-xl bg-red-500/5 border border-red-500/15 text-red-400 text-xs flex items-center gap-3">
+                      <AlertTriangle className="w-4 h-4 flex-shrink-0" />
+                      <div>{qrError}</div>
+                    </div>
+                  )}
+
+                  <div className="grid sm:grid-cols-2 gap-5 mb-6">
+                    {/* Category Selection */}
+                    <div>
+                      <label className="block text-xs font-semibold text-zinc-400 mb-2">Category *</label>
                       <select
                         value={newQr.category}
-                        onChange={(e) => setNewQr({ ...newQr, category: e.target.value })}
-                        className="input-base"
+                        onChange={(e) => {
+                          const cat = e.target.value;
+                          setNewQr({
+                            ...newQr,
+                            category: cat,
+                            subType: cat === "ACADEMIC_EQUIPMENT" ? "BOOK" : "BOOK",
+                          });
+                          setFormErrors({});
+                          setQrError("");
+                        }}
+                        className="input-base text-sm"
                       >
                         {["LAPTOP", "PHONE", "GAMING_CONSOLE", "CYCLE", "APPLIANCE", "ACADEMIC_EQUIPMENT", "OTHER"].map((c) => (
                           <option key={c} value={c}>{c.replace(/_/g, " ")}</option>
                         ))}
                       </select>
                     </div>
-                    <div>
-                      <label className="block text-xs text-zinc-400 mb-1.5">Brand</label>
+
+                    {/* Academic Equipment Subtype */}
+                    {newQr.category === "ACADEMIC_EQUIPMENT" && (
+                      <div className="animate-fade-in">
+                        <label className="block text-xs font-semibold text-zinc-400 mb-2">Equipment Type *</label>
+                        <select
+                          value={newQr.subType}
+                          onChange={(e) => {
+                            setNewQr({ ...newQr, subType: e.target.value });
+                            setFormErrors({});
+                            setQrError("");
+                          }}
+                          className="input-base text-sm"
+                        >
+                          <option value="BOOK">Book / Textbook</option>
+                          <option value="CALCULATOR">Calculator & Instruments</option>
+                        </select>
+                      </div>
+                    )}
+
+                    {/* Primary Name Field (Conditional Styling and Hints) */}
+                    <div className="sm:col-span-2">
+                      <label className="block text-xs font-semibold text-zinc-400 mb-2">
+                        {newQr.category === "CYCLE" ? "Bicycle Name *" : (newQr.category === "ACADEMIC_EQUIPMENT" && newQr.subType === "BOOK" ? "Book Name *" : "Product Name *")}
+                      </label>
                       <input
                         type="text"
-                        value={newQr.brand}
-                        onChange={(e) => setNewQr({ ...newQr, brand: e.target.value })}
-                        placeholder="e.g. Apple, Dell, Sony"
-                        className="input-base"
+                        value={newQr.name}
+                        onChange={(e) => {
+                          setNewQr({ ...newQr, name: e.target.value });
+                          if (formErrors.name) setFormErrors({ ...formErrors, name: "" });
+                        }}
+                        placeholder={
+                          newQr.category === "ACADEMIC_EQUIPMENT" && newQr.subType === "BOOK" ? "e.g. Data Structures and Algorithms" :
+                          newQr.category === "CYCLE" ? "e.g. Trek Marlin 7" :
+                          newQr.category === "LAPTOP" ? "e.g. MacBook Air M2" :
+                          newQr.category === "ACADEMIC_EQUIPMENT" && newQr.subType === "CALCULATOR" ? "e.g. Casio FX-991ES Plus" : "e.g. Sony WH-1000XM5"
+                        }
+                        className={`input-base text-sm ${formErrors.name ? "border-red-500/40 focus:border-red-500" : ""}`}
                       />
+                      {formErrors.name ? (
+                        <p className="text-[11px] text-red-400 mt-1.5 flex items-center gap-1">
+                          <AlertTriangle className="w-3 h-3" />
+                          {formErrors.name}
+                        </p>
+                      ) : (
+                        <p className="text-[11px] text-zinc-600 mt-1.5">
+                          {newQr.category === "ACADEMIC_EQUIPMENT" && newQr.subType === "BOOK" ? "Enter the full title of the textbook." :
+                           newQr.category === "CYCLE" ? "Enter the complete brand and model name of the bicycle." :
+                           "This is the primary identity of the product across EcoXchange."}
+                        </p>
+                      )}
                     </div>
-                    <div>
-                      <label className="block text-xs text-zinc-400 mb-1.5">Model</label>
-                      <input
-                        type="text"
-                        value={newQr.model}
-                        onChange={(e) => setNewQr({ ...newQr, model: e.target.value })}
-                        placeholder="e.g. MacBook Pro 14"
-                        className="input-base"
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-xs text-zinc-400 mb-1.5">Serial Number</label>
-                      <input
-                        type="text"
-                        value={newQr.serialNumber}
-                        onChange={(e) => setNewQr({ ...newQr, serialNumber: e.target.value })}
-                        placeholder="Optional"
-                        className="input-base"
-                      />
-                    </div>
+
+                    {/* Laptop Fields */}
+                    {newQr.category === "LAPTOP" && (
+                      <>
+                        <div className="animate-fade-in">
+                          <label className="block text-xs font-semibold text-zinc-400 mb-2">Brand</label>
+                          <input
+                            type="text"
+                            value={newQr.brand}
+                            onChange={(e) => setNewQr({ ...newQr, brand: e.target.value })}
+                            placeholder="e.g. Dell, Apple, Lenovo"
+                            className="input-base text-sm"
+                          />
+                        </div>
+                        <div className="animate-fade-in">
+                          <label className="block text-xs font-semibold text-zinc-400 mb-2">Model</label>
+                          <input
+                            type="text"
+                            value={newQr.model}
+                            onChange={(e) => setNewQr({ ...newQr, model: e.target.value })}
+                            placeholder="e.g. Inspiron 15, MacBook Air M2"
+                            className="input-base text-sm"
+                          />
+                        </div>
+                        <div className="sm:col-span-2 animate-fade-in">
+                          <label className="block text-xs font-semibold text-zinc-400 mb-2">Serial Number</label>
+                          <input
+                            type="text"
+                            value={newQr.serialNumber}
+                            onChange={(e) => setNewQr({ ...newQr, serialNumber: e.target.value })}
+                            placeholder="e.g. CN-0XXXXX-XXXXX"
+                            className="input-base text-sm"
+                          />
+                        </div>
+                      </>
+                    )}
+
+                    {/* Bicycle Fields */}
+                    {newQr.category === "CYCLE" && (
+                      <>
+                        <div className="animate-fade-in">
+                          <label className="block text-xs font-semibold text-zinc-400 mb-2">Brand</label>
+                          <input
+                            type="text"
+                            value={newQr.brand}
+                            onChange={(e) => setNewQr({ ...newQr, brand: e.target.value })}
+                            placeholder="e.g. Giant, Trek, Firefox"
+                            className="input-base text-sm"
+                          />
+                        </div>
+                        <div className="animate-fade-in">
+                          <label className="block text-xs font-semibold text-zinc-400 mb-2">Color</label>
+                          <input
+                            type="text"
+                            value={newQr.color}
+                            onChange={(e) => setNewQr({ ...newQr, color: e.target.value })}
+                            placeholder="e.g. Stealth Black, Crimson Red"
+                            className="input-base text-sm"
+                          />
+                        </div>
+                        <div className="sm:col-span-2 animate-fade-in">
+                          <label className="block text-xs font-semibold text-zinc-400 mb-2">Frame Number</label>
+                          <input
+                            type="text"
+                            value={newQr.frameNumber}
+                            onChange={(e) => setNewQr({ ...newQr, frameNumber: e.target.value })}
+                            placeholder="Optional: Unique frame or chassis identifier"
+                            className="input-base text-sm"
+                          />
+                        </div>
+                      </>
+                    )}
+
+                    {/* Book Fields */}
+                    {newQr.category === "ACADEMIC_EQUIPMENT" && newQr.subType === "BOOK" && (
+                      <>
+                        <div className="animate-fade-in">
+                          <label className="block text-xs font-semibold text-zinc-400 mb-2">Author</label>
+                          <input
+                            type="text"
+                            value={newQr.author}
+                            onChange={(e) => setNewQr({ ...newQr, author: e.target.value })}
+                            placeholder="e.g. Silberschatz, Galvin, Gagne"
+                            className="input-base text-sm"
+                          />
+                        </div>
+                        <div className="animate-fade-in">
+                          <label className="block text-xs font-semibold text-zinc-400 mb-2">Edition</label>
+                          <input
+                            type="text"
+                            value={newQr.edition}
+                            onChange={(e) => setNewQr({ ...newQr, edition: e.target.value })}
+                            placeholder="e.g. 10th Edition"
+                            className="input-base text-sm"
+                          />
+                        </div>
+                        <div className="sm:col-span-2 animate-fade-in">
+                          <label className="block text-xs font-semibold text-zinc-400 mb-2">ISBN</label>
+                          <input
+                            type="text"
+                            value={newQr.isbn}
+                            onChange={(e) => setNewQr({ ...newQr, isbn: e.target.value })}
+                            placeholder="e.g. 978-0-470-12872-5"
+                            className="input-base text-sm"
+                          />
+                        </div>
+                      </>
+                    )}
+
+                    {/* Electronics / Other / Calculator Fields */}
+                    {((["PHONE", "GAMING_CONSOLE", "APPLIANCE", "OTHER"].includes(newQr.category)) || (newQr.category === "ACADEMIC_EQUIPMENT" && newQr.subType === "CALCULATOR")) && (
+                      <>
+                        <div className="animate-fade-in">
+                          <label className="block text-xs font-semibold text-zinc-400 mb-2">Brand</label>
+                          <input
+                            type="text"
+                            value={newQr.brand}
+                            onChange={(e) => setNewQr({ ...newQr, brand: e.target.value })}
+                            placeholder="e.g. Sony, JBL, Casio"
+                            className="input-base text-sm"
+                          />
+                        </div>
+                        <div className="animate-fade-in">
+                          <label className="block text-xs font-semibold text-zinc-400 mb-2">Model</label>
+                          <input
+                            type="text"
+                            value={newQr.model}
+                            onChange={(e) => setNewQr({ ...newQr, model: e.target.value })}
+                            placeholder="e.g. WH-1000XM5, Flip 6, FX-991ES"
+                            className="input-base text-sm"
+                          />
+                        </div>
+                        {newQr.category !== "ACADEMIC_EQUIPMENT" && (
+                          <div className="sm:col-span-2 animate-fade-in">
+                            <label className="block text-xs font-semibold text-zinc-400 mb-2">Warranty Info</label>
+                            <input
+                              type="text"
+                              value={newQr.warranty}
+                              onChange={(e) => setNewQr({ ...newQr, warranty: e.target.value })}
+                              placeholder="e.g. 1 Year Seller Warranty"
+                              className="input-base text-sm"
+                            />
+                          </div>
+                        )}
+                      </>
+                    )}
                   </div>
+
                   <button
                     onClick={handleGenerateQr}
                     disabled={generatingQr}
-                    className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-emerald-500 text-black font-semibold text-sm hover:bg-emerald-400 transition-all disabled:opacity-60"
+                    className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-emerald-500 text-black font-semibold text-sm hover:bg-emerald-400 transition-all disabled:opacity-60 cursor-pointer shadow-[0_4px_12px_rgba(16,185,129,0.15)] hover:shadow-[0_4px_16px_rgba(16,185,129,0.25)]"
                     id="generate-qr-btn"
                   >
                     {generatingQr ? (

@@ -3,6 +3,7 @@
 import { useState, useEffect, use } from "react";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
+import { Logo } from "@/components/ui/logo";
 import {
   QrCode,
   Shield,
@@ -81,6 +82,7 @@ interface Product {
   id: string;
   dppId: string;
   category: string;
+  name?: string;
   brand?: string;
   model?: string;
   color?: string;
@@ -98,6 +100,12 @@ interface Product {
   repairLogs: RepairLog[];
   documents: Document[];
   listings: Listing[];
+  author?: string | null;
+  edition?: string | null;
+  isbn?: string | null;
+  warranty?: string | null;
+  frameNumber?: string | null;
+  serialNumber?: string | null;
 }
 
 // ─────────────────────────────────────────────
@@ -355,9 +363,8 @@ export default function PassportPage({ params }: { params: Promise<{ dppId: stri
       {/* Top nav */}
       <div className="border-b border-[#141414] sticky top-0 z-40 bg-[#080808]/90 backdrop-blur-xl">
         <div className="max-w-5xl mx-auto px-4 h-14 flex items-center justify-between">
-          <Link href="/" className="flex items-center gap-2">
-            <QrCode className="w-4 h-4 text-emerald-400" />
-            <span className="text-sm font-semibold">Eco<span className="text-emerald-400">X</span>change</span>
+          <Link href="/" className="flex items-center">
+            <Logo height={26} />
           </Link>
           <div className="flex items-center gap-2">
             <button
@@ -388,9 +395,9 @@ export default function PassportPage({ params }: { params: Promise<{ dppId: stri
                   <div className="text-3xl">{getCategoryIcon(product.category)}</div>
                   <div>
                     <h1 className="text-xl font-semibold text-white">
-                      {product.brand && product.model
+                      {product.name || (product.brand && product.model
                         ? `${product.brand} ${product.model}`
-                        : product.category}
+                        : product.category)}
                     </h1>
                     <div className="text-zinc-500 text-sm">
                       {product.color && `${product.color} · `}
@@ -536,19 +543,30 @@ export default function PassportPage({ params }: { params: Promise<{ dppId: stri
                     <div>
                       <div className="mono-tag mb-3">Product Details</div>
                       <div className="grid grid-cols-2 gap-2">
-                        {[
-                          { label: "Category", value: product.category },
-                          { label: "Brand", value: product.brand ?? "—" },
-                          { label: "Model", value: product.model ?? "—" },
-                          { label: "Color", value: product.color ?? "—" },
-                          { label: "Year", value: product.yearOfPurchase?.toString() ?? "—" },
-                          { label: "Activated", value: product.activatedAt ? formatDate(product.activatedAt) : "—" },
-                        ].map((item) => (
-                          <div key={item.label} className="p-3 bg-[#141414] border border-[#1f1f1f] rounded-xl">
-                            <div className="text-xs text-zinc-600 mb-0.5">{item.label}</div>
-                            <div className="text-sm text-zinc-200">{item.value}</div>
-                          </div>
-                        ))}
+                        {(() => {
+                          const detailItems = [
+                            { label: "Category", value: product.category.replace(/_/g, " ") },
+                            { label: "Product Name", value: product.name || "—" },
+                          ];
+                          if (product.brand) detailItems.push({ label: "Brand", value: product.brand });
+                          if (product.model) detailItems.push({ label: "Model", value: product.model });
+                          if (product.color) detailItems.push({ label: "Color", value: product.color });
+                          if (product.serialNumber) detailItems.push({ label: "Serial Number", value: product.serialNumber });
+                          if (product.author) detailItems.push({ label: "Author", value: product.author });
+                          if (product.edition) detailItems.push({ label: "Edition", value: product.edition });
+                          if (product.isbn) detailItems.push({ label: "ISBN", value: product.isbn });
+                          if (product.warranty) detailItems.push({ label: "Warranty", value: product.warranty });
+                          if (product.frameNumber) detailItems.push({ label: "Frame Number", value: product.frameNumber });
+                          if (product.yearOfPurchase) detailItems.push({ label: "Year", value: product.yearOfPurchase.toString() });
+                          detailItems.push({ label: "Activated", value: product.activatedAt ? formatDate(product.activatedAt) : "—" });
+
+                          return detailItems.map((item) => (
+                            <div key={item.label} className="p-3 bg-[#141414] border border-[#1f1f1f] rounded-xl">
+                              <div className="text-xs text-zinc-600 mb-0.5">{item.label}</div>
+                              <div className="text-sm text-zinc-200">{item.value}</div>
+                            </div>
+                          ));
+                        })()}
                       </div>
                     </div>
                   </div>

@@ -1,8 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/lib/server-auth";
 
-const CK_SUPABASE_URL = "https://edzicxebgtiosahshvgi.supabase.co";
+const CK_SUPABASE_URL =
+  process.env.CAMPUSKARTT_URL || "https://edzicxebgtiosahshvgi.supabase.co";
 const CK_ANON_KEY =
+  process.env.CAMPUSKARTT_ANON_KEY ||
   process.env.CAMPUSKARTT_SUPABASE_ANON_KEY ||
   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVkemljeGViZ3Rpb3NhaHNodmdpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUwNDIxMzIsImV4cCI6MjA5MDYxODEzMn0._gV35IiY97ufGvHMGDEZHiT0zISIaugK8tk90IJiJDE";
 const CK_SERVICE_KEY =

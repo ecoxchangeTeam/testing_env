@@ -4,7 +4,6 @@ import Link from "next/link";
 import { useSession, signOut } from "next-auth/react";
 import { useState, useEffect } from "react";
 import {
-  QrCode,
   LayoutDashboard,
   ShoppingBag,
   User,
@@ -16,11 +15,19 @@ import {
   Wrench,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { Logo } from "@/components/ui/logo";
 
 export function Navbar() {
   const { data: session } = useSession();
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
+
+  const handleSignOut = () => {
+    const ckUrl = process.env.NEXT_PUBLIC_CAMPUSKARTT_URL ?? "https://www.campuskartt.in";
+    const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000";
+    const callbackUrl = `${ckUrl}/app/login.html?action=logout&redirect_to=${encodeURIComponent(appUrl)}`;
+    signOut({ callbackUrl });
+  };
 
   useEffect(() => {
     const handleScroll = () => setIsScrolled(window.scrollY > 20);
@@ -52,13 +59,8 @@ export function Navbar() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
-          <Link href="/" className="flex items-center gap-2.5 group">
-            <div className="w-8 h-8 rounded-lg bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center transition-all group-hover:border-emerald-500/40 group-hover:bg-emerald-500/15">
-              <QrCode className="w-4 h-4 text-emerald-400" />
-            </div>
-            <span className="text-[15px] font-semibold tracking-tight">
-              Eco<span className="text-emerald-400">X</span>change
-            </span>
+          <Link href="/" className="flex items-center group">
+            <Logo height={28} />
           </Link>
 
           {/* Desktop Nav */}
@@ -89,7 +91,7 @@ export function Navbar() {
                   </Link>
                 )}
                 <button
-                  onClick={() => signOut({ callbackUrl: "/" })}
+                  onClick={handleSignOut}
                   className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[13px] text-zinc-400 hover:text-zinc-100 hover:bg-white/4 transition-all"
                 >
                   <LogOut className="w-3.5 h-3.5" />
@@ -153,7 +155,7 @@ export function Navbar() {
           <div className="pt-2 flex flex-col gap-2">
             {session ? (
               <button
-                onClick={() => signOut({ callbackUrl: "/" })}
+                onClick={handleSignOut}
                 className="flex items-center gap-2 px-3 py-2.5 rounded-lg text-[14px] text-red-400 hover:bg-red-400/8 transition-all"
               >
                 <LogOut className="w-4 h-4" />

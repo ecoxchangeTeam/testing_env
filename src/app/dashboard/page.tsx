@@ -30,6 +30,7 @@ interface Product {
   id: string;
   dppId: string;
   category: string;
+  name?: string;
   brand?: string;
   model?: string;
   status: string;
@@ -94,7 +95,7 @@ export default function DashboardPage() {
             </p>
           </div>
           <Link
-            href="/admin/products"
+            href="/admin?section=qr"
             className="hidden sm:flex items-center gap-2 px-4 py-2 rounded-xl border border-dashed border-[#2a2a2a] text-zinc-500 hover:border-zinc-600 hover:text-zinc-300 text-sm transition-all"
           >
             <Plus className="w-4 h-4" />
@@ -161,9 +162,9 @@ export default function DashboardPage() {
                         <span className="text-2xl">{getCategoryIcon(product.category)}</span>
                         <div>
                           <div className="text-sm font-semibold text-white leading-tight">
-                            {product.brand && product.model
+                            {product.name || (product.brand && product.model
                               ? `${product.brand} ${product.model}`
-                              : product.category}
+                              : product.category)}
                           </div>
                         </div>
                       </div>

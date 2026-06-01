@@ -4,7 +4,8 @@ import { useState } from "react";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { QrCode, Eye, EyeOff, Loader2, ArrowRight } from "lucide-react";
+import { Eye, EyeOff, Loader2, ArrowRight } from "lucide-react";
+import { Logo } from "@/components/ui/logo";
 
 export default function SignInPage() {
   const router = useRouter();
@@ -42,13 +43,8 @@ export default function SignInPage() {
 
       <div className="relative w-full max-w-sm">
         {/* Logo */}
-        <Link href="/" className="flex items-center gap-2 mb-8 justify-center">
-          <div className="w-8 h-8 rounded-lg bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center">
-            <QrCode className="w-4 h-4 text-emerald-400" />
-          </div>
-          <span className="text-[15px] font-semibold tracking-tight">
-            Eco<span className="text-emerald-400">X</span>change
-          </span>
+        <Link href="/" className="flex justify-center mb-8">
+          <Logo height={42} />
         </Link>
 
         <div className="bg-[#0f0f0f] border border-[#1f1f1f] rounded-2xl p-7">

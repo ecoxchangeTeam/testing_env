@@ -167,11 +167,19 @@ model Product {
   
   // Product Details
   category       ProductCategory
+  name           String          @default("")
   brand          String?
   model          String?
   serialNumber   String?
   color          String?
   yearOfPurchase Int?
+  
+  // Category-specific details
+  author         String?
+  edition        String?
+  isbn           String?
+  warranty       String?
+  frameNumber    String?
   
   // Status & Scoring
   status         ProductStatus   @default(UNCLAIMED)

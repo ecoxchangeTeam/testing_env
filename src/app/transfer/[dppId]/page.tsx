@@ -5,21 +5,21 @@ import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import {
-  QrCode,
   ArrowRight,
   CheckCircle2,
   AlertCircle,
   Loader2,
   User,
   Shield,
-  Package,
 } from "lucide-react";
+import { Logo } from "@/components/ui/logo";
 import { formatCurrency, getConditionLabel, getCategoryIcon } from "@/lib/utils";
 
 interface Product {
   id: string;
   dppId: string;
   category: string;
+  name?: string;
   brand?: string;
   model?: string;
   status: string;
@@ -134,9 +134,8 @@ export default function TransferPage({ params }: { params: Promise<{ dppId: stri
       </div>
       <div className="relative max-w-md mx-auto">
         {/* Header */}
-        <Link href="/" className="flex items-center gap-2 mb-8 justify-center">
-          <QrCode className="w-5 h-5 text-emerald-400" />
-          <span className="text-sm font-semibold">Eco<span className="text-emerald-400">X</span>change</span>
+        <Link href="/" className="flex justify-center mb-8">
+          <Logo height={28} />
         </Link>
 
         <div className="text-center mb-6">
@@ -152,7 +151,7 @@ export default function TransferPage({ params }: { params: Promise<{ dppId: stri
             <span className="text-2xl">{getCategoryIcon(product.category)}</span>
             <div className="flex-1">
               <h2 className="text-white font-semibold">
-                {product.brand} {product.model}
+                {product.name || `${product.brand} ${product.model}`}
               </h2>
               <div className="font-mono text-[10px] text-zinc-600 mt-0.5">{dppId}</div>
             </div>

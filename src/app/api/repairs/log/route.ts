@@ -53,7 +53,7 @@ export async function POST(request: Request) {
       },
       include: {
         product: {
-          select: { dppId: true, brand: true, model: true, category: true },
+          select: { dppId: true, name: true, brand: true, model: true, category: true },
         },
       },
     }),
@@ -81,7 +81,7 @@ export async function GET(request: Request) {
       where: { productId: product.id },
       include: {
         loggedBy: { select: { name: true } },
-        product: { select: { dppId: true, brand: true, model: true, category: true } },
+        product: { select: { dppId: true, name: true, brand: true, model: true, category: true } },
       },
       orderBy: { createdAt: "desc" },
     });
@@ -97,7 +97,7 @@ export async function GET(request: Request) {
   const repairs = await prisma.repairLog.findMany({
     where: { loggedById: session.user.id },
     include: {
-      product: { select: { dppId: true, brand: true, model: true, category: true } },
+      product: { select: { dppId: true, name: true, brand: true, model: true, category: true } },
     },
     orderBy: { createdAt: "desc" },
   });
