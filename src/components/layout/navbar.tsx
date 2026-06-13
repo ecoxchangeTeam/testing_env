@@ -1,5 +1,4 @@
 "use client";
-
 import Link from "next/link";
 import { useSession, signOut } from "next-auth/react";
 import { useState, useEffect } from "react";
@@ -13,6 +12,7 @@ import {
   ChevronRight,
   Shield,
   Wrench,
+  BadgeCheck,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Logo } from "@/components/ui/logo";
@@ -39,11 +39,13 @@ export function Navbar() {
     ? [
         { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
         { href: "/marketplace", label: "Marketplace", icon: ShoppingBag },
+        { href: "/verified", label: "EcoX Verified", icon: BadgeCheck, highlight: true },
         { href: "/repairs", label: "Repairs", icon: Wrench },
         { href: "/profile", label: "Profile", icon: User },
       ]
     : [
         { href: "/marketplace", label: "Marketplace", icon: ShoppingBag },
+        { href: "/verified", label: "EcoX Verified", icon: BadgeCheck, highlight: true },
         { href: "#how-it-works", label: "How It Works", icon: null },
       ];
 
@@ -69,7 +71,12 @@ export function Navbar() {
               <Link
                 key={link.href}
                 href={link.href}
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[13px] text-zinc-400 hover:text-zinc-100 hover:bg-white/4 transition-all"
+                className={cn(
+                  "flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[13px] transition-all",
+                  link.highlight
+                    ? "text-emerald-400 hover:text-emerald-300 hover:bg-emerald-500/8"
+                    : "text-zinc-400 hover:text-zinc-100 hover:bg-white/4"
+                )}
               >
                 {link.icon && <link.icon className="w-3.5 h-3.5" />}
                 {link.label}
@@ -146,7 +153,12 @@ export function Navbar() {
               key={link.href}
               href={link.href}
               onClick={() => setMobileOpen(false)}
-              className="flex items-center gap-2 px-3 py-2.5 rounded-lg text-[14px] text-zinc-400 hover:text-zinc-100 hover:bg-white/4 transition-all"
+              className={cn(
+                "flex items-center gap-2 px-3 py-2.5 rounded-lg text-[14px] transition-all",
+                link.highlight
+                  ? "text-emerald-400 hover:text-emerald-300 hover:bg-emerald-500/8"
+                  : "text-zinc-400 hover:text-zinc-100 hover:bg-white/4"
+              )}
             >
               {link.icon && <link.icon className="w-4 h-4" />}
               {link.label}
