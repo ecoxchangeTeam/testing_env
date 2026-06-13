@@ -203,7 +203,7 @@ In Supabase Dashboard → Storage, create these public buckets:
 
 ---
 
-## 🧱 Tech Stack
+## Tech Stack
 
 - **Frontend**: Next.js 16, React 19, TypeScript
 - **Styling**: Tailwind CSS v4, custom design system
