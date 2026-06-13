@@ -17,7 +17,7 @@ export function Logo({
 
   return (
     <Image
-      src="/logo.jpg"
+      src="/logo.png"
       alt="EcoXchange"
       height={h}
       width={h * 5}
