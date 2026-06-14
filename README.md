@@ -54,7 +54,7 @@ Open [http://localhost:3000](http://localhost:3000) 🎉
 
 ---
 
-## 🔐 Demo Credentials
+## Demo Credentials
 
 After seeding:
 
