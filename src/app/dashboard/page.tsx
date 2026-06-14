@@ -11,7 +11,6 @@ import {
   Clock,
   Plus,
   Star,
-  Wrench,
   Shield,
   Loader2,
   ExternalLink,
@@ -22,7 +21,6 @@ import {
   formatDate,
   formatCurrency,
   getConditionLabel,
-  getTrustLabel,
   getCategoryIcon,
 } from "@/lib/utils";
 
@@ -85,8 +83,8 @@ export default function DashboardPage() {
       <Navbar />
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pt-24 pb-16">
         {/* Header */}
-        <div className="flex items-start justify-between mb-8">
-          <div>
+        <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4 mb-8">
+          <div className="min-w-0">
             <h1 className="text-2xl font-semibold text-white mb-1">
               Welcome back, {session?.user?.name?.split(" ")[0]}
             </h1>
@@ -96,7 +94,7 @@ export default function DashboardPage() {
           </div>
           <Link
             href="/admin?section=qr"
-            className="hidden sm:flex items-center gap-2 px-4 py-2 rounded-xl border border-dashed border-[#2a2a2a] text-zinc-500 hover:border-zinc-600 hover:text-zinc-300 text-sm transition-all"
+            className="flex items-center justify-center gap-2 px-4 py-2 rounded-xl border border-dashed border-[#2a2a2a] text-zinc-500 hover:border-zinc-600 hover:text-zinc-300 text-sm transition-all sm:w-auto"
           >
             <Plus className="w-4 h-4" />
             Scan / Add Product
@@ -104,7 +102,7 @@ export default function DashboardPage() {
         </div>
 
         {/* Stats row */}
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-8">
+        <div className="grid grid-cols-1 min-[420px]:grid-cols-2 lg:grid-cols-4 gap-3 mb-8">
           {[
             { label: "Owned Products", value: products.length, icon: Package, color: "text-emerald-400" },
             { label: "Active", value: activeCount, icon: Shield, color: "text-emerald-400" },
@@ -118,7 +116,7 @@ export default function DashboardPage() {
           ].map((stat) => (
             <div
               key={stat.label}
-              className="bg-[#0f0f0f] border border-[#1f1f1f] rounded-xl p-4"
+              className="bg-[#0f0f0f] border border-[#1f1f1f] rounded-xl p-4 min-w-0"
             >
               <div className="flex items-center gap-2 mb-2">
                 <stat.icon className={`w-4 h-4 ${stat.color}`} />
@@ -157,11 +155,11 @@ export default function DashboardPage() {
                     className="bg-[#0f0f0f] border border-[#1f1f1f] rounded-2xl p-5 card-hover group"
                   >
                     {/* Product header */}
-                    <div className="flex items-start justify-between mb-4">
-                      <div className="flex items-center gap-2.5">
+                    <div className="flex items-start justify-between gap-3 mb-4">
+                      <div className="flex min-w-0 items-center gap-2.5">
                         <span className="text-2xl">{getCategoryIcon(product.category)}</span>
-                        <div>
-                          <div className="text-sm font-semibold text-white leading-tight">
+                        <div className="min-w-0">
+                          <div className="text-sm font-semibold text-white leading-tight break-words">
                             {product.name || (product.brand && product.model
                               ? `${product.brand} ${product.model}`
                               : product.category)}
@@ -183,7 +181,7 @@ export default function DashboardPage() {
                     </div>
 
                     {/* DPP ID */}
-                    <div className="font-mono text-[10px] text-zinc-600 mb-3">
+                    <div className="font-mono text-[10px] text-zinc-600 mb-3 break-all">
                       {product.dppId}
                     </div>
 
@@ -220,7 +218,7 @@ export default function DashboardPage() {
                     )}
 
                     {/* Actions */}
-                    <div className="flex gap-2">
+                    <div className="flex flex-col min-[420px]:flex-row gap-2">
                       <Link
                         href={`/passport/${product.dppId}`}
                         className="flex-1 flex items-center justify-center gap-1 py-2 px-3 rounded-lg bg-[#141414] border border-[#1f1f1f] text-xs text-zinc-400 hover:text-zinc-100 hover:border-zinc-600 transition-all"
@@ -312,5 +310,3 @@ function SellButton({ dppId }: { dppId: string }) {
     </button>
   );
 }
-
-

@@ -26,7 +26,6 @@ import {
   formatCurrency,
   getTrustLabel,
   getConditionLabel,
-  getStatusColor,
   getCategoryIcon,
   cn,
 } from "@/lib/utils";
@@ -229,10 +228,10 @@ function OwnershipTimeline({ history }: { history: OwnershipRecord[] }) {
             {record.newOwner.college && (
               <div className="text-xs text-zinc-500 mt-0.5">{record.newOwner.college}</div>
             )}
-            <div className="text-xs text-zinc-600 mt-1 flex items-center gap-1">
-              <Clock className="w-3 h-3" />
+            <div className="text-xs text-zinc-600 mt-1 flex flex-wrap items-center gap-1">
+              <Clock className="w-3 h-3 flex-shrink-0" />
               {formatDate(record.transferDate)}
-              <span className="ml-1 px-1.5 py-0.5 rounded-full bg-[#1a1a1a] border border-[#242424] text-[10px]">
+              <span className="px-1.5 py-0.5 rounded-full bg-[#1a1a1a] border border-[#242424] text-[10px]">
                 {record.transferType}
               </span>
             </div>
@@ -271,21 +270,21 @@ function RepairTimeline({ repairs }: { repairs: RepairLog[] }) {
       {repairs.map((repair) => (
         <div key={repair.id} className="flex gap-3">
           <div className={`w-3.5 h-3.5 rounded-full border-2 flex-shrink-0 mt-1 ${repairColors[repair.repairType] ?? repairColors.OTHER}`} />
-          <div className="flex-1 bg-[#141414] border border-[#1f1f1f] rounded-xl p-3">
-            <div className="flex items-start justify-between mb-1">
-              <span className="text-sm font-medium text-zinc-200">{repair.repairType.replace("_", " ")}</span>
+          <div className="flex-1 min-w-0 bg-[#141414] border border-[#1f1f1f] rounded-xl p-3">
+            <div className="flex flex-col min-[380px]:flex-row min-[380px]:items-start min-[380px]:justify-between gap-1 mb-1">
+              <span className="text-sm font-medium text-zinc-200 break-words">{repair.repairType.replace("_", " ")}</span>
               {repair.repairCost && (
-                <span className="text-xs font-medium text-zinc-300">{formatCurrency(repair.repairCost)}</span>
+                <span className="text-xs font-medium text-zinc-300 flex-shrink-0">{formatCurrency(repair.repairCost)}</span>
               )}
             </div>
             {repair.repairShop && (
-              <div className="text-xs text-zinc-500 mb-1">{repair.repairShop}</div>
+              <div className="text-xs text-zinc-500 mb-1 break-words">{repair.repairShop}</div>
             )}
             {repair.repairNotes && (
-              <div className="text-xs text-zinc-500 mb-1">{repair.repairNotes}</div>
+              <div className="text-xs text-zinc-500 mb-1 break-words">{repair.repairNotes}</div>
             )}
-            <div className="text-xs text-zinc-600 flex items-center gap-1">
-              <Clock className="w-3 h-3" />
+            <div className="text-xs text-zinc-600 flex flex-wrap items-center gap-1">
+              <Clock className="w-3 h-3 flex-shrink-0" />
               {formatDate(repair.createdAt)} · by {repair.loggedBy.name}
             </div>
           </div>
@@ -362,21 +361,21 @@ export default function PassportPage({ params }: { params: Promise<{ dppId: stri
     <div className="min-h-screen bg-[#080808]">
       {/* Top nav */}
       <div className="border-b border-[#141414] sticky top-0 z-40 bg-[#080808]/90 backdrop-blur-xl">
-        <div className="max-w-5xl mx-auto px-4 h-14 flex items-center justify-between">
-          <Link href="/" className="flex items-center">
+        <div className="max-w-5xl mx-auto px-4 h-14 flex items-center justify-between gap-3 min-w-0">
+          <Link href="/" className="flex min-w-0 items-center">
             <Logo height={26} />
           </Link>
-          <div className="flex items-center gap-2">
+          <div className="flex flex-shrink-0 items-center gap-2">
             <button
               onClick={sharePassport}
-              className="btn-ghost text-xs"
+              className="btn-ghost text-xs px-3"
               id="share-passport"
             >
               <Share2 className="w-3.5 h-3.5" />
               Share
             </button>
             {isOwner && (
-              <Link href={`/dashboard`} className="btn-secondary text-xs py-1.5 px-3">
+              <Link href={`/dashboard`} className="btn-secondary !w-auto text-xs py-1.5 px-3">
                 Manage
               </Link>
             )}
@@ -384,28 +383,28 @@ export default function PassportPage({ params }: { params: Promise<{ dppId: stri
         </div>
       </div>
 
-      <div className="max-w-5xl mx-auto px-4 py-8">
-        <div className="grid lg:grid-cols-[1fr_280px] gap-6">
+      <div className="w-full max-w-5xl mx-auto px-3 min-[380px]:px-4 py-5 sm:py-8">
+        <div className="grid min-w-0 lg:grid-cols-[minmax(0,1fr)_280px] gap-5 sm:gap-6">
           {/* Main content */}
-          <div className="space-y-6">
+          <div className="min-w-0 space-y-5 sm:space-y-6">
             {/* Product header */}
-            <div className="bg-[#0f0f0f] border border-[#1f1f1f] rounded-2xl p-6">
-              <div className="flex items-start justify-between mb-4">
-                <div className="flex items-center gap-3">
-                  <div className="text-3xl">{getCategoryIcon(product.category)}</div>
-                  <div>
-                    <h1 className="text-xl font-semibold text-white">
+            <div className="bg-[#0f0f0f] border border-[#1f1f1f] rounded-2xl p-3 min-[380px]:p-4 sm:p-6">
+              <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4 mb-4">
+                <div className="flex min-w-0 items-center gap-3">
+                  <div className="text-3xl flex-shrink-0">{getCategoryIcon(product.category)}</div>
+                  <div className="min-w-0">
+                    <h1 className="text-xl font-semibold text-white break-words">
                       {product.name || (product.brand && product.model
                         ? `${product.brand} ${product.model}`
                         : product.category)}
                     </h1>
-                    <div className="text-zinc-500 text-sm">
+                    <div className="text-zinc-500 text-sm break-words">
                       {product.color && `${product.color} · `}
                       {product.yearOfPurchase && `Purchased ${product.yearOfPurchase}`}
                     </div>
                   </div>
                 </div>
-                <div className="flex items-center gap-2">
+                <div className="flex flex-wrap items-center gap-2">
                   {product.isFlagged && (
                     <span className="badge badge-retired">
                       <AlertTriangle className="w-3 h-3" />
@@ -431,20 +430,18 @@ export default function PassportPage({ params }: { params: Promise<{ dppId: stri
               </div>
 
               {/* DPP-ID */}
-              <div className="flex items-center gap-2 bg-[#141414] border border-[#1f1f1f] rounded-xl px-4 py-2.5 mb-5">
+              <div className="flex items-start gap-2 bg-[#141414] border border-[#1f1f1f] rounded-xl px-4 py-2.5 mb-5 min-w-0">
                 <QrCode className="w-4 h-4 text-emerald-400 flex-shrink-0" />
-                <div>
+                <div className="min-w-0">
                   <div className="mono-tag text-[10px] mb-0.5">Digital Product Passport ID</div>
-                  <div className="font-mono text-sm text-emerald-400">{product.dppId}</div>
+                  <div className="font-mono text-sm text-emerald-400 break-all">{product.dppId}</div>
                 </div>
               </div>
 
               {/* Scores */}
-              <div className="flex items-center justify-around py-4 border-t border-[#1f1f1f]">
+              <div className="grid grid-cols-3 items-start gap-1 min-[380px]:gap-2 py-4 border-t border-[#1f1f1f]">
                 <ScoreRing score={product.trustScore} label="Trust Score" color="#10b981" />
-                <div className="w-px h-12 bg-[#1f1f1f]" />
                 <ScoreRing score={product.conditionScore} label="Condition" color="#3b82f6" />
-                <div className="w-px h-12 bg-[#1f1f1f]" />
                 <div className="flex flex-col items-center gap-1.5">
                   <div className="w-20 h-20 flex items-center justify-center">
                     <div className="text-center">
@@ -469,8 +466,8 @@ export default function PassportPage({ params }: { params: Promise<{ dppId: stri
 
             {/* Active Listing Banner */}
             {product.listings.length > 0 && product.status === "LISTED" && (
-              <div className="bg-blue-500/6 border border-blue-500/20 rounded-2xl p-5 flex items-center justify-between">
-                <div>
+              <div className="bg-blue-500/6 border border-blue-500/20 rounded-2xl p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                <div className="min-w-0">
                   <div className="flex items-center gap-2 mb-1">
                     <ShoppingBag className="w-4 h-4 text-blue-400" />
                     <span className="text-blue-400 font-medium text-sm">Listed for Sale</span>
@@ -485,7 +482,7 @@ export default function PassportPage({ params }: { params: Promise<{ dppId: stri
                 {!isOwner && session && (
                   <Link
                     href={`/transfer/${dppId}`}
-                    className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-blue-500 text-white font-medium text-sm hover:bg-blue-400 transition-all"
+                    className="flex items-center justify-center gap-1.5 px-4 py-2 rounded-xl bg-blue-500 text-white font-medium text-sm hover:bg-blue-400 transition-all"
                   >
                     Buy Now
                     <ArrowRight className="w-4 h-4" />
@@ -514,24 +511,24 @@ export default function PassportPage({ params }: { params: Promise<{ dppId: stri
                 ))}
               </div>
 
-              <div className="p-5">
+              <div className="p-3 min-[380px]:p-4 sm:p-5">
                 {activeTab === "overview" && (
                   <div className="space-y-4">
                     {/* Current Owner */}
                     {product.currentOwner && (
                       <div>
                         <div className="mono-tag mb-3">Current Owner</div>
-                        <div className="flex items-center gap-3 p-3 bg-[#141414] border border-[#1f1f1f] rounded-xl">
-                          <div className="w-9 h-9 rounded-full bg-emerald-500/10 border border-emerald-500/15 flex items-center justify-center">
+                        <div className="flex items-center gap-3 p-3 bg-[#141414] border border-[#1f1f1f] rounded-xl min-w-0">
+                          <div className="w-9 h-9 rounded-full bg-emerald-500/10 border border-emerald-500/15 flex flex-shrink-0 items-center justify-center">
                             <User className="w-4 h-4 text-emerald-400" />
                           </div>
-                          <div>
-                            <div className="text-sm font-medium text-zinc-200">{product.currentOwner.name}</div>
+                          <div className="min-w-0">
+                            <div className="text-sm font-medium text-zinc-200 break-words">{product.currentOwner.name}</div>
                             {product.currentOwner.college && (
-                              <div className="text-xs text-zinc-500">{product.currentOwner.college}</div>
+                              <div className="text-xs text-zinc-500 break-words">{product.currentOwner.college}</div>
                             )}
                           </div>
-                          <div className="ml-auto flex items-center gap-1">
+                          <div className="ml-auto flex flex-shrink-0 items-center gap-1">
                             <Star className="w-3 h-3 text-amber-400 fill-amber-400" />
                             <span className="text-xs text-zinc-400">{product.currentOwner.trustScore}</span>
                           </div>
@@ -542,7 +539,7 @@ export default function PassportPage({ params }: { params: Promise<{ dppId: stri
                     {/* Product Details */}
                     <div>
                       <div className="mono-tag mb-3">Product Details</div>
-                      <div className="grid grid-cols-2 gap-2">
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                         {(() => {
                           const detailItems = [
                             { label: "Category", value: product.category.replace(/_/g, " ") },
@@ -561,9 +558,9 @@ export default function PassportPage({ params }: { params: Promise<{ dppId: stri
                           detailItems.push({ label: "Activated", value: product.activatedAt ? formatDate(product.activatedAt) : "—" });
 
                           return detailItems.map((item) => (
-                            <div key={item.label} className="p-3 bg-[#141414] border border-[#1f1f1f] rounded-xl">
+                            <div key={item.label} className="p-3 bg-[#141414] border border-[#1f1f1f] rounded-xl min-w-0">
                               <div className="text-xs text-zinc-600 mb-0.5">{item.label}</div>
-                              <div className="text-sm text-zinc-200">{item.value}</div>
+                              <div className="text-sm text-zinc-200 break-words">{item.value}</div>
                             </div>
                           ));
                         })()}
@@ -610,15 +607,15 @@ export default function PassportPage({ params }: { params: Promise<{ dppId: stri
                             href={doc.documentUrl}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="flex items-center gap-3 p-3 bg-[#141414] border border-[#1f1f1f] rounded-xl hover:border-zinc-600 transition-all"
+                            className="flex items-center gap-3 p-3 bg-[#141414] border border-[#1f1f1f] rounded-xl hover:border-zinc-600 transition-all min-w-0"
                           >
-                            <FileText className="w-4 h-4 text-zinc-500" />
-                            <div className="flex-1">
-                              <div className="text-sm text-zinc-200">{doc.documentType}</div>
+                            <FileText className="w-4 h-4 text-zinc-500 flex-shrink-0" />
+                            <div className="flex-1 min-w-0">
+                              <div className="text-sm text-zinc-200 break-words">{doc.documentType}</div>
                               <div className="text-xs text-zinc-600">{formatDate(doc.uploadedAt)}</div>
                             </div>
                             {doc.isVerified && (
-                              <CheckCircle2 className="w-4 h-4 text-emerald-400" />
+                              <CheckCircle2 className="w-4 h-4 text-emerald-400 flex-shrink-0" />
                             )}
                           </a>
                         ))}
@@ -631,7 +628,7 @@ export default function PassportPage({ params }: { params: Promise<{ dppId: stri
 
             {/* Owner actions */}
             {isOwner && product.status === "ACTIVE" && (
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-1 min-[420px]:grid-cols-2 gap-3">
                 <Link
                   href={`/dashboard`}
                   className="flex items-center justify-center gap-2 py-3 rounded-xl bg-[#0f0f0f] border border-[#1f1f1f] text-zinc-300 text-sm font-medium hover:border-zinc-600 transition-all"
@@ -651,7 +648,7 @@ export default function PassportPage({ params }: { params: Promise<{ dppId: stri
           </div>
 
           {/* Sidebar */}
-          <div className="space-y-4">
+          <div className="min-w-0 space-y-4">
             <QrDownload product={product} />
 
             {/* Quick stats */}
@@ -663,9 +660,9 @@ export default function PassportPage({ params }: { params: Promise<{ dppId: stri
                 { label: "Documents", value: product.documents.length.toString() },
                 { label: "Activated", value: product.activatedAt ? formatDate(product.activatedAt) : "—" },
               ].map((item) => (
-                <div key={item.label} className="flex items-center justify-between">
+                <div key={item.label} className="flex items-center justify-between gap-3 min-w-0">
                   <span className="text-xs text-zinc-500">{item.label}</span>
-                  <span className="text-xs font-medium text-zinc-200">{item.value}</span>
+                  <span className="text-right text-xs font-medium text-zinc-200 break-words">{item.value}</span>
                 </div>
               ))}
             </div>
@@ -680,10 +677,10 @@ export default function PassportPage({ params }: { params: Promise<{ dppId: stri
                   { label: "Repair History", value: product.repairLogs.length > 0, icon: Wrench },
                   { label: "Multiple Owners", value: product.ownershipHistory.length > 1, icon: User },
                 ].map((factor) => (
-                  <div key={factor.label} className="flex items-center gap-2">
+                  <div key={factor.label} className="flex items-center gap-2 min-w-0">
                     <div className={`w-1.5 h-1.5 rounded-full ${factor.value ? "bg-emerald-400" : "bg-zinc-700"}`} />
                     <factor.icon className={`w-3 h-3 ${factor.value ? "text-emerald-400" : "text-zinc-600"}`} />
-                    <span className={`text-xs ${factor.value ? "text-zinc-300" : "text-zinc-600"}`}>{factor.label}</span>
+                    <span className={`min-w-0 text-xs ${factor.value ? "text-zinc-300" : "text-zinc-600"}`}>{factor.label}</span>
                     {factor.value && <CheckCircle2 className="w-3 h-3 text-emerald-400 ml-auto" />}
                   </div>
                 ))}

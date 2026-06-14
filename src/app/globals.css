@@ -40,6 +40,7 @@ html {
   scroll-behavior: smooth;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
 }
 
 body {
@@ -47,6 +48,23 @@ body {
   color: #f9fafb;
   font-family: var(--font-sans);
   min-height: 100vh;
+  overflow-x: hidden;
+  text-rendering: optimizeLegibility;
+}
+
+button,
+a,
+input,
+select,
+textarea {
+  -webkit-tap-highlight-color: transparent;
+}
+
+img,
+svg,
+video,
+canvas {
+  max-width: 100%;
 }
 
 /* ─────────────────────────────────────────────
@@ -239,6 +257,7 @@ body {
   border-radius: 8px;
   color: #f9fafb;
   font-size: 14px;
+  min-height: 44px;
   padding: 10px 14px;
   transition: border-color 0.2s ease, box-shadow 0.2s ease;
   width: 100%;
@@ -275,7 +294,9 @@ body {
   transition: all 0.2s ease;
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: 8px;
+  min-height: 44px;
 }
 
 .btn-primary:hover {
@@ -296,7 +317,9 @@ body {
   transition: all 0.2s ease;
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: 8px;
+  min-height: 44px;
 }
 
 .btn-secondary:hover {
@@ -316,7 +339,9 @@ body {
   transition: all 0.15s ease;
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: 8px;
+  min-height: 40px;
 }
 
 .btn-ghost:hover {
@@ -331,30 +356,31 @@ body {
 .heading-xl {
   font-size: clamp(2.5rem, 6vw, 5rem);
   font-weight: 700;
-  letter-spacing: -0.03em;
+  letter-spacing: 0;
   line-height: 1.05;
 }
 
 .heading-lg {
   font-size: clamp(1.75rem, 4vw, 3rem);
   font-weight: 700;
-  letter-spacing: -0.025em;
+  letter-spacing: 0;
   line-height: 1.1;
 }
 
 .heading-md {
   font-size: clamp(1.25rem, 2.5vw, 1.875rem);
   font-weight: 600;
-  letter-spacing: -0.02em;
+  letter-spacing: 0;
   line-height: 1.2;
 }
 
 .mono-tag {
   font-family: var(--font-mono);
   font-size: 11px;
-  letter-spacing: 0.08em;
+  letter-spacing: 0;
   text-transform: uppercase;
   color: #6b7280;
+  overflow-wrap: anywhere;
 }
 
 /* ─────────────────────────────────────────────
@@ -410,6 +436,7 @@ body {
 .data-table {
   width: 100%;
   border-collapse: collapse;
+  min-width: 680px;
 }
 
 .data-table th {
@@ -456,4 +483,27 @@ body {
   position: relative;
   z-index: 1;
   flex-shrink: 0;
+}
+
+@media (max-width: 640px) {
+  .heading-xl {
+    font-size: clamp(2.25rem, 13vw, 3.35rem);
+    line-height: 1.08;
+  }
+
+  .heading-lg {
+    font-size: clamp(1.75rem, 9vw, 2.35rem);
+    line-height: 1.12;
+  }
+
+  .btn-primary,
+  .btn-secondary {
+    width: 100%;
+  }
+
+  .card-hover:hover,
+  .btn-primary:hover,
+  .btn-secondary:hover {
+    transform: none;
+  }
 }

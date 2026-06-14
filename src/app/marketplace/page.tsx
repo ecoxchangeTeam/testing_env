@@ -139,7 +139,7 @@ export default function MarketplacePage() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-24 pb-16">
 
         {/* Header */}
-        <div className="mb-8">
+        <div className="mb-8 max-w-3xl">
           <div className="mono-tag text-emerald-400 mb-2">Verified Marketplace</div>
           <h1 className="text-2xl font-semibold text-white mb-1">
             Every listing carries a Digital Passport.
@@ -165,7 +165,7 @@ export default function MarketplacePage() {
         </div>
 
         {/* Category Filter */}
-        <div className="flex gap-2 overflow-x-auto pb-2 mb-6">
+        <div className="flex gap-2 overflow-x-auto pb-2 mb-6 -mx-4 px-4 sm:mx-0 sm:px-0">
           {CATEGORIES.map((cat) => (
             <button
               key={cat}
@@ -197,7 +197,7 @@ export default function MarketplacePage() {
           </div>
         ) : (
           <>
-            <div className="mono-tag mb-4 flex items-center gap-3">
+            <div className="mono-tag mb-4 flex flex-col min-[420px]:flex-row min-[420px]:items-center gap-1 min-[420px]:gap-3">
               <span>{ecoCount} verified EcoXchange listings</span>
               {ckCount > 0 && (
                 <span className="text-orange-400">+ {ckCount} from CampusKartt</span>
@@ -227,7 +227,7 @@ export default function MarketplacePage() {
                         </div>
                       )}
 
-                      <div className="flex items-start justify-between mb-3">
+                      <div className="flex items-start justify-between gap-3 mb-3">
                         <span className="text-2xl">{getCategoryIcon(listing.product.category)}</span>
                         <div className="flex items-center gap-1 px-2 py-0.5 rounded-full bg-orange-500/12 border border-orange-500/25">
                           <span className="text-[9px] text-orange-400 font-bold tracking-wide">CampusKartt</span>
@@ -235,10 +235,10 @@ export default function MarketplacePage() {
                       </div>
 
                       <div className="mb-3">
-                        <h3 className="text-[14px] font-semibold text-white leading-tight mb-0.5">
+                        <h3 className="text-[14px] font-semibold text-white leading-tight mb-0.5 break-words">
                           {listing.product.name || listing.product.model}
                         </h3>
-                        <div className="font-mono text-[10px] text-zinc-600">CK-{listing.externalId}</div>
+                        <div className="font-mono text-[10px] text-zinc-600 break-all">CK-{listing.externalId}</div>
                       </div>
 
                       <div className="grid grid-cols-3 gap-1.5 mb-3">
@@ -267,10 +267,10 @@ export default function MarketplacePage() {
                         </div>
                       </div>
 
-                      <div className="flex items-center justify-between pt-3 border-t border-orange-500/10 mt-auto">
-                        <div>
+                      <div className="flex flex-col min-[420px]:flex-row min-[420px]:items-center min-[420px]:justify-between gap-3 pt-3 border-t border-orange-500/10 mt-auto">
+                        <div className="min-w-0">
                           <div className="text-lg font-bold text-white">{formatCurrency(listing.askingPrice)}</div>
-                          <div className="text-[10px] text-zinc-600">
+                          <div className="text-[10px] text-zinc-600 break-words">
                             {listing.seller.name}
                             {listing.seller.college && ` · ${listing.seller.college.split("(")[0].trim()}`}
                           </div>
@@ -278,7 +278,7 @@ export default function MarketplacePage() {
                         <button
                           onClick={() => handleBuyNow(listing.externalId!)}
                           disabled={buyingId === listing.externalId}
-                          className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-orange-500/10 border border-orange-500/20 text-orange-400 text-[11px] font-medium hover:bg-orange-500/20 transition-all disabled:opacity-60"
+                          className="flex min-h-9 items-center justify-center gap-1 px-2.5 py-1.5 rounded-lg bg-orange-500/10 border border-orange-500/20 text-orange-400 text-[11px] font-medium hover:bg-orange-500/20 transition-all disabled:opacity-60"
                         >
                           {buyingId === listing.externalId ? (
                             <Loader2 className="w-3 h-3 animate-spin" />
@@ -307,7 +307,7 @@ export default function MarketplacePage() {
                     href={`/passport/${listing.product.dppId}`}
                     className="group block bg-[#0f0f0f] border border-[#1f1f1f] rounded-2xl p-5 card-hover"
                   >
-                    <div className="flex items-start justify-between mb-3">
+                    <div className="flex items-start justify-between gap-3 mb-3">
                       <span className="text-2xl">{getCategoryIcon(listing.product.category)}</span>
                       <div className="flex gap-1">
                         {listing.product.isVerified && (
@@ -320,10 +320,10 @@ export default function MarketplacePage() {
                     </div>
 
                     <div className="mb-3">
-                      <h3 className="text-[14px] font-semibold text-white leading-tight mb-0.5">
+                      <h3 className="text-[14px] font-semibold text-white leading-tight mb-0.5 break-words">
                         {listing.product.name || `${listing.product.brand} ${listing.product.model}`}
                       </h3>
-                      <div className="font-mono text-[10px] text-zinc-600">{listing.product.dppId}</div>
+                      <div className="font-mono text-[10px] text-zinc-600 break-all">{listing.product.dppId}</div>
                     </div>
 
                     <div className="grid grid-cols-3 gap-1.5 mb-3">
@@ -352,15 +352,15 @@ export default function MarketplacePage() {
                       </div>
                     </div>
 
-                    <div className="flex items-center justify-between pt-3 border-t border-[#1f1f1f]">
-                      <div>
+                    <div className="flex flex-col min-[420px]:flex-row min-[420px]:items-center min-[420px]:justify-between gap-3 pt-3 border-t border-[#1f1f1f]">
+                      <div className="min-w-0">
                         <div className="text-lg font-bold text-white">{formatCurrency(listing.askingPrice)}</div>
-                        <div className="text-[10px] text-zinc-600">
+                        <div className="text-[10px] text-zinc-600 break-words">
                           {listing.seller.name}
                           {listing.seller.college && ` · ${listing.seller.college.split("(")[0].trim()}`}
                         </div>
                       </div>
-                      <div className="px-2.5 py-1.5 rounded-lg bg-blue-500/10 border border-blue-500/20 text-blue-400 text-[11px] font-medium group-hover:bg-blue-500/15 transition-all">
+                      <div className="min-h-9 px-2.5 py-1.5 rounded-lg bg-blue-500/10 border border-blue-500/20 text-center text-blue-400 text-[11px] font-medium group-hover:bg-blue-500/15 transition-all">
                         View DPP →
                       </div>
                     </div>

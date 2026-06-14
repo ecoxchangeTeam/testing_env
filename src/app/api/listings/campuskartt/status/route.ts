@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { mapCampusKarttListingStatus } from "@/lib/campuskartt-sync";
 
 const WEBHOOK_SECRET = process.env.CAMPUSKARTT_WEBHOOK_SECRET || "ck-eco-webhook-secret-2024";
 
@@ -17,32 +18,44 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Missing externalId or status" }, { status: 400 });
     }
 
+    const mappedStatus = mapCampusKarttListingStatus(status);
+    if (!mappedStatus) {
+      return NextResponse.json({ error: "Unsupported CampusKartt listing status" }, { status: 400 });
+    }
+
     const listing = await prisma.marketplaceListing.findFirst({
-      where: { externalId: String(externalId), source: "CAMPUSKARTT" },
+      where: { externalId: String(externalId), source: "ECOXCHANGE" },
     });
 
     if (!listing) {
-      return NextResponse.json({ error: "Listing not found" }, { status: 404 });
+      return NextResponse.json(
+        {
+          skipped: true,
+          reason: "Listing is not an EcoXchange mirrored listing",
+        },
+        { status: 202 }
+      );
     }
-
-    const newStatus = status === "sold" ? "SOLD" : "CANCELLED";
 
     await prisma.$transaction([
       prisma.marketplaceListing.update({
         where: { id: listing.id },
         data: {
-          listingStatus: newStatus,
-          soldAt: newStatus === "SOLD" ? new Date() : undefined,
+          listingStatus: mappedStatus.listingStatus,
+          soldAt: mappedStatus.soldAt,
         },
       }),
-      // Also update dummy product status
       prisma.product.update({
         where: { id: listing.productId },
-        data: { status: newStatus === "SOLD" ? "TRANSFERRED" : "RETIRED" },
+        data: { status: mappedStatus.productStatus },
       }),
     ]);
 
-    return NextResponse.json({ success: true, listingId: listing.id, newStatus });
+    return NextResponse.json({
+      success: true,
+      listingId: listing.id,
+      newStatus: mappedStatus.listingStatus,
+    });
   } catch (error) {
     console.error("[CampusKartt Status Webhook Error]", error);
     return NextResponse.json({ error: "Internal server error" }, { status: 500 });

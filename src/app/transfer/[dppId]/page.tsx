@@ -128,9 +128,9 @@ export default function TransferPage({ params }: { params: Promise<{ dppId: stri
   }
 
   return (
-    <div className="min-h-screen dot-grid py-12 px-4">
+    <div className="min-h-[100svh] dot-grid py-10 sm:py-12 px-4">
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-1/3 left-1/2 -translate-x-1/2 w-[500px] h-[400px] bg-blue-500/3 rounded-full blur-[100px]" />
+        <div className="absolute top-1/3 left-1/2 -translate-x-1/2 w-[min(500px,calc(100vw-2rem))] h-[400px] bg-blue-500/3 rounded-full blur-[100px]" />
       </div>
       <div className="relative max-w-md mx-auto">
         {/* Header */}
@@ -149,18 +149,18 @@ export default function TransferPage({ params }: { params: Promise<{ dppId: stri
         <div className="bg-[#0f0f0f] border border-[#1f1f1f] rounded-2xl p-5 mb-4">
           <div className="flex items-start gap-3 mb-4">
             <span className="text-2xl">{getCategoryIcon(product.category)}</span>
-            <div className="flex-1">
-              <h2 className="text-white font-semibold">
+            <div className="flex-1 min-w-0">
+              <h2 className="text-white font-semibold break-words">
                 {product.name || `${product.brand} ${product.model}`}
               </h2>
-              <div className="font-mono text-[10px] text-zinc-600 mt-0.5">{dppId}</div>
+              <div className="font-mono text-[10px] text-zinc-600 mt-0.5 break-all">{dppId}</div>
             </div>
-            <div className={`badge ${product.status === "LISTED" ? "badge-listed" : "badge-active"}`}>
+            <div className={`badge flex-shrink-0 ${product.status === "LISTED" ? "badge-listed" : "badge-active"}`}>
               {product.status}
             </div>
           </div>
 
-          <div className="grid grid-cols-3 gap-2">
+          <div className="grid grid-cols-1 min-[420px]:grid-cols-3 gap-2">
             <div className="bg-[#141414] rounded-lg p-2.5 text-center">
               <div className="text-sm font-semibold text-white">{Math.round(product.trustScore)}</div>
               <div className="text-[10px] text-zinc-600">Trust</div>
@@ -170,7 +170,7 @@ export default function TransferPage({ params }: { params: Promise<{ dppId: stri
               <div className="text-[10px] text-zinc-600">Condition</div>
             </div>
             <div className="bg-[#141414] rounded-lg p-2.5 text-center">
-              <div className="text-sm font-semibold text-white">{listing ? formatCurrency(listing.askingPrice) : "—"}</div>
+              <div className="text-sm font-semibold text-white break-words">{listing ? formatCurrency(listing.askingPrice) : "—"}</div>
               <div className="text-[10px] text-zinc-600">Price</div>
             </div>
           </div>

@@ -1,7 +1,14 @@
 import { BadgeCheck } from "lucide-react";
 
+type VerifiedProduct = {
+  id: string;
+  name: string;
+  category: string;
+  imageUrl?: string | null;
+};
+
 // Replace this with your actual DB/API call
-async function getVerifiedProducts() {
+async function getVerifiedProducts(): Promise<VerifiedProduct[]> {
   // Example: return await prisma.product.findMany({ where: { verified: true } });
   return [];
 }
@@ -54,7 +61,7 @@ export default async function VerifiedPage() {
         {/* Products Grid */}
         {products.length > 0 ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-            {products.map((product: any) => (
+            {products.map((product) => (
               <div
                 key={product.id}
                 className="group rounded-xl border border-[#1f1f1f] bg-[#0f0f0f] hover:border-emerald-500/30 transition-all overflow-hidden"

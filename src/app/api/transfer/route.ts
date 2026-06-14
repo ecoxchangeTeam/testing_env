@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { auth } from "@/lib/server-auth";
 import { prisma } from "@/lib/prisma";
+import { syncCampusKarttSoldStatus } from "@/lib/campuskartt-sync";
 
 // POST /api/transfer/initiate — Seller or buyer initiates transfer request
 export async function POST(request: Request) {
@@ -66,7 +67,7 @@ export async function PATCH(request: Request) {
 
   const transfer = await prisma.transferRequest.findUnique({
     where: { id: transferId },
-    include: { product: true },
+    include: { product: true, listing: true },
   });
 
   if (!transfer) {
@@ -135,12 +136,28 @@ export async function PATCH(request: Request) {
         : []),
     ]);
 
+    if (transfer.listing?.externalId) {
+      try {
+        await syncCampusKarttSoldStatus(transfer.listing.externalId);
+      } catch (error) {
+        console.error("[CampusKartt Sold Sync Error]", error);
+        return NextResponse.json(
+          {
+            success: false,
+            error:
+              "Ownership transferred on EcoXchange, but CampusKartt sold-status sync failed.",
+          },
+          { status: 502 }
+        );
+      }
+    }
+
     return NextResponse.json({
       success: true,
       message: "Ownership transferred successfully",
+      campusKarttSynced: Boolean(transfer.listing?.externalId),
     });
   }
 
   return NextResponse.json({ error: "Invalid action" }, { status: 400 });
 }
-

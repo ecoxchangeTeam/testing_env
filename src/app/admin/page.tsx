@@ -21,7 +21,7 @@ import {
   Database,
 } from "lucide-react";
 import { Navbar } from "@/components/layout/navbar";
-import { formatDate, formatCurrency, getCategoryIcon } from "@/lib/utils";
+import { formatDate, getCategoryIcon } from "@/lib/utils";
 import Link from "next/link";
 
 interface Stats {
@@ -292,29 +292,29 @@ export default function AdminDashboardPage() {
       <Navbar />
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-20 pb-16">
         {/* Admin header */}
-        <div className="flex items-center gap-3 mb-6 pt-4">
+        <div className="flex flex-col min-[420px]:flex-row min-[420px]:items-center gap-3 mb-6 pt-4">
           <div className="w-8 h-8 rounded-lg bg-violet-500/10 border border-violet-500/20 flex items-center justify-center">
             <Shield className="w-4 h-4 text-violet-400" />
           </div>
-          <div>
+          <div className="min-w-0">
             <h1 className="text-lg font-semibold text-white">Admin Dashboard</h1>
             <p className="text-xs text-zinc-500">Platform management & analytics</p>
           </div>
-          <div className="ml-auto text-xs text-zinc-700">
+          <div className="min-[420px]:ml-auto text-xs text-zinc-700">
             Last updated: {new Date().toLocaleTimeString()}
           </div>
         </div>
 
         {/* Side nav + content */}
-        <div className="flex gap-6">
+        <div className="flex flex-col lg:flex-row gap-6">
           {/* Sidebar */}
-          <div className="w-44 flex-shrink-0">
-            <nav className="space-y-1">
+          <div className="lg:w-44 lg:flex-shrink-0">
+            <nav className="flex gap-2 overflow-x-auto pb-2 lg:block lg:space-y-1 lg:overflow-visible lg:pb-0">
               {navItems.map((item) => (
                 <button
                   key={item.id}
                   onClick={() => setActiveSection(item.id)}
-                  className={`w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-all ${
+                  className={`flex min-h-10 flex-shrink-0 items-center gap-2 px-3 py-2 rounded-lg text-sm transition-all lg:w-full ${
                     activeSection === item.id
                       ? "bg-white/5 text-white"
                       : "text-zinc-500 hover:text-zinc-300 hover:bg-white/3"
@@ -333,7 +333,7 @@ export default function AdminDashboardPage() {
             {activeSection === "overview" && (
               <div className="space-y-6">
                 {/* Stats grid */}
-                <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
+                <div className="grid grid-cols-1 min-[420px]:grid-cols-2 xl:grid-cols-4 gap-3">
                   <StatCard label="Total Users" value={data.stats.totalUsers} icon={Users} color="bg-blue-500/10 text-blue-400" />
                   <StatCard label="Total Products" value={data.stats.totalProducts} icon={Package} color="bg-emerald-500/10 text-emerald-400" />
                   <StatCard label="Active Products" value={data.stats.activeProducts} icon={Activity} color="bg-emerald-500/10 text-emerald-400" sub={`${data.stats.listedProducts} listed`} />
@@ -401,13 +401,13 @@ export default function AdminDashboardPage() {
                 </div>
 
                 {/* Recent Admin Actions */}
-                <div className="bg-[#0f0f0f] border border-[#1f1f1f] rounded-xl overflow-hidden">
+                <div className="bg-[#0f0f0f] border border-[#1f1f1f] rounded-xl overflow-x-auto">
                   <div className="px-5 py-4 border-b border-[#1f1f1f]">
                     <div className="mono-tag">Recent Admin Actions</div>
                   </div>
                   <div className="divide-y divide-[#141414]">
                     {data.recentActions.map((action) => (
-                      <div key={action.id} className="px-5 py-3 flex items-center gap-3">
+                      <div key={action.id} className="px-4 sm:px-5 py-3 flex items-start gap-3">
                         <div className={`w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 ${
                           action.actionType === "PRODUCT_VERIFIED" ? "bg-emerald-500/10" :
                           action.actionType === "PRODUCT_FLAGGED" ? "bg-red-500/10" : "bg-zinc-500/10"
@@ -421,14 +421,14 @@ export default function AdminDashboardPage() {
                           )}
                         </div>
                         <div className="flex-1 min-w-0">
-                          <div className="text-xs text-zinc-300">
+                          <div className="text-xs text-zinc-300 break-words">
                             <span className="font-medium">{action.admin.name}</span>{" "}
                             {action.actionType.replace(/_/g, " ").toLowerCase()}
                             {action.product && ` · ${action.product.name || `${action.product.brand} ${action.product.model}`}`}
                           </div>
                           {action.notes && <div className="text-xs text-zinc-600 truncate">{action.notes}</div>}
                         </div>
-                        <div className="text-[10px] text-zinc-700">{formatDate(action.createdAt)}</div>
+                        <div className="flex-shrink-0 text-[10px] text-zinc-700">{formatDate(action.createdAt)}</div>
                       </div>
                     ))}
                   </div>
@@ -452,7 +452,7 @@ export default function AdminDashboardPage() {
                   </div>
                 </div>
 
-                <div className="bg-[#0f0f0f] border border-[#1f1f1f] rounded-xl overflow-hidden">
+                <div className="bg-[#0f0f0f] border border-[#1f1f1f] rounded-xl overflow-x-auto">
                   <table className="data-table">
                     <thead>
                       <tr>
@@ -479,7 +479,7 @@ export default function AdminDashboardPage() {
                             </div>
                           </td>
                           <td>
-                            <Link href={`/passport/${product.dppId}`} className="font-mono text-xs text-emerald-400 hover:underline">
+                            <Link href={`/passport/${product.dppId}`} className="font-mono text-xs text-emerald-400 hover:underline break-all">
                               {product.dppId}
                             </Link>
                           </td>
@@ -501,7 +501,7 @@ export default function AdminDashboardPage() {
                             </span>
                           </td>
                           <td>
-                            <div className="flex items-center gap-1">
+                            <div className="flex flex-wrap items-center gap-1">
                               {!product.isVerified && (
                                 <button
                                   onClick={() => handleProductAction(product.id, "verify")}
@@ -546,7 +546,7 @@ export default function AdminDashboardPage() {
 
             {/* USERS */}
             {activeSection === "users" && (
-              <div className="bg-[#0f0f0f] border border-[#1f1f1f] rounded-xl overflow-hidden">
+              <div className="bg-[#0f0f0f] border border-[#1f1f1f] rounded-xl overflow-x-auto">
                 <div className="px-5 py-4 border-b border-[#1f1f1f]">
                   <div className="mono-tag">Registered Users ({data.stats.totalUsers})</div>
                 </div>
@@ -582,9 +582,9 @@ export default function AdminDashboardPage() {
             {/* QR ISSUANCE */}
             {activeSection === "qr" && (
               <div className="space-y-5">
-                <div className="bg-[#0f0f0f] border border-[#1f1f1f] rounded-2xl p-6">
-                  <div className="flex items-center justify-between mb-6 pb-4 border-b border-[#1f1f1f]">
-                    <div>
+                <div className="bg-[#0f0f0f] border border-[#1f1f1f] rounded-2xl p-4 sm:p-6">
+                  <div className="flex flex-col min-[420px]:flex-row min-[420px]:items-center min-[420px]:justify-between gap-3 mb-6 pb-4 border-b border-[#1f1f1f]">
+                    <div className="min-w-0">
                       <h2 className="text-base font-semibold text-white">Generate Product DPP & QR Code</h2>
                       <p className="text-xs text-zinc-500 mt-0.5">Configure product properties to issue a secure digital passport.</p>
                     </div>
@@ -825,7 +825,7 @@ export default function AdminDashboardPage() {
                   <button
                     onClick={handleGenerateQr}
                     disabled={generatingQr}
-                    className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-emerald-500 text-black font-semibold text-sm hover:bg-emerald-400 transition-all disabled:opacity-60 cursor-pointer shadow-[0_4px_12px_rgba(16,185,129,0.15)] hover:shadow-[0_4px_16px_rgba(16,185,129,0.25)]"
+                    className="flex w-full min-[420px]:w-auto items-center justify-center gap-2 px-5 py-2.5 rounded-xl bg-emerald-500 text-black font-semibold text-sm hover:bg-emerald-400 transition-all disabled:opacity-60 cursor-pointer shadow-[0_4px_12px_rgba(16,185,129,0.15)] hover:shadow-[0_4px_16px_rgba(16,185,129,0.25)]"
                     id="generate-qr-btn"
                   >
                     {generatingQr ? (
@@ -839,7 +839,7 @@ export default function AdminDashboardPage() {
 
                 {/* Generated QR */}
                 {generatedQr && (
-                  <div className="bg-[#0f0f0f] border border-emerald-500/20 rounded-xl p-6">
+                  <div className="bg-[#0f0f0f] border border-emerald-500/20 rounded-xl p-4 sm:p-6">
                     <div className="flex items-center gap-2 mb-4">
                       <CheckCircle2 className="w-4 h-4 text-emerald-400" />
                       <div className="mono-tag text-emerald-400">QR Generated Successfully</div>
@@ -857,7 +857,7 @@ export default function AdminDashboardPage() {
                       <div className="space-y-3">
                         <div>
                           <div className="mono-tag mb-1">DPP-ID</div>
-                          <div className="font-mono text-sm text-emerald-400 bg-emerald-500/6 border border-emerald-500/15 rounded-lg px-3 py-2">
+                          <div className="font-mono text-sm text-emerald-400 bg-emerald-500/6 border border-emerald-500/15 rounded-lg px-3 py-2 break-all">
                             {generatedQr.dppId}
                           </div>
                         </div>
@@ -867,7 +867,7 @@ export default function AdminDashboardPage() {
                             {typeof window !== "undefined" ? window.location.origin : ""}/activate/{generatedQr.dppId}
                           </div>
                         </div>
-                        <div className="grid grid-cols-2 gap-2">
+                        <div className="grid grid-cols-1 min-[420px]:grid-cols-2 gap-2">
                           <button
                             onClick={() => downloadQr("png")}
                             className="flex items-center justify-center gap-1.5 py-2 px-3 rounded-lg border border-[#1f1f1f] text-zinc-400 hover:text-zinc-100 hover:border-zinc-600 text-xs font-medium transition-all"

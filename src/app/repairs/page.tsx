@@ -13,7 +13,6 @@ import {
   AlertCircle,
   ChevronDown,
   QrCode,
-  Package,
 } from "lucide-react";
 import { Navbar } from "@/components/layout/navbar";
 import { formatDate, formatCurrency, getCategoryIcon } from "@/lib/utils";
@@ -151,8 +150,8 @@ export default function RepairsPage() {
       <Navbar />
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 pt-24 pb-16">
         {/* Header */}
-        <div className="flex items-center justify-between mb-8">
-          <div>
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8">
+          <div className="min-w-0">
             <div className="mono-tag text-emerald-400 mb-1">Repair Logs</div>
             <h1 className="text-2xl font-semibold text-white">Service History</h1>
             <p className="text-zinc-500 text-sm mt-1">
@@ -161,7 +160,7 @@ export default function RepairsPage() {
           </div>
           <button
             onClick={() => setShowForm(!showForm)}
-            className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 font-medium text-sm hover:bg-emerald-500/15 transition-all"
+            className="flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 font-medium text-sm hover:bg-emerald-500/15 transition-all"
             id="log-repair-btn"
           >
             <Plus className="w-4 h-4" />
@@ -179,7 +178,7 @@ export default function RepairsPage() {
 
         {/* Log Repair Form */}
         {showForm && (
-          <div className="bg-[#0f0f0f] border border-[#1f1f1f] rounded-2xl p-6 mb-6 animate-fade-in">
+          <div className="bg-[#0f0f0f] border border-[#1f1f1f] rounded-2xl p-4 sm:p-6 mb-6 animate-fade-in">
             <h2 className="text-white font-semibold mb-4">Log a New Repair</h2>
             <form onSubmit={handleLogRepair} className="space-y-4">
               {/* Product selector */}
@@ -295,11 +294,11 @@ export default function RepairsPage() {
                 </div>
               )}
 
-              <div className="flex gap-3">
+              <div className="flex flex-col min-[420px]:flex-row gap-3">
                 <button
                   type="submit"
                   disabled={submitting || products.length === 0}
-                  className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-emerald-500 text-black font-semibold text-sm hover:bg-emerald-400 transition-all disabled:opacity-60"
+                  className="flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl bg-emerald-500 text-black font-semibold text-sm hover:bg-emerald-400 transition-all disabled:opacity-60"
                 >
                   {submitting ? (
                     <Loader2 className="w-4 h-4 animate-spin" />
@@ -348,8 +347,8 @@ export default function RepairsPage() {
                 key={repair.id}
                 className="bg-[#0f0f0f] border border-[#1f1f1f] rounded-xl p-4"
               >
-                <div className="flex items-start justify-between mb-3">
-                  <div className="flex items-center gap-2.5">
+                <div className="flex flex-col min-[420px]:flex-row min-[420px]:items-start min-[420px]:justify-between gap-2 mb-3">
+                  <div className="flex flex-wrap items-center gap-2.5">
                     <div
                       className={`px-2 py-0.5 rounded-full border text-[10px] font-medium ${
                         repairTypeColors[repair.repairType] ?? repairTypeColors.OTHER
@@ -375,13 +374,13 @@ export default function RepairsPage() {
                 {repair.product && (
                   <Link
                     href={`/passport/${repair.product.dppId}`}
-                    className="flex items-center gap-2 mb-2 hover:opacity-80 transition-opacity"
+                    className="flex items-start gap-2 mb-2 hover:opacity-80 transition-opacity min-w-0"
                   >
                     <span className="text-sm">{getCategoryIcon(repair.product.category)}</span>
-                    <span className="text-sm font-medium text-zinc-300">
+                    <span className="text-sm font-medium text-zinc-300 break-words">
                       {repair.product.brand} {repair.product.model}
                     </span>
-                    <span className="font-mono text-[10px] text-zinc-600">
+                    <span className="font-mono text-[10px] text-zinc-600 break-all">
                       {repair.product.dppId}
                     </span>
                     <QrCode className="w-3 h-3 text-zinc-700 ml-auto" />
