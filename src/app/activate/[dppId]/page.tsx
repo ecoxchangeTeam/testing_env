@@ -18,7 +18,6 @@ import {
   User,
   Building2,
 } from "lucide-react";
-import { formatDate } from "@/lib/utils";
 
 interface Product {
   id: string;
@@ -161,9 +160,9 @@ export default function ActivatePage({
   }
 
   return (
-    <div className="min-h-screen dot-grid py-12 px-4">
+    <div className="min-h-[100svh] dot-grid py-10 sm:py-12 px-4">
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-1/3 left-1/2 -translate-x-1/2 w-[500px] h-[400px] bg-emerald-500/3 rounded-full blur-[100px]" />
+        <div className="absolute top-1/3 left-1/2 -translate-x-1/2 w-[min(500px,calc(100vw-2rem))] h-[400px] bg-emerald-500/3 rounded-full blur-[100px]" />
       </div>
 
       <div className="relative max-w-lg mx-auto">
@@ -199,8 +198,8 @@ export default function ActivatePage({
         {/* Product Info Card */}
         {product && (
           <div className="bg-[#0f0f0f] border border-[#1f1f1f] rounded-2xl p-5 mb-5">
-            <div className="flex items-start justify-between">
-              <div>
+            <div className="flex flex-col min-[420px]:flex-row min-[420px]:items-start min-[420px]:justify-between gap-3">
+              <div className="min-w-0">
                 <div className="mono-tag mb-1">Product Detected</div>
                 <h2 className="text-white font-semibold">
                   {product.name || (product.brand && product.model
@@ -215,9 +214,9 @@ export default function ActivatePage({
               </div>
             </div>
 
-            <div className="mt-4 pt-4 border-t border-[#1f1f1f]">
+            <div className="mt-4 pt-4 border-t border-[#1f1f1f] min-w-0">
               <div className="mono-tag">DPP-ID</div>
-              <div className="font-mono text-sm text-emerald-400 mt-1">{dppId}</div>
+              <div className="font-mono text-sm text-emerald-400 mt-1 break-all">{dppId}</div>
             </div>
           </div>
         )}
@@ -260,7 +259,7 @@ export default function ActivatePage({
               </div>
             )}
 
-            <form onSubmit={handleActivate} className="bg-[#0f0f0f] border border-[#1f1f1f] rounded-2xl p-6 space-y-5">
+            <form onSubmit={handleActivate} className="bg-[#0f0f0f] border border-[#1f1f1f] rounded-2xl p-4 sm:p-6 space-y-5">
               <h3 className="text-white font-semibold text-[15px]">Activation Details</h3>
 
               {/* Owner info (from session) */}
@@ -316,7 +315,7 @@ export default function ActivatePage({
                   {invoiceFile ? (
                     <>
                       <CheckCircle2 className="w-6 h-6 text-emerald-400" />
-                      <span className="text-sm text-emerald-400">{invoiceFile.name}</span>
+                      <span className="max-w-full break-all text-center text-sm text-emerald-400">{invoiceFile.name}</span>
                       <span className="text-xs text-zinc-600">
                         {(invoiceFile.size / 1024).toFixed(1)} KB
                       </span>

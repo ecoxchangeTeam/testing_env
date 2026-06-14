@@ -63,7 +63,7 @@ async function main() {
 
   await prisma.account.upsert({
     where: { provider_providerAccountId: { provider: "credentials", providerAccountId: adminUser.id } },
-    update: {},
+    update: { access_token: passwordHash },
     create: {
       userId: adminUser.id,
       type: "credentials",
@@ -87,7 +87,7 @@ async function main() {
     });
     await prisma.account.upsert({
       where: { provider_providerAccountId: { provider: "credentials", providerAccountId: user.id } },
-      update: {},
+      update: { access_token: passwordHash },
       create: {
         userId: user.id,
         type: "credentials",

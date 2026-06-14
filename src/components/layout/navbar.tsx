@@ -13,6 +13,7 @@ import {
   ChevronRight,
   Shield,
   Wrench,
+  BadgeCheck,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Logo } from "@/components/ui/logo";
@@ -35,15 +36,24 @@ export function Navbar() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  useEffect(() => {
+    document.body.style.overflow = mobileOpen ? "hidden" : "";
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [mobileOpen]);
+
   const navLinks = session
     ? [
         { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
         { href: "/marketplace", label: "Marketplace", icon: ShoppingBag },
+        { href: "/verified", label: "EcoX Verified", icon: BadgeCheck, highlight: true },
         { href: "/repairs", label: "Repairs", icon: Wrench },
         { href: "/profile", label: "Profile", icon: User },
       ]
     : [
         { href: "/marketplace", label: "Marketplace", icon: ShoppingBag },
+        { href: "/verified", label: "EcoX Verified", icon: BadgeCheck, highlight: true },
         { href: "#how-it-works", label: "How It Works", icon: null },
       ];
 
@@ -69,7 +79,12 @@ export function Navbar() {
               <Link
                 key={link.href}
                 href={link.href}
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[13px] text-zinc-400 hover:text-zinc-100 hover:bg-white/4 transition-all"
+                className={cn(
+                  "flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[13px] transition-all",
+                  link.highlight
+                    ? "text-emerald-400 hover:text-emerald-300 hover:bg-emerald-500/8"
+                    : "text-zinc-400 hover:text-zinc-100 hover:bg-white/4"
+                )}
               >
                 {link.icon && <link.icon className="w-3.5 h-3.5" />}
                 {link.label}
@@ -126,8 +141,10 @@ export function Navbar() {
 
           {/* Mobile Menu Button */}
           <button
-            className="md:hidden p-2 rounded-lg hover:bg-white/5 transition-colors"
+            className="md:hidden inline-flex h-11 w-11 items-center justify-center rounded-lg hover:bg-white/5 transition-colors"
             onClick={() => setMobileOpen(!mobileOpen)}
+            aria-label={mobileOpen ? "Close navigation menu" : "Open navigation menu"}
+            aria-expanded={mobileOpen}
           >
             {mobileOpen ? (
               <X className="w-5 h-5" />
@@ -140,13 +157,18 @@ export function Navbar() {
 
       {/* Mobile Menu */}
       {mobileOpen && (
-        <div className="md:hidden bg-[#0f0f0f] border-b border-[#1f1f1f] px-4 py-4 space-y-1">
+        <div className="md:hidden fixed left-0 right-0 top-16 max-h-[calc(100dvh-4rem)] overflow-y-auto bg-[#0f0f0f]/98 border-b border-[#1f1f1f] px-4 py-4 space-y-1 shadow-2xl shadow-black/40">
           {navLinks.map((link) => (
             <Link
               key={link.href}
               href={link.href}
               onClick={() => setMobileOpen(false)}
-              className="flex items-center gap-2 px-3 py-2.5 rounded-lg text-[14px] text-zinc-400 hover:text-zinc-100 hover:bg-white/4 transition-all"
+              className={cn(
+                "flex min-h-11 items-center gap-2 px-3 py-2.5 rounded-lg text-[14px] transition-all",
+                link.highlight
+                  ? "text-emerald-400 hover:text-emerald-300 hover:bg-emerald-500/8"
+                  : "text-zinc-400 hover:text-zinc-100 hover:bg-white/4"
+              )}
             >
               {link.icon && <link.icon className="w-4 h-4" />}
               {link.label}
@@ -156,7 +178,7 @@ export function Navbar() {
             {session ? (
               <button
                 onClick={handleSignOut}
-                className="flex items-center gap-2 px-3 py-2.5 rounded-lg text-[14px] text-red-400 hover:bg-red-400/8 transition-all"
+                className="flex min-h-11 items-center gap-2 px-3 py-2.5 rounded-lg text-[14px] text-red-400 hover:bg-red-400/8 transition-all"
               >
                 <LogOut className="w-4 h-4" />
                 Sign Out

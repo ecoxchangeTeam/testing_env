@@ -5,10 +5,8 @@ import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import {
-  User,
   Mail,
   Building2,
-  Star,
   Shield,
   Package,
   Clock,
@@ -313,9 +311,9 @@ export default function ProfilePage() {
                           <div className="text-sm font-medium text-zinc-200 truncate">
                             {product.brand} {product.model}
                           </div>
-                          <div className="font-mono text-[10px] text-zinc-600">{product.dppId}</div>
+                          <div className="font-mono text-[10px] text-zinc-600 break-all">{product.dppId}</div>
                         </div>
-                        <span className={`badge text-[9px] ${
+                        <span className={`badge flex-shrink-0 text-[9px] ${
                           product.status === "ACTIVE" ? "badge-active" :
                           product.status === "LISTED" ? "badge-listed" : "badge-unclaimed"
                         }`}>
@@ -341,7 +339,7 @@ export default function ProfilePage() {
                   <p className="text-zinc-600 text-sm">No listings yet.</p>
                 </div>
               ) : (
-                <div className="bg-[#0f0f0f] border border-[#1f1f1f] rounded-xl overflow-hidden">
+                <div className="bg-[#0f0f0f] border border-[#1f1f1f] rounded-xl overflow-x-auto">
                   <table className="data-table">
                     <thead>
                       <tr>
@@ -361,7 +359,7 @@ export default function ProfilePage() {
                             >
                               {listing.product.brand} {listing.product.model}
                             </Link>
-                            <div className="font-mono text-[10px] text-zinc-600">{listing.product.dppId}</div>
+                            <div className="font-mono text-[10px] text-zinc-600 break-all">{listing.product.dppId}</div>
                           </td>
                           <td className="text-sm font-medium text-white">{formatCurrency(listing.askingPrice)}</td>
                           <td>

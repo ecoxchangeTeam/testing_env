@@ -20,25 +20,30 @@ export default function SignInPage() {
     setLoading(true);
     setError("");
 
-    const result = await signIn("credentials", {
-      email,
-      password,
-      action: "signin",
-      redirect: false,
-    });
+    try {
+      const result = await signIn("credentials", {
+        email,
+        password,
+        action: "signin",
+        redirect: false,
+      });
 
-    if (result?.error) {
-      setError(result.error);
+      if (result?.error) {
+        setError(result.error);
+        setLoading(false);
+      } else {
+        router.push("/dashboard");
+      }
+    } catch {
+      setError("Sign in failed. Check your database connection and try again.");
       setLoading(false);
-    } else {
-      router.push("/dashboard");
     }
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center px-4 dot-grid">
+    <div className="min-h-[100svh] flex items-center justify-center px-4 py-10 dot-grid">
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-1/3 left-1/2 -translate-x-1/2 w-[500px] h-[400px] bg-emerald-500/4 rounded-full blur-[100px]" />
+        <div className="absolute top-1/3 left-1/2 -translate-x-1/2 w-[min(500px,calc(100vw-2rem))] h-[400px] bg-emerald-500/4 rounded-full blur-[100px]" />
       </div>
 
       <div className="relative w-full max-w-sm">
@@ -47,7 +52,7 @@ export default function SignInPage() {
           <Logo height={42} />
         </Link>
 
-        <div className="bg-[#0f0f0f] border border-[#1f1f1f] rounded-2xl p-7">
+        <div className="bg-[#0f0f0f] border border-[#1f1f1f] rounded-2xl p-5 sm:p-7">
           <div className="mb-6">
             <h1 className="text-xl font-semibold text-white mb-1">
               Welcome back

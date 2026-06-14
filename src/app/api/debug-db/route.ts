@@ -1,9 +1,9 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 
 export const dynamic = "force-dynamic";
 
-export async function GET(req: NextRequest) {
+export async function GET() {
   const dbUrl = process.env.DATABASE_URL || "";
   
   // Mask password for security
@@ -35,13 +35,14 @@ export async function GET(req: NextRequest) {
       databaseUrl: maskedUrl,
       usersCount: testQuery
     });
-  } catch (err: any) {
+  } catch (err: unknown) {
     console.error("[Debug DB] Error:", err);
+    const error = err instanceof Error ? err : new Error(String(err));
     return NextResponse.json({
       status: "error",
       databaseUrl: maskedUrl,
-      error: err.message || String(err),
-      stack: err.stack
+      error: error.message,
+      stack: error.stack
     }, { status: 500 });
   }
 }

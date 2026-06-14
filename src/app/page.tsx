@@ -1,6 +1,3 @@
-"use client";
-
-import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import {
   QrCode,
@@ -25,17 +22,17 @@ import { Logo } from "@/components/ui/logo";
 // ─────────────────────────────────────────────
 function HeroSection() {
   return (
-    <section className="relative min-h-screen flex flex-col justify-center overflow-hidden dot-grid">
+    <section className="relative min-h-[100svh] flex flex-col justify-center overflow-hidden dot-grid">
       {/* Background gradient orbs */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[800px] h-[600px] bg-emerald-500/4 rounded-full blur-[120px]" />
         <div className="absolute bottom-1/4 right-1/4 w-[400px] h-[400px] bg-blue-500/4 rounded-full blur-[100px]" />
       </div>
 
-      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-24 pb-16">
+      <div className="relative w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-24 pb-14 sm:pb-16">
         <div className="text-center max-w-4xl mx-auto">
           {/* Eyebrow tag */}
-          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-emerald-500/8 border border-emerald-500/15 mb-8">
+          <div className="inline-flex max-w-full items-center gap-2 px-3 py-1.5 rounded-full bg-emerald-500/8 border border-emerald-500/15 mb-8">
             <div className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
             <span className="mono-tag text-emerald-400/80">
               Digital Product Passport Infrastructure
@@ -50,31 +47,31 @@ function HeroSection() {
           </h1>
 
           {/* Subheadline */}
-          <p className="text-[18px] text-zinc-400 max-w-2xl mx-auto leading-relaxed mb-10">
+          <p className="text-base sm:text-[18px] text-zinc-400 max-w-2xl mx-auto leading-relaxed mb-10">
             EcoXchange assigns every physical product a persistent digital
             passport — tracking its lifecycle, ownership, repairs, and resale
             history forever.
           </p>
 
           {/* CTAs */}
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-center gap-3">
             <Link
               href="/sign-up"
-              className="group flex items-center gap-2 px-6 py-3 rounded-xl bg-emerald-500 text-black font-semibold text-[15px] hover:bg-emerald-400 transition-all duration-200 hover:shadow-[0_4px_20px_rgba(16,185,129,0.3)] hover:-translate-y-0.5"
+              className="group flex items-center justify-center gap-2 px-6 py-3 rounded-xl bg-emerald-500 text-black font-semibold text-[15px] hover:bg-emerald-400 transition-all duration-200 hover:shadow-[0_4px_20px_rgba(16,185,129,0.3)] hover:-translate-y-0.5"
             >
               Activate Your Product
               <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
             </Link>
             <Link
               href="/marketplace"
-              className="flex items-center gap-2 px-6 py-3 rounded-xl border border-[#1f1f1f] text-zinc-300 font-medium text-[15px] hover:border-zinc-600 hover:text-white transition-all duration-200 hover:-translate-y-0.5"
+              className="flex items-center justify-center gap-2 px-6 py-3 rounded-xl border border-[#1f1f1f] text-zinc-300 font-medium text-[15px] hover:border-zinc-600 hover:text-white transition-all duration-200 hover:-translate-y-0.5"
             >
               Browse Marketplace
             </Link>
           </div>
 
           {/* Stats */}
-          <div className="mt-20 grid grid-cols-3 gap-8 max-w-2xl mx-auto">
+          <div className="mt-14 sm:mt-20 grid grid-cols-1 min-[420px]:grid-cols-3 gap-5 sm:gap-8 max-w-2xl mx-auto">
             {[
               { value: "100%", label: "Verified Ownership" },
               { value: "∞", label: "Lifetime Tracking" },
@@ -91,12 +88,12 @@ function HeroSection() {
         </div>
 
         {/* Hero visual — QR + passport card */}
-        <div className="mt-24 flex justify-center">
-          <div className="relative">
+        <div className="mt-16 sm:mt-24 flex justify-center">
+          <div className="relative w-full max-w-[420px]">
             {/* Passport card */}
-            <div className="glass border border-[#1f1f1f] rounded-2xl p-6 w-[420px] max-w-full">
-              <div className="flex items-start justify-between mb-4">
-                <div>
+            <div className="glass border border-[#1f1f1f] rounded-2xl p-4 sm:p-6 w-full">
+              <div className="flex flex-col min-[420px]:flex-row min-[420px]:items-start min-[420px]:justify-between gap-3 mb-4">
+                <div className="min-w-0">
                   <div className="mono-tag mb-1">Digital Product Passport</div>
                   <div className="text-white font-semibold text-lg">
                     MacBook Pro 14&quot;
@@ -112,15 +109,15 @@ function HeroSection() {
               </div>
 
               {/* DPP ID */}
-              <div className="bg-[#0f0f0f] border border-[#1f1f1f] rounded-lg p-3 mb-4">
+              <div className="bg-[#0f0f0f] border border-[#1f1f1f] rounded-lg p-3 mb-4 min-w-0">
                 <div className="mono-tag mb-1">DPP-ID</div>
-                <div className="font-mono text-sm text-emerald-400">
+                <div className="font-mono text-xs sm:text-sm text-emerald-400 break-all">
                   ECO-LPT-2024-A8X3K9PQ
                 </div>
               </div>
 
               {/* Metrics row */}
-              <div className="grid grid-cols-3 gap-3 mb-4">
+              <div className="grid grid-cols-3 gap-2 sm:gap-3 mb-4">
                 {[
                   { label: "Trust Score", value: "94", unit: "/100" },
                   { label: "Condition", value: "87", unit: "/100" },
@@ -128,7 +125,7 @@ function HeroSection() {
                 ].map((m) => (
                   <div
                     key={m.label}
-                    className="bg-[#0f0f0f] border border-[#1f1f1f] rounded-lg p-2.5 text-center"
+                    className="bg-[#0f0f0f] border border-[#1f1f1f] rounded-lg p-2 sm:p-2.5 text-center min-w-0"
                   >
                     <div className="text-xs text-zinc-500 mb-1">{m.label}</div>
                     <div className="font-semibold text-white text-sm">
@@ -177,12 +174,12 @@ function HeroSection() {
             </div>
 
             {/* Floating QR badge */}
-            <div className="absolute -top-4 -right-4 glass border border-[#1f1f1f] rounded-xl p-3 animate-float">
+            <div className="absolute -top-3 -right-2 sm:-top-4 sm:-right-4 glass border border-[#1f1f1f] rounded-xl p-3 animate-float">
               <QrCode className="w-8 h-8 text-emerald-400" />
             </div>
 
             {/* Floating verified badge */}
-            <div className="absolute -bottom-3 -left-4 glass border border-[#1f1f1f] rounded-xl px-3 py-2 flex items-center gap-2">
+            <div className="absolute -bottom-3 -left-2 sm:-left-4 glass border border-[#1f1f1f] rounded-xl px-3 py-2 flex items-center gap-2">
               <Shield className="w-4 h-4 text-emerald-400" />
               <span className="text-xs text-emerald-400 font-medium">
                 Verified
@@ -223,9 +220,9 @@ function ProblemSection() {
   ];
 
   return (
-    <section className="py-24 border-t border-[#141414]">
+    <section className="py-16 sm:py-24 border-t border-[#141414]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="max-w-2xl mb-16">
+        <div className="max-w-2xl mb-10 sm:mb-16">
           <div className="mono-tag text-blue-400 mb-3">The Problem</div>
           <h2 className="heading-lg text-white mb-4">
             Physical products are
@@ -298,9 +295,9 @@ function DppSection() {
   ];
 
   return (
-    <section className="py-24 border-t border-[#141414]">
+    <section className="py-16 sm:py-24 border-t border-[#141414]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center max-w-2xl mx-auto mb-16">
+        <div className="text-center max-w-2xl mx-auto mb-10 sm:mb-16">
           <div className="mono-tag text-emerald-400 mb-3">
             Digital Product Passport
           </div>
@@ -376,9 +373,9 @@ function ActivationFlowSection() {
   };
 
   return (
-    <section id="how-it-works" className="py-24 border-t border-[#141414]">
+    <section id="how-it-works" className="py-16 sm:py-24 border-t border-[#141414]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid lg:grid-cols-2 gap-16 items-center">
+        <div className="grid lg:grid-cols-2 gap-10 lg:gap-16 items-center">
           <div>
             <div className="mono-tag text-blue-400 mb-3">QR Activation Flow</div>
             <h2 className="heading-lg text-white mb-4">
@@ -428,9 +425,9 @@ function ActivationFlowSection() {
 // ─────────────────────────────────────────────
 function MarketplaceTrustSection() {
   return (
-    <section className="py-24 border-t border-[#141414]">
+    <section className="py-16 sm:py-24 border-t border-[#141414]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center max-w-2xl mx-auto mb-16">
+        <div className="text-center max-w-2xl mx-auto mb-10 sm:mb-16">
           <div className="mono-tag text-violet-400 mb-3">Marketplace Trust Layer</div>
           <h2 className="heading-lg text-white mb-4">
             Every listing comes with
@@ -514,9 +511,9 @@ function InfrastructureSection() {
   ];
 
   return (
-    <section className="py-24 border-t border-[#141414]">
+    <section className="py-16 sm:py-24 border-t border-[#141414]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid lg:grid-cols-2 gap-16 items-center">
+        <div className="grid lg:grid-cols-2 gap-10 lg:gap-16 items-center">
           <div>
             <div className="mono-tag text-zinc-500 mb-3">
               Infrastructure Vision
@@ -540,7 +537,7 @@ function InfrastructureSection() {
             </Link>
           </div>
 
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-1 min-[420px]:grid-cols-2 gap-3">
             {pillars.map((pillar) => (
               <div
                 key={pillar.label}
@@ -566,9 +563,9 @@ function InfrastructureSection() {
 // ─────────────────────────────────────────────
 function CtaSection() {
   return (
-    <section className="py-24 border-t border-[#141414]">
+    <section className="py-16 sm:py-24 border-t border-[#141414]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="relative overflow-hidden rounded-2xl border border-[#1f1f1f] bg-[#0f0f0f] p-12 text-center">
+        <div className="relative overflow-hidden rounded-2xl border border-[#1f1f1f] bg-[#0f0f0f] p-5 sm:p-8 lg:p-12 text-center">
           {/* Background */}
           <div className="absolute inset-0 pointer-events-none">
             <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[300px] bg-emerald-500/5 rounded-full blur-[80px]" />
@@ -584,17 +581,17 @@ function CtaSection() {
               Activate your first product in under 2 minutes. Your QR sticker
               is waiting.
             </p>
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-center gap-3">
               <Link
                 href="/sign-up"
-                className="group flex items-center gap-2 px-8 py-3.5 rounded-xl bg-emerald-500 text-black font-semibold text-[15px] hover:bg-emerald-400 transition-all hover:shadow-[0_4px_24px_rgba(16,185,129,0.35)] hover:-translate-y-0.5"
+                className="group flex items-center justify-center gap-2 px-8 py-3.5 rounded-xl bg-emerald-500 text-black font-semibold text-[15px] hover:bg-emerald-400 transition-all hover:shadow-[0_4px_24px_rgba(16,185,129,0.35)] hover:-translate-y-0.5"
               >
                 Create Free Account
                 <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
               </Link>
               <Link
                 href="/marketplace"
-                className="flex items-center gap-2 px-6 py-3.5 rounded-xl border border-[#2a2a2a] text-zinc-300 font-medium text-[15px] hover:border-zinc-600 hover:text-white transition-all"
+                className="flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl border border-[#2a2a2a] text-zinc-300 font-medium text-[15px] hover:border-zinc-600 hover:text-white transition-all"
               >
                 View Marketplace
               </Link>
