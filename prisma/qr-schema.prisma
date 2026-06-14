@@ -1,0 +1,50 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/qr-client"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model QRRecord {
+  id             String   @id @default(cuid())
+  dppId          String   @unique
+  productId      String
+  activationUrl  String
+  generatedBy    String?
+  generatedAt    DateTime @default(now())
+  status         String
+  scanCount      Int @default(0)
+  lastScannedAt  DateTime?
+  qrHash         String
+}
+
+model ActivationRecord {
+  id             String @id @default(cuid())
+  dppId          String
+  productId      String
+  qrRecordId     String?
+  activatedBy    String?
+  activatedAt    DateTime @default(now())
+  ipAddress      String?
+  deviceInfo     String?
+  status         String
+}
+
+model ProductSnapshot {
+  id              String @id @default(cuid())
+  dppId           String @unique
+  productId       String
+  productName     String
+  category        String
+  brand           String?
+  model           String?
+  serialNumber    String?
+  owner           String?
+  trustScore      Int?
+  conditionScore  Int?
+  status          String
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}

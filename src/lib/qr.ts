@@ -153,3 +153,10 @@ export function getPassportUrl(dppId: string, baseUrl: string): string {
 export function getActivationUrl(dppId: string, baseUrl: string): string {
   return `${baseUrl}/activate/${dppId}`;
 }
+
+export function generateQrPayload(
+  dppId: string,
+  baseUrl: string
+): string {
+  return `${baseUrl}/activate/${dppId}`;
+}

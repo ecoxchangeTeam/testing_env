@@ -11,7 +11,8 @@
     "db:generate": "prisma generate",
     "db:studio": "prisma studio",
     "db:seed": "tsx prisma/seed.ts",
-    "postinstall": "prisma generate"
+    "postinstall": "prisma generate",
+    "db:generate-qr": "prisma generate --schema prisma/qr-schema.prisma"
   },
   "prisma": {
     "seed": "tsx prisma/seed.ts"

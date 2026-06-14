@@ -1,7 +1,9 @@
 import { NextResponse } from "next/server";
 import { auth } from "@/lib/server-auth";
 import { prisma } from "@/lib/prisma";
-import { generateQrPng, generateQrSvg, generateQrSticker, generateDppId } from "@/lib/qr";
+import {generateQrPng, generateQrSvg, generateQrSticker, generateDppId, generateQrPayload,} from "@/lib/qr";
+import crypto from "crypto";
+import { qrPrisma } from "@/lib/qr-prisma";
 
 // GET /api/products/activate?dppId=... — Get product for activation page
 export async function GET(request: Request) {
@@ -76,6 +78,41 @@ export async function POST(request: Request) {
     }),
   ]);
 
+  // Activation Logging
+  await qrPrisma.activationRecord.create({
+  data: {
+    dppId,
+
+    productId: product.id,
+
+    activatedBy: session.user.id,
+
+    status: "SUCCESS",
+
+    ipAddress:
+      request.headers.get(
+        "x-forwarded-for"
+      ),
+
+    deviceInfo:
+      request.headers.get(
+        "user-agent"
+      ),
+  },
+});
+
+await qrPrisma.productSnapshot.update({
+  where:{
+    dppId
+  },
+  data:{
+    status:"ACTIVE",
+
+    owner:
+      session.user.id
+  }
+})
+
   // Upload invoice document if provided
   if (invoiceUrl) {
     await prisma.productDocument.create({
@@ -135,31 +172,80 @@ export async function PUT(request: Request) {
   const baseUrl = process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000";
   const dppId = generateDppId(category);
 
+  const qrPayload =
+  generateQrPayload(
+    dppId,
+    baseUrl
+  );
+
   const [qrPng, qrSvg, qrSticker] = await Promise.all([
     generateQrPng(dppId, baseUrl),
     generateQrSvg(dppId, baseUrl),
     generateQrSticker(dppId, baseUrl),
   ]);
 
-  const product = await prisma.product.create({
-    data: {
-      dppId,
-      qrCodeUrl: qrPng,
-      qrCodeSvg: qrSticker,
-      category,
-      name,
-      brand,
-      model,
-      serialNumber,
-      color,
-      author,
-      edition,
-      isbn,
-      warranty,
-      frameNumber,
-      status: "UNCLAIMED",
-    },
-  });
+  const activationUrl = `${baseUrl}/activate/${dppId}`;
+
+  const qrHash = crypto
+    .createHash("sha256")
+    .update(qrPayload)
+    .digest("hex");
+
+  console.log("START PRODUCT GENERATION");
+
+const product = await prisma.product.create({
+  data: {
+    dppId,
+    qrCodeUrl: qrPng,
+    qrCodeSvg: qrSticker,
+    category,
+    name,
+    brand,
+    model,
+    serialNumber,
+    color,
+    author,
+    edition,
+    isbn,
+    warranty,
+    frameNumber,
+    status: "UNCLAIMED",
+  },
+});
+
+console.log("PRODUCT CREATED:", product.id);
+
+console.log("WRITING TO QR DATABASE");
+
+  // QR Database
+  await qrPrisma.qRRecord.create({
+  data: {
+    dppId,
+    productId: product.id,
+    activationUrl,
+    generatedBy: session.user.id,
+    status: "ACTIVE",
+    qrHash,
+  },
+});
+
+// Product Snapshot
+await qrPrisma.productSnapshot.create({
+  data: {
+    dppId,
+    productId: product.id,
+
+    productName: product.name,
+
+    category,
+
+    brand,
+    model,
+    serialNumber,
+
+    status: "UNCLAIMED",
+  },
+});
 
   // Log admin action
   await prisma.adminAction.create({
