@@ -7,7 +7,6 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "verify:listing-sync": "tsx scripts/verify-listing-sync.ts",
     "db:push": "prisma db push",
     "db:generate": "prisma generate",
     "db:studio": "prisma studio",
