@@ -14,7 +14,7 @@ export function conditionToTrustScore(condition?: string | null): number {
       return 55;
     case "old":
       return 40;
-    default:
+    default:git
       return 65;
   }
 }
