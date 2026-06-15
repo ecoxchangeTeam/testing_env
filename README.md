@@ -1,4 +1,4 @@
-# EcoXchange — Digital Product Passport Platform
+# EcoXchange - Digital Product Passport Platform
 
 **The digital identity infrastructure for physical products.**
 
