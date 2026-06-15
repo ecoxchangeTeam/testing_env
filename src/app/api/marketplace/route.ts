@@ -13,7 +13,7 @@ export async function GET(request: Request) {
 
   const where: Record<string, unknown> = {
     listingStatus: "ACTIVE",
-    source: "ECOXCHANGE",
+    source: { in: ["ECOXCHANGE", "CAMPUSKARTT"] },
   };
   if (category && category !== "ALL") {
     where.product = { category };
@@ -63,6 +63,75 @@ export async function GET(request: Request) {
     )
   ).catch(() => {});
 
+  const normalizedListings = listings.map((l) => ({
+    ...l,
+    source: l.source ?? "ECOXCHANGE",
+  }));
+
+  return NextResponse.json({
+    listings: normalizedListings,
+    pagination: {
+      page,
+      limit,
+      total,
+      pages: Math.ceil(total / limit),
+    },
+  });
+}
+
+
+
+// POST /api/marketplace — Create a new listing
+export async function POST(request: Request) {
+  const session = await auth();
+  if (!session?.user?.id) {
+    return NextResponse.json({ error: "Authentication required" }, { status: 401 });
+  }
+
+  const body = await request.json();
+  const { dppId, askingPrice, originalPrice, description, condition } = body;
+
+  if (!dppId || !askingPrice) {
+    return NextResponse.json({ error: "Product and asking price required" }, { status: 400 });
+  }
+
+  const product = await prisma.product.findUnique({
+    where: { dppId },
+    include: { listings: { where: { listingStatus: "ACTIVE" } } },
+  });
+
+  if (!product) {
+    return NextResponse.json({ error: "Product not found" }, { status: 404 });
+  }
+
+  if (product.currentOwnerId !== session.user.id) {
+    return NextResponse.json({ error: "You do not own this product" }, { status: 403 });
+  }
+
+  if (product.listings.length > 0) {
+    return NextResponse.json({ error: "Product already has an active listing" }, { status: 409 });
+  }
+
+  const [listing] = await prisma.$transaction([
+    prisma.marketplaceListing.create({
+      data: {
+        productId: product.id,
+        sellerId: session.user.id,
+        askingPrice: parseFloat(askingPrice),
+        originalPrice: originalPrice ? parseFloat(originalPrice) : undefined,
+        description,
+        condition,
+        expiresAt: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000), // 30 days
+      },
+    }),
+    prisma.product.update({
+      where: { id: product.id },
+      data: { status: "LISTED" },
+    }),
+  ]);
+
+  return NextResponse.json({ success: true, listing });
+}
   const normalizedListings = listings.map((l) => ({
     ...l,
     source: l.source ?? "ECOXCHANGE",
