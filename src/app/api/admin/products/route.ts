@@ -1,12 +1,26 @@
 import { NextResponse } from "next/server";
 import { auth } from "@/lib/server-auth";
 import { prisma } from "@/lib/prisma";
+import { scoreFromPrismaProduct } from "@/lib/trust-score";
+
+// Shared include for trust score recalculation
+const TRUST_INCLUDE = {
+  documents: { select: { documentType: true, isVerified: true } },
+  ownershipHistory: { select: { id: true } },
+  repairLogs: { select: { isVerified: true } },
+} as const;
 
 // GET /api/admin/products — All products with filters
 export async function GET(request: Request) {
   const session = await auth();
-  if (!session?.user || !(session.user as { isAdmin?: boolean }).isAdmin) {
-    return NextResponse.json({ error: "Admin access required" }, { status: 403 });
+  if (
+    !session?.user ||
+    !(session.user as { isAdmin?: boolean }).isAdmin
+  ) {
+    return NextResponse.json(
+      { error: "Admin access required" },
+      { status: 403 }
+    );
   }
 
   const { searchParams } = new URL(request.url);
@@ -32,8 +46,12 @@ export async function GET(request: Request) {
     prisma.product.findMany({
       where,
       include: {
-        currentOwner: { select: { name: true, email: true, college: true } },
-        _count: { select: { ownershipHistory: true, repairLogs: true } },
+        currentOwner: {
+          select: { name: true, email: true, college: true },
+        },
+        _count: {
+          select: { ownershipHistory: true, repairLogs: true },
+        },
       },
       orderBy: { createdAt: "desc" },
       take: limit,
@@ -42,46 +60,91 @@ export async function GET(request: Request) {
     prisma.product.count({ where }),
   ]);
 
-  return NextResponse.json({ products, pagination: { page, limit, total, pages: Math.ceil(total / limit) } });
+  return NextResponse.json({
+    products,
+    pagination: {
+      page,
+      limit,
+      total,
+      pages: Math.ceil(total / limit),
+    },
+  });
 }
 
 // PATCH /api/admin/products — Verify or flag a product
 export async function PATCH(request: Request) {
   const session = await auth();
-  if (!session?.user || !(session.user as { isAdmin?: boolean }).isAdmin) {
-    return NextResponse.json({ error: "Admin access required" }, { status: 403 });
+  if (
+    !session?.user ||
+    !(session.user as { isAdmin?: boolean }).isAdmin
+  ) {
+    return NextResponse.json(
+      { error: "Admin access required" },
+      { status: 403 }
+    );
   }
 
   const body = await request.json();
   const { productId, action, notes } = body; // action: "verify" | "flag" | "unflag"
 
-  const product = await prisma.product.findUnique({ where: { id: productId } });
-  if (!product) return NextResponse.json({ error: "Product not found" }, { status: 404 });
+  // Fetch full product with all trust-score relations
+  const product = await prisma.product.findUnique({
+    where: { id: productId },
+    include: TRUST_INCLUDE,
+  });
+
+  if (!product) {
+    return NextResponse.json(
+      { error: "Product not found" },
+      { status: 404 }
+    );
+  }
 
   const updateData: Record<string, unknown> = {};
   let actionType: "PRODUCT_VERIFIED" | "PRODUCT_FLAGGED";
 
   if (action === "verify") {
     updateData.isVerified = true;
-    updateData.trustScore = Math.min(100, product.trustScore + 20);
     actionType = "PRODUCT_VERIFIED";
   } else if (action === "flag") {
     updateData.isFlagged = true;
     actionType = "PRODUCT_FLAGGED";
   } else if (action === "unflag") {
     updateData.isFlagged = false;
-    actionType = "PRODUCT_FLAGGED"; // Reuse type
+    actionType = "PRODUCT_FLAGGED";
   } else {
     return NextResponse.json({ error: "Invalid action" }, { status: 400 });
   }
 
+  // Recalculate trust score with the new state applied
+  const newTrustScore = scoreFromPrismaProduct({
+    ...product,
+    // Merge the pending change so the score reflects the new state immediately
+    isVerified: action === "verify" ? true : product.isVerified,
+    isFlagged:
+      action === "flag"
+        ? true
+        : action === "unflag"
+        ? false
+        : product.isFlagged,
+  });
+
+  updateData.trustScore = newTrustScore;
+
   await prisma.$transaction([
-    prisma.product.update({ where: { id: productId }, data: updateData }),
+    prisma.product.update({
+      where: { id: productId },
+      data: updateData,
+    }),
     prisma.adminAction.create({
-      data: { adminId: session.user.id, productId, actionType, notes },
+      data: {
+        adminId: session.user.id,
+        productId,
+        actionType,
+        notes,
+      },
     }),
   ]);
 
-  return NextResponse.json({ success: true });
+  return NextResponse.json({ success: true, trustScore: newTrustScore });
 }
-
