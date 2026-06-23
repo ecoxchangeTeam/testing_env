@@ -21,6 +21,12 @@ enum ProductStatus {
   RETIRED
 }
 
+enum LostProductStatus {
+  LOST
+  FOUND
+  RECOVERED
+}
+
 enum ProductCategory {
   LAPTOP
   PHONE
@@ -105,6 +111,8 @@ model User {
   repairLogsAdded  RepairLog[]
   adminActions     AdminAction[]     @relation("AdminUser")
   ownershipHistory OwnershipHistory[] @relation("HistoryOwner")
+
+  lostProducts LostProduct[]
 
   @@index([email])
   @@index([trustScore])
@@ -203,6 +211,8 @@ model Product {
   listings           MarketplaceListing[]
   transferRequests   TransferRequest[]
   adminActions       AdminAction[]
+
+  lostRecords LostProduct[]
 
   @@index([dppId])
   @@index([status])
@@ -368,4 +378,34 @@ model AdminAction {
   @@index([actionType])
   @@index([createdAt])
   @@map("admin_actions")
+}
+
+model LostProduct {
+  id            String @id @default(cuid())
+
+  productId     String
+  ownerId       String
+
+  status        LostProductStatus @default(LOST)
+
+  lostAt        DateTime @default(now())
+  foundAt       DateTime?
+  recoveredAt   DateTime?
+
+  finderName    String?
+  finderEmail   String?
+  finderPhone   String?
+
+  notes         String?
+
+  product       Product @relation(fields: [productId], references: [id])
+  owner         User @relation(fields: [ownerId], references: [id])
+
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@index([productId])
+  @@index([status])
+
+  @@map("lost_products")
 }

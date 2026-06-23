@@ -39,6 +39,7 @@ interface Product {
   activatedAt?: string;
   _count?: { ownershipHistory: number; repairLogs: number };
   listings?: { askingPrice: number }[];
+  lostRecords?: {id: string; status: string;}[];
 }
 
 export default function DashboardPage() {
@@ -149,6 +150,7 @@ export default function DashboardPage() {
             <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
               {products.map((product) => {
                 const conditionInfo = getConditionLabel(product.conditionScore);
+                console.log("PRODUCT", product.dppId, product.lostRecords);
                 return (
                   <div
                     key={product.id}
@@ -227,9 +229,36 @@ export default function DashboardPage() {
                         Passport
                       </Link>
                       {product.status === "ACTIVE" && (
-                        <SellButton dppId={product.dppId} />
-                      )}
+                      <>
+                        {(!product.lostRecords ||
+                          product.lostRecords.length === 0) && (
+                          <MarkLostButton
+                            productId={product.id}
+                          />
+                        )}
+
+                        <SellButton
+                          dppId={product.dppId}
+                          disabled={
+                            product.lostRecords &&
+                            product.lostRecords.length > 0
+                          }
+                        />
+                      </>
+                    )}
                     </div>
+
+                    {product.lostRecords?.[0] && (
+                      <div
+                        className={`mt-2 text-center py-2 rounded-lg text-xs font-medium ${
+                          product.lostRecords[0].status === "LOST"
+                            ? "bg-red-500/10 text-red-400 border border-red-500/20"
+                            : "bg-yellow-500/10 text-yellow-400 border border-yellow-500/20"
+                        }`}
+                      >
+                        {product.lostRecords[0].status}
+                      </div>
+                    )}
 
                     <div className="mt-2 text-[10px] text-zinc-700 flex items-center gap-1">
                       <Clock className="w-2.5 h-2.5" />
@@ -246,7 +275,68 @@ export default function DashboardPage() {
   );
 }
 
-function SellButton({ dppId }: { dppId: string }) {
+function MarkLostButton({
+  productId,
+}: {
+  productId: string;
+}) {
+  const [loading, setLoading] = useState(false);
+
+  const markLost = async () => {
+    const confirmed = window.confirm(
+      "Mark this product as lost?"
+    );
+
+    if (!confirmed) return;
+
+    setLoading(true);
+
+    try {
+      const res = await fetch("/api/lost-products", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          productId,
+        }),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        alert(data.error || "Failed");
+        return;
+      }
+
+      alert("Product marked as LOST");
+
+      window.location.reload();
+    } catch {
+      alert("Something went wrong");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <button
+      onClick={markLost}
+      disabled={loading}
+      className="flex-1 flex items-center justify-center gap-1 py-2 px-3 rounded-lg bg-red-500/10 border border-red-500/20 text-xs text-red-400 hover:bg-red-500/20 disabled:opacity-50"
+    >
+      {loading ? "..." : "Mark Lost"}
+    </button>
+  );
+}
+
+function SellButton({
+  dppId,
+  disabled = false,
+}: {
+  dppId: string;
+  disabled?: boolean;
+}) {
   const [loading, setLoading] = useState(false);
   const CAMPUSKARTT_URL =
     process.env.NEXT_PUBLIC_CAMPUSKARTT_URL ?? "https://www.campuskartt.in";
@@ -295,15 +385,15 @@ function SellButton({ dppId }: { dppId: string }) {
   return (
     <button
       onClick={handleSell}
-      disabled={loading}
-      className="flex-1 flex items-center justify-center gap-1 py-2 px-3 rounded-lg bg-orange-500/8 border border-orange-500/15 text-xs text-orange-400 hover:bg-orange-500/12 hover:border-orange-500/25 transition-all disabled:opacity-60"
+      disabled={loading || disabled}
+      className="flex-1 flex items-center justify-center gap-1 py-2 px-3 rounded-lg bg-orange-500/8 border border-orange-500/15 text-xs text-orange-400 hover:bg-orange-500/12 hover:border-orange-500/25 transition-all disabled:opacity-40 disabled:cursor-not-allowed"
     >
       {loading ? (
         <Loader2 className="w-3 h-3 animate-spin" />
       ) : (
         <>
           <ShoppingBag className="w-3 h-3" />
-          Sell
+          {disabled ? "Unavailable" : "Sell"}
           <ExternalLink className="w-2.5 h-2.5 opacity-60" />
         </>
       )}

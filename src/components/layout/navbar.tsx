@@ -6,6 +6,7 @@ import { useState, useEffect } from "react";
 import {
   LayoutDashboard,
   ShoppingBag,
+  Package,
   User,
   LogOut,
   Menu,
@@ -47,12 +48,16 @@ export function Navbar() {
     ? [
         { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
         { href: "/marketplace", label: "Marketplace", icon: ShoppingBag },
+        { href: "/lost-products", label: "Lost Products", icon: Package },
         { href: "/verified", label: "EcoX Verified", icon: BadgeCheck, highlight: true },
         { href: "/repairs", label: "Repairs", icon: Wrench },
         { href: "/profile", label: "Profile", icon: User },
       ]
     : [
         { href: "/marketplace", label: "Marketplace", icon: ShoppingBag },
+
+        { href: "/lost-products", label: "Lost Products", icon: Package },
+
         { href: "/verified", label: "EcoX Verified", icon: BadgeCheck, highlight: true },
         { href: "#how-it-works", label: "How It Works", icon: null },
       ];

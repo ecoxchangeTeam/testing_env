@@ -9,16 +9,40 @@ export async function GET() {
   }
 
   const products = await prisma.product.findMany({
-    where: { currentOwnerId: session.user.id },
-    include: {
-      _count: { select: { ownershipHistory: true, repairLogs: true } },
-      listings: {
-        where: { listingStatus: "ACTIVE" },
-        select: { askingPrice: true },
+  where: { currentOwnerId: session.user.id },
+  include: {
+    _count: {
+      select: {
+        ownershipHistory: true,
+        repairLogs: true,
       },
     },
-    orderBy: { activatedAt: "desc" },
-  });
+
+    listings: {
+      where: {
+        listingStatus: "ACTIVE",
+      },
+      select: {
+        askingPrice: true,
+      },
+    },
+
+    lostRecords: {
+      where: {
+        status: {
+          in: ["LOST", "FOUND"],
+        },
+      },
+      select: {
+        id: true,
+        status: true,
+      },
+    },
+  },
+  orderBy: {
+    activatedAt: "desc",
+  },
+});
 
   return NextResponse.json({ products });
 }

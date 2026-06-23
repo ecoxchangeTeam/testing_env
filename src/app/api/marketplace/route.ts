@@ -112,6 +112,26 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Product already has an active listing" }, { status: 409 });
   }
 
+  const activeLostRecord =
+  await prisma.lostProduct.findFirst({
+    where: {
+      productId: product.id,
+      status: {
+        in: ["LOST", "FOUND"],
+      },
+    },
+  });
+
+if (activeLostRecord) {
+  return NextResponse.json(
+    {
+      error:
+        "Cannot sell a product that is marked as LOST or FOUND",
+    },
+    { status: 400 }
+  );
+}
+
   const [listing] = await prisma.$transaction([
     prisma.marketplaceListing.create({
       data: {
