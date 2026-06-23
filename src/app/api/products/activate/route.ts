@@ -1,9 +1,16 @@
 import { NextResponse } from "next/server";
 import { auth } from "@/lib/server-auth";
 import { prisma } from "@/lib/prisma";
-import {generateQrPng, generateQrSvg, generateQrSticker, generateDppId, generateQrPayload,} from "@/lib/qr";
+import {
+  generateQrPng,
+  generateQrSvg,
+  generateQrSticker,
+  generateDppId,
+  generateQrPayload,
+} from "@/lib/qr";
 import crypto from "crypto";
 import { qrPrisma } from "@/lib/qr-prisma";
+import { calculateProductTrustScore } from "@/lib/trust-score";
 
 // GET /api/products/activate?dppId=... — Get product for activation page
 export async function GET(request: Request) {
@@ -30,7 +37,10 @@ export async function GET(request: Request) {
 export async function POST(request: Request) {
   const session = await auth();
   if (!session?.user?.id) {
-    return NextResponse.json({ error: "Authentication required" }, { status: 401 });
+    return NextResponse.json(
+      { error: "Authentication required" },
+      { status: 401 }
+    );
   }
 
   const body = await request.json();
@@ -41,7 +51,6 @@ export async function POST(request: Request) {
   }
 
   const product = await prisma.product.findUnique({ where: { dppId } });
-
   if (!product) {
     return NextResponse.json({ error: "Product not found" }, { status: 404 });
   }
@@ -53,7 +62,27 @@ export async function POST(request: Request) {
     );
   }
 
-  // Activate product and create ownership record atomically
+  // ── Calculate initial trust score ─────────────────────────
+  // At activation: 1 owner, no repair logs, invoice optional
+  const initialTrustScore = calculateProductTrustScore({
+    isVerified: false,
+    isFlagged: false,
+    // Invoice present but not yet admin-verified
+    documents: invoiceUrl
+      ? [{ documentType: "INVOICE", isVerified: false }]
+      : [],
+    // One ownership entry is being created right now
+    ownershipHistory: [{}],
+    repairLogs: [],
+    yearOfPurchase: purchaseDate
+      ? new Date(purchaseDate).getFullYear()
+      : product.yearOfPurchase,
+    serialNumber: product.serialNumber,
+    brand: product.brand,
+    model: product.model,
+  });
+
+  // ── Activate product and create ownership record atomically ─
   const [updatedProduct] = await prisma.$transaction([
     prisma.product.update({
       where: { dppId },
@@ -64,7 +93,7 @@ export async function POST(request: Request) {
         yearOfPurchase: purchaseDate
           ? new Date(purchaseDate).getFullYear()
           : undefined,
-        trustScore: invoiceUrl ? 50 : 30, // Higher trust with invoice
+        trustScore: initialTrustScore,
       },
     }),
     prisma.ownershipHistory.create({
@@ -78,42 +107,24 @@ export async function POST(request: Request) {
     }),
   ]);
 
-  // Activation Logging
+  // ── Activation logging ─────────────────────────────────────
   await qrPrisma.activationRecord.create({
-  data: {
-    dppId,
+    data: {
+      dppId,
+      productId: product.id,
+      activatedBy: session.user.id,
+      status: "SUCCESS",
+      ipAddress: request.headers.get("x-forwarded-for"),
+      deviceInfo: request.headers.get("user-agent"),
+    },
+  });
 
-    productId: product.id,
+  await qrPrisma.productSnapshot.update({
+    where: { dppId },
+    data: { status: "ACTIVE", owner: session.user.id },
+  });
 
-    activatedBy: session.user.id,
-
-    status: "SUCCESS",
-
-    ipAddress:
-      request.headers.get(
-        "x-forwarded-for"
-      ),
-
-    deviceInfo:
-      request.headers.get(
-        "user-agent"
-      ),
-  },
-});
-
-await qrPrisma.productSnapshot.update({
-  where:{
-    dppId
-  },
-  data:{
-    status:"ACTIVE",
-
-    owner:
-      session.user.id
-  }
-})
-
-  // Upload invoice document if provided
+  // ── Upload invoice document if provided ───────────────────
   if (invoiceUrl) {
     await prisma.productDocument.create({
       data: {
@@ -128,15 +139,22 @@ await qrPrisma.productSnapshot.update({
   return NextResponse.json({
     success: true,
     product: updatedProduct,
+    trustScore: initialTrustScore,
     message: "Product activated successfully",
   });
 }
 
-// POST /api/products/generate — Admin: generate new DPP + QR
+// PUT /api/products/activate — Admin: generate new DPP + QR
 export async function PUT(request: Request) {
   const session = await auth();
-  if (!session?.user || !(session.user as { isAdmin?: boolean }).isAdmin) {
-    return NextResponse.json({ error: "Admin access required" }, { status: 403 });
+  if (
+    !session?.user ||
+    !(session.user as { isAdmin?: boolean }).isAdmin
+  ) {
+    return NextResponse.json(
+      { error: "Admin access required" },
+      { status: 403 }
+    );
   }
 
   const body = await request.json();
@@ -152,31 +170,38 @@ export async function PUT(request: Request) {
     warranty,
     frameNumber,
   } = body;
+
   let { name } = body;
 
   if (!name || typeof name !== "string") {
-    return NextResponse.json({ error: "Product Name is required" }, { status: 400 });
+    return NextResponse.json(
+      { error: "Product Name is required" },
+      { status: 400 }
+    );
   }
   name = name.trim();
   if (name.length < 3) {
-    return NextResponse.json({ error: "Product Name must be at least 3 characters long" }, { status: 400 });
+    return NextResponse.json(
+      { error: "Product Name must be at least 3 characters long" },
+      { status: 400 }
+    );
   }
   if (name.length > 100) {
-    return NextResponse.json({ error: "Product Name must be under 100 characters long" }, { status: 400 });
+    return NextResponse.json(
+      { error: "Product Name must be under 100 characters long" },
+      { status: 400 }
+    );
   }
-
   if (!category) {
-    return NextResponse.json({ error: "Category required" }, { status: 400 });
+    return NextResponse.json(
+      { error: "Category required" },
+      { status: 400 }
+    );
   }
 
   const baseUrl = process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000";
   const dppId = generateDppId(category);
-
-  const qrPayload =
-  generateQrPayload(
-    dppId,
-    baseUrl
-  );
+  const qrPayload = generateQrPayload(dppId, baseUrl);
 
   const [qrPng, qrSvg, qrSticker] = await Promise.all([
     generateQrPng(dppId, baseUrl),
@@ -185,69 +210,60 @@ export async function PUT(request: Request) {
   ]);
 
   const activationUrl = `${baseUrl}/activate/${dppId}`;
-
   const qrHash = crypto
     .createHash("sha256")
     .update(qrPayload)
     .digest("hex");
 
   console.log("START PRODUCT GENERATION");
+  const product = await prisma.product.create({
+    data: {
+      dppId,
+      qrCodeUrl: qrPng,
+      qrCodeSvg: qrSticker,
+      category,
+      name,
+      brand,
+      model,
+      serialNumber,
+      color,
+      author,
+      edition,
+      isbn,
+      warranty,
+      frameNumber,
+      status: "UNCLAIMED",
+      // Unclaimed products start at 0 — score builds when activated & documents are added
+      trustScore: 0,
+    },
+  });
+  console.log("PRODUCT CREATED:", product.id);
 
-const product = await prisma.product.create({
-  data: {
-    dppId,
-    qrCodeUrl: qrPng,
-    qrCodeSvg: qrSticker,
-    category,
-    name,
-    brand,
-    model,
-    serialNumber,
-    color,
-    author,
-    edition,
-    isbn,
-    warranty,
-    frameNumber,
-    status: "UNCLAIMED",
-  },
-});
-
-console.log("PRODUCT CREATED:", product.id);
-
-console.log("WRITING TO QR DATABASE");
-
-  // QR Database
+  console.log("WRITING TO QR DATABASE");
   await qrPrisma.qRRecord.create({
-  data: {
-    dppId,
-    productId: product.id,
-    activationUrl,
-    generatedBy: session.user.id,
-    status: "ACTIVE",
-    qrHash,
-  },
-});
+    data: {
+      dppId,
+      productId: product.id,
+      activationUrl,
+      generatedBy: session.user.id,
+      status: "ACTIVE",
+      qrHash,
+    },
+  });
 
-// Product Snapshot
-await qrPrisma.productSnapshot.create({
-  data: {
-    dppId,
-    productId: product.id,
+  await qrPrisma.productSnapshot.create({
+    data: {
+      dppId,
+      productId: product.id,
+      productName: product.name,
+      category,
+      brand,
+      model,
+      serialNumber,
+      status: "UNCLAIMED",
+    },
+  });
 
-    productName: product.name,
-
-    category,
-
-    brand,
-    model,
-    serialNumber,
-
-    status: "UNCLAIMED",
-  },
-});
-
-  // Log admin action
   await prisma.adminAction.create({
     data: {
       adminId: session.user.id,
@@ -265,4 +281,3 @@ await qrPrisma.productSnapshot.create({
     qrSticker,
   });
 }
-

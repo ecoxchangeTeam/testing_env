@@ -13,7 +13,7 @@ export async function GET(request: Request) {
 
   const where: Record<string, unknown> = {
     listingStatus: "ACTIVE",
-    source: "ECOXCHANGE",
+    source: { in: ["ECOXCHANGE", "CAMPUSKARTT"] },
   };
   if (category && category !== "ALL") {
     where.product = { category };

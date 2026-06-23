@@ -1,14 +1,26 @@
 "use client";
 
-import { useState } from "react";
+import { Suspense, useState } from "react";
 import { signIn } from "next-auth/react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { Eye, EyeOff, Loader2, ArrowRight } from "lucide-react";
 import { Logo } from "@/components/ui/logo";
+import { getSafeCallbackUrl } from "@/lib/auth-redirect";
 
 export default function SignInPage() {
+  return (
+    <Suspense fallback={null}>
+      <SignInForm />
+    </Suspense>
+  );
+}
+
+function SignInForm() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const callbackUrl = getSafeCallbackUrl(searchParams.get("callbackUrl"));
+  const signUpHref = `/sign-up?callbackUrl=${encodeURIComponent(callbackUrl)}`;
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -32,7 +44,7 @@ export default function SignInPage() {
         setError(result.error);
         setLoading(false);
       } else {
-        router.push("/dashboard");
+        router.push(callbackUrl);
       }
     } catch {
       setError("Sign in failed. Check your database connection and try again.");
@@ -134,7 +146,7 @@ export default function SignInPage() {
           <div className="mt-5 text-center text-sm text-zinc-500">
             Don&apos;t have an account?{" "}
             <Link
-              href="/sign-up"
+              href={signUpHref}
               className="text-emerald-400 hover:text-emerald-300 font-medium transition-colors"
             >
               Sign up

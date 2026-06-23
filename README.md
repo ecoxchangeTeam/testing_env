@@ -1,4 +1,4 @@
-# EcoXchange — Digital Product Passport Platform
+# EcoXchange - Digital Product Passport Platform
 
 **The digital identity infrastructure for physical products.**
 
@@ -54,7 +54,7 @@ Open [http://localhost:3000](http://localhost:3000) 🎉
 
 ---
 
-## 🔐 Demo Credentials
+## Demo Credentials
 
 After seeding:
 

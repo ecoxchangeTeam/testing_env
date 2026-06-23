@@ -373,7 +373,7 @@ function SellButton({
     } catch {
       // Network error — just open CampusKartt sell page normally
       window.open(
-        `${CAMPUSKARTT_URL}/app/post.html?source=ecoxchange`,
+        `${CAMPUSKARTT_URL}/app/post.html?source=ecoxchange&dppId=${encodeURIComponent(dppId)}`,
         "_blank",
         "noopener,noreferrer"
       );

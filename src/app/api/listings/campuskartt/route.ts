@@ -58,26 +58,35 @@ export async function POST(req: NextRequest) {
 
     const externalIdString = String(externalId);
     const price = Number(body.price);
+
     if (!Number.isFinite(price) || price <= 0) {
-      return NextResponse.json({ error: "Invalid listing price" }, { status: 400 });
+      return NextResponse.json(
+        { error: "Invalid listing price" },
+        { status: 400 }
+      );
     }
 
     const title =
       typeof body.title === "string" && body.title.trim()
         ? body.title.trim()
-        : product.name || [product.brand, product.model].filter(Boolean).join(" ");
+        : product.name ||
+          [product.brand, product.model].filter(Boolean).join(" ");
+
     const description =
       typeof body.description === "string" && body.description.trim()
         ? body.description.trim()
         : title;
+
     const condition =
       typeof body.condition === "string" && body.condition.trim()
         ? body.condition.trim()
         : undefined;
+
     const externalUrl =
       typeof body.externalUrl === "string" && body.externalUrl.trim()
         ? body.externalUrl.trim()
         : `https://www.campuskartt.in/app/listing.html?id=${externalIdString}`;
+
     const externalImage =
       typeof body.imageUrl === "string" && body.imageUrl.trim()
         ? body.imageUrl.trim()
@@ -103,11 +112,11 @@ export async function POST(req: NextRequest) {
       askingPrice: price,
       description,
       condition,
-      source: "ECOXCHANGE" as const,
+      source: "CAMPUSKARTT" as const,
       externalId: externalIdString,
       externalUrl,
       externalImage,
-      sellerLabel: null,
+      sellerLabel: "CampusKartt",
       externalTrustScore: conditionToTrustScore(condition),
       expiresAt: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
     };
@@ -131,6 +140,9 @@ export async function POST(req: NextRequest) {
     );
   } catch (error) {
     console.error("[CampusKartt EcoXchange Listing Webhook Error]", error);
-    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
+    return NextResponse.json(
+      { error: "Internal server error" },
+      { status: 500 }
+    );
   }
 }

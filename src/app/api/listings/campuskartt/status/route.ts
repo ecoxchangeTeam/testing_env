@@ -24,7 +24,10 @@ export async function POST(req: NextRequest) {
     }
 
     const listing = await prisma.marketplaceListing.findFirst({
-      where: { externalId: String(externalId), source: "ECOXCHANGE" },
+      where: {
+        externalId: String(externalId),
+        source: { in: ["CAMPUSKARTT", "ECOXCHANGE"] },
+      },
     });
 
     if (!listing) {

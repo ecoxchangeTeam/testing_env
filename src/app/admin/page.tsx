@@ -1,5 +1,4 @@
 "use client";
-
 import { useState, useEffect } from "react";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
@@ -98,6 +97,8 @@ function StatCard({
   );
 }
 
+const INSTRUMENT_SUBTYPES = ["CALCULATOR", "DRAFTER", "SHEET_HOLDER", "ROLLING_SCALE"];
+
 export default function AdminDashboardPage() {
   const { data: session, status } = useSession();
   const router = useRouter();
@@ -108,9 +109,7 @@ export default function AdminDashboardPage() {
     if (typeof window !== "undefined") {
       const params = new URLSearchParams(window.location.search);
       const sec = params.get("section");
-      if (sec === "products" || sec === "users" || sec === "qr") {
-        return sec;
-      }
+      if (sec === "products" || sec === "users" || sec === "qr") return sec;
     }
     return "overview";
   });
@@ -198,7 +197,6 @@ export default function AdminDashboardPage() {
       const isBook = isAcademic && newQr.subType === "BOOK";
       const isCycle = newQr.category === "CYCLE";
       const isLaptop = newQr.category === "LAPTOP";
-
       const payload = {
         category: newQr.category,
         name: newQr.name.trim(),
@@ -212,7 +210,6 @@ export default function AdminDashboardPage() {
         warranty: (!isLaptop && !isBook && !isCycle && newQr.category !== "ACADEMIC_EQUIPMENT") ? newQr.warranty : undefined,
         frameNumber: isCycle ? newQr.frameNumber : undefined,
       };
-
       const res = await fetch("/api/products/activate", {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
@@ -223,16 +220,8 @@ export default function AdminDashboardPage() {
         setGeneratedQr({ qrSticker: d.qrSticker, dppId: d.product.dppId, qrPng: d.qrPng });
         setNewQr((prev) => ({
           ...prev,
-          name: "",
-          brand: "",
-          model: "",
-          serialNumber: "",
-          color: "",
-          author: "",
-          edition: "",
-          isbn: "",
-          warranty: "",
-          frameNumber: "",
+          name: "", brand: "", model: "", serialNumber: "",
+          color: "", author: "", edition: "", isbn: "", warranty: "", frameNumber: "",
         }));
         await fetchData();
       } else {
@@ -250,17 +239,36 @@ export default function AdminDashboardPage() {
     if (format === "png") {
       const a = document.createElement("a");
       a.href = generatedQr.qrPng;
-      a.download = `ecoxchange-qr-${generatedQr.dppId}.png`;
+      a.download = "ecoxchange-qr-" + generatedQr.dppId + ".png";
       a.click();
     } else {
       const blob = new Blob([generatedQr.qrSticker], { type: "image/svg+xml" });
       const url = URL.createObjectURL(blob);
       const a = document.createElement("a");
       a.href = url;
-      a.download = `ecoxchange-sticker-${generatedQr.dppId}.svg`;
+      a.download = "ecoxchange-sticker-" + generatedQr.dppId + ".svg";
       a.click();
       URL.revokeObjectURL(url);
     }
+  };
+
+  const getNamePlaceholder = () => {
+    if (newQr.category === "ACADEMIC_EQUIPMENT") {
+      if (newQr.subType === "BOOK")         return "e.g. Data Structures and Algorithms";
+      if (newQr.subType === "CALCULATOR")   return "e.g. Casio FX-991ES Plus";
+      if (newQr.subType === "DRAFTER")      return "e.g. Staedtler Mars 550 Drafter";
+      if (newQr.subType === "SHEET_HOLDER") return "e.g. A1 Magnetic Sheet Holder";
+      if (newQr.subType === "ROLLING_SCALE") return "e.g. Rotring Rolling Ruler 60cm";
+    }
+    if (newQr.category === "CYCLE")  return "e.g. Trek Marlin 7";
+    if (newQr.category === "LAPTOP") return "e.g. MacBook Air M2";
+    return "e.g. Sony WH-1000XM5";
+  };
+
+  const getNameLabel = () => {
+    if (newQr.category === "CYCLE") return "Bicycle Name *";
+    if (newQr.category === "ACADEMIC_EQUIPMENT" && newQr.subType === "BOOK") return "Book Name *";
+    return "Product Name *";
   };
 
   if (loading || !data) {
@@ -272,10 +280,10 @@ export default function AdminDashboardPage() {
   }
 
   const navItems = [
-    { id: "overview", label: "Overview", icon: BarChart3 },
-    { id: "products", label: "Products", icon: Package },
-    { id: "users", label: "Users", icon: Users },
-    { id: "qr", label: "QR Issuance", icon: QrCode },
+    { id: "overview", label: "Overview",    icon: BarChart3 },
+    { id: "products", label: "Products",    icon: Package },
+    { id: "users",    label: "Users",       icon: Users },
+    { id: "qr",       label: "QR Issuance", icon: QrCode },
   ] as const;
 
   const filteredProducts = productSearch
@@ -305,7 +313,6 @@ export default function AdminDashboardPage() {
           </div>
         </div>
 
-        {/* Side nav + content */}
         <div className="flex flex-col lg:flex-row gap-6">
           {/* Sidebar */}
           <div className="lg:w-44 lg:flex-shrink-0">
@@ -329,22 +336,21 @@ export default function AdminDashboardPage() {
 
           {/* Main content */}
           <div className="flex-1 min-w-0">
+
             {/* OVERVIEW */}
             {activeSection === "overview" && (
               <div className="space-y-6">
-                {/* Stats grid */}
                 <div className="grid grid-cols-1 min-[420px]:grid-cols-2 xl:grid-cols-4 gap-3">
-                  <StatCard label="Total Users" value={data.stats.totalUsers} icon={Users} color="bg-blue-500/10 text-blue-400" />
-                  <StatCard label="Total Products" value={data.stats.totalProducts} icon={Package} color="bg-emerald-500/10 text-emerald-400" />
-                  <StatCard label="Active Products" value={data.stats.activeProducts} icon={Activity} color="bg-emerald-500/10 text-emerald-400" sub={`${data.stats.listedProducts} listed`} />
-                  <StatCard label="Total Transfers" value={data.stats.totalTransfers} icon={TrendingUp} color="bg-violet-500/10 text-violet-400" />
-                  <StatCard label="Unclaimed" value={data.stats.unclaimedProducts} icon={Clock} color="bg-zinc-500/10 text-zinc-400" />
-                  <StatCard label="Repair Logs" value={data.stats.totalRepairs} icon={Settings} color="bg-orange-500/10 text-orange-400" />
-                  <StatCard label="Listings" value={data.stats.totalListings} icon={BarChart3} color="bg-blue-500/10 text-blue-400" />
-                  <StatCard label="Total Revenue" value="₹—" icon={Database} color="bg-amber-500/10 text-amber-400" sub="Marketplace volume" />
+                  <StatCard label="Total Users"     value={data.stats.totalUsers}      icon={Users}      color="bg-blue-500/10 text-blue-400" />
+                  <StatCard label="Total Products"  value={data.stats.totalProducts}   icon={Package}    color="bg-emerald-500/10 text-emerald-400" />
+                  <StatCard label="Active Products" value={data.stats.activeProducts}  icon={Activity}   color="bg-emerald-500/10 text-emerald-400" sub={data.stats.listedProducts + " listed"} />
+                  <StatCard label="Total Transfers" value={data.stats.totalTransfers}  icon={TrendingUp} color="bg-violet-500/10 text-violet-400" />
+                  <StatCard label="Unclaimed"       value={data.stats.unclaimedProducts} icon={Clock}   color="bg-zinc-500/10 text-zinc-400" />
+                  <StatCard label="Repair Logs"     value={data.stats.totalRepairs}    icon={Settings}   color="bg-orange-500/10 text-orange-400" />
+                  <StatCard label="Listings"        value={data.stats.totalListings}   icon={BarChart3}  color="bg-blue-500/10 text-blue-400" />
+                  <StatCard label="Total Revenue"   value="₹—"                         icon={Database}   color="bg-amber-500/10 text-amber-400" sub="Marketplace volume" />
                 </div>
 
-                {/* Category Breakdown */}
                 <div className="grid lg:grid-cols-2 gap-4">
                   <div className="bg-[#0f0f0f] border border-[#1f1f1f] rounded-xl p-5">
                     <div className="mono-tag mb-4">Category Distribution</div>
@@ -361,29 +367,25 @@ export default function AdminDashboardPage() {
                               <span className="text-xs text-zinc-500">{item._count.category} ({pct}%)</span>
                             </div>
                             <div className="h-1 bg-[#1f1f1f] rounded-full overflow-hidden">
-                              <div
-                                className="h-full bg-emerald-500/60 rounded-full transition-all duration-500"
-                                style={{ width: `${pct}%` }}
-                              />
+                              <div className="h-full bg-emerald-500/60 rounded-full transition-all duration-500" style={{ width: pct + "%" }} />
                             </div>
                           </div>
                         );
                       })}
                     </div>
                   </div>
-
                   <div className="bg-[#0f0f0f] border border-[#1f1f1f] rounded-xl p-5">
                     <div className="mono-tag mb-4">Status Distribution</div>
                     <div className="space-y-2">
                       {data.statusBreakdown.map((item) => {
                         const pct = Math.round((item._count.status / data.stats.totalProducts) * 100) || 0;
-                        const color = {
-                          ACTIVE: "bg-emerald-500/60",
-                          LISTED: "bg-blue-500/60",
-                          UNCLAIMED: "bg-zinc-500/40",
+                        const color = ({
+                          ACTIVE:      "bg-emerald-500/60",
+                          LISTED:      "bg-blue-500/60",
+                          UNCLAIMED:   "bg-zinc-500/40",
                           TRANSFERRED: "bg-violet-500/60",
-                          RETIRED: "bg-red-500/60",
-                        }[item.status] ?? "bg-zinc-500/40";
+                          RETIRED:     "bg-red-500/60",
+                        } as Record<string, string>)[item.status] ?? "bg-zinc-500/40";
                         return (
                           <div key={item.status}>
                             <div className="flex items-center justify-between mb-1">
@@ -391,7 +393,7 @@ export default function AdminDashboardPage() {
                               <span className="text-xs text-zinc-500">{item._count.status} ({pct}%)</span>
                             </div>
                             <div className="h-1 bg-[#1f1f1f] rounded-full overflow-hidden">
-                              <div className={`h-full ${color} rounded-full`} style={{ width: `${pct}%` }} />
+                              <div className={`h-full ${color} rounded-full`} style={{ width: pct + "%" }} />
                             </div>
                           </div>
                         );
@@ -400,7 +402,6 @@ export default function AdminDashboardPage() {
                   </div>
                 </div>
 
-                {/* Recent Admin Actions */}
                 <div className="bg-[#0f0f0f] border border-[#1f1f1f] rounded-xl overflow-x-auto">
                   <div className="px-5 py-4 border-b border-[#1f1f1f]">
                     <div className="mono-tag">Recent Admin Actions</div>
@@ -410,7 +411,7 @@ export default function AdminDashboardPage() {
                       <div key={action.id} className="px-4 sm:px-5 py-3 flex items-start gap-3">
                         <div className={`w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 ${
                           action.actionType === "PRODUCT_VERIFIED" ? "bg-emerald-500/10" :
-                          action.actionType === "PRODUCT_FLAGGED" ? "bg-red-500/10" : "bg-zinc-500/10"
+                          action.actionType === "PRODUCT_FLAGGED"  ? "bg-red-500/10"     : "bg-zinc-500/10"
                         }`}>
                           {action.actionType === "PRODUCT_VERIFIED" ? (
                             <CheckCircle2 className="w-3 h-3 text-emerald-400" />
@@ -424,7 +425,7 @@ export default function AdminDashboardPage() {
                           <div className="text-xs text-zinc-300 break-words">
                             <span className="font-medium">{action.admin.name}</span>{" "}
                             {action.actionType.replace(/_/g, " ").toLowerCase()}
-                            {action.product && ` · ${action.product.name || `${action.product.brand} ${action.product.model}`}`}
+                            {action.product && " · " + (action.product.name || (action.product.brand + " " + action.product.model))}
                           </div>
                           {action.notes && <div className="text-xs text-zinc-600 truncate">{action.notes}</div>}
                         </div>
@@ -451,7 +452,6 @@ export default function AdminDashboardPage() {
                     />
                   </div>
                 </div>
-
                 <div className="bg-[#0f0f0f] border border-[#1f1f1f] rounded-xl overflow-x-auto">
                   <table className="data-table">
                     <thead>
@@ -471,32 +471,28 @@ export default function AdminDashboardPage() {
                             <div className="flex items-center gap-2">
                               <span>{getCategoryIcon(product.category)}</span>
                               <div>
-                                <div className="text-sm text-zinc-200">
-                                  {product.name || `${product.brand} ${product.model}`}
-                                </div>
+                                <div className="text-sm text-zinc-200">{product.name || (product.brand + " " + product.model)}</div>
                                 <div className="text-xs text-zinc-600">{product.category}</div>
                               </div>
                             </div>
                           </td>
                           <td>
-                            <Link href={`/passport/${product.dppId}`} className="font-mono text-xs text-emerald-400 hover:underline break-all">
+                            <Link href={"/passport/" + product.dppId} className="font-mono text-xs text-emerald-400 hover:underline break-all">
                               {product.dppId}
                             </Link>
                           </td>
                           <td>
-                            <span className={`badge ${
-                              product.status === "ACTIVE" ? "badge-active" :
-                              product.status === "LISTED" ? "badge-listed" :
-                              product.status === "UNCLAIMED" ? "badge-unclaimed" : "badge-transferred"
-                            }`}>
+                            <span className={"badge " + (
+                              product.status === "ACTIVE"      ? "badge-active"      :
+                              product.status === "LISTED"      ? "badge-listed"      :
+                              product.status === "UNCLAIMED"   ? "badge-unclaimed"   : "badge-transferred"
+                            )}>
                               {product.status}
                             </span>
                           </td>
-                          <td className="text-sm text-zinc-400">
-                            {product.currentOwner?.name ?? "—"}
-                          </td>
+                          <td className="text-sm text-zinc-400">{product.currentOwner?.name ?? "—"}</td>
                           <td>
-                            <span className={`text-sm font-medium ${product.trustScore >= 70 ? "text-emerald-400" : "text-amber-400"}`}>
+                            <span className={"text-sm font-medium " + (product.trustScore >= 70 ? "text-emerald-400" : "text-amber-400")}>
                               {Math.round(product.trustScore)}
                             </span>
                           </td>
@@ -508,11 +504,7 @@ export default function AdminDashboardPage() {
                                   disabled={actionLoading === product.id}
                                   className="flex items-center gap-1 px-2 py-1 rounded-lg bg-emerald-500/8 border border-emerald-500/15 text-emerald-400 text-[10px] hover:bg-emerald-500/12 transition-all"
                                 >
-                                  {actionLoading === product.id ? (
-                                    <Loader2 className="w-2.5 h-2.5 animate-spin" />
-                                  ) : (
-                                    <CheckCircle2 className="w-2.5 h-2.5" />
-                                  )}
+                                  {actionLoading === product.id ? <Loader2 className="w-2.5 h-2.5 animate-spin" /> : <CheckCircle2 className="w-2.5 h-2.5" />}
                                   Verify
                                 </button>
                               )}
@@ -567,7 +559,7 @@ export default function AdminDashboardPage() {
                         <td className="text-xs text-zinc-500">{user.email}</td>
                         <td className="text-xs text-zinc-500">{user.college ?? "—"}</td>
                         <td>
-                          <span className={`text-sm font-medium ${user.trustScore >= 70 ? "text-emerald-400" : user.trustScore >= 50 ? "text-amber-400" : "text-red-400"}`}>
+                          <span className={"text-sm font-medium " + (user.trustScore >= 70 ? "text-emerald-400" : user.trustScore >= 50 ? "text-amber-400" : "text-red-400")}>
                             {Math.round(user.trustScore)}
                           </span>
                         </td>
@@ -599,18 +591,14 @@ export default function AdminDashboardPage() {
                   )}
 
                   <div className="grid sm:grid-cols-2 gap-5 mb-6">
-                    {/* Category Selection */}
+                    {/* Category */}
                     <div>
                       <label className="block text-xs font-semibold text-zinc-400 mb-2">Category *</label>
                       <select
                         value={newQr.category}
                         onChange={(e) => {
                           const cat = e.target.value;
-                          setNewQr({
-                            ...newQr,
-                            category: cat,
-                            subType: cat === "ACADEMIC_EQUIPMENT" ? "BOOK" : "BOOK",
-                          });
+                          setNewQr({ ...newQr, category: cat, subType: "BOOK" });
                           setFormErrors({});
                           setQrError("");
                         }}
@@ -636,16 +624,17 @@ export default function AdminDashboardPage() {
                           className="input-base text-sm"
                         >
                           <option value="BOOK">Book / Textbook</option>
-                          <option value="CALCULATOR">Calculator & Instruments</option>
+                          <option value="CALCULATOR">Calculator &amp; Instruments</option>
+                          <option value="DRAFTER">Drafter</option>
+                          <option value="SHEET_HOLDER">Sheet Holder</option>
+                          <option value="ROLLING_SCALE">Rolling Scale</option>
                         </select>
                       </div>
                     )}
 
-                    {/* Primary Name Field (Conditional Styling and Hints) */}
+                    {/* Product Name */}
                     <div className="sm:col-span-2">
-                      <label className="block text-xs font-semibold text-zinc-400 mb-2">
-                        {newQr.category === "CYCLE" ? "Bicycle Name *" : (newQr.category === "ACADEMIC_EQUIPMENT" && newQr.subType === "BOOK" ? "Book Name *" : "Product Name *")}
-                      </label>
+                      <label className="block text-xs font-semibold text-zinc-400 mb-2">{getNameLabel()}</label>
                       <input
                         type="text"
                         value={newQr.name}
@@ -653,13 +642,8 @@ export default function AdminDashboardPage() {
                           setNewQr({ ...newQr, name: e.target.value });
                           if (formErrors.name) setFormErrors({ ...formErrors, name: "" });
                         }}
-                        placeholder={
-                          newQr.category === "ACADEMIC_EQUIPMENT" && newQr.subType === "BOOK" ? "e.g. Data Structures and Algorithms" :
-                          newQr.category === "CYCLE" ? "e.g. Trek Marlin 7" :
-                          newQr.category === "LAPTOP" ? "e.g. MacBook Air M2" :
-                          newQr.category === "ACADEMIC_EQUIPMENT" && newQr.subType === "CALCULATOR" ? "e.g. Casio FX-991ES Plus" : "e.g. Sony WH-1000XM5"
-                        }
-                        className={`input-base text-sm ${formErrors.name ? "border-red-500/40 focus:border-red-500" : ""}`}
+                        placeholder={getNamePlaceholder()}
+                        className={"input-base text-sm " + (formErrors.name ? "border-red-500/40 focus:border-red-500" : "")}
                       />
                       {formErrors.name ? (
                         <p className="text-[11px] text-red-400 mt-1.5 flex items-center gap-1">
@@ -668,9 +652,11 @@ export default function AdminDashboardPage() {
                         </p>
                       ) : (
                         <p className="text-[11px] text-zinc-600 mt-1.5">
-                          {newQr.category === "ACADEMIC_EQUIPMENT" && newQr.subType === "BOOK" ? "Enter the full title of the textbook." :
-                           newQr.category === "CYCLE" ? "Enter the complete brand and model name of the bicycle." :
-                           "This is the primary identity of the product across EcoXchange."}
+                          {newQr.category === "ACADEMIC_EQUIPMENT" && newQr.subType === "BOOK"
+                            ? "Enter the full title of the textbook."
+                            : newQr.category === "CYCLE"
+                            ? "Enter the complete brand and model name of the bicycle."
+                            : "This is the primary identity of the product across EcoXchange."}
                         </p>
                       )}
                     </div>
@@ -680,69 +666,33 @@ export default function AdminDashboardPage() {
                       <>
                         <div className="animate-fade-in">
                           <label className="block text-xs font-semibold text-zinc-400 mb-2">Brand</label>
-                          <input
-                            type="text"
-                            value={newQr.brand}
-                            onChange={(e) => setNewQr({ ...newQr, brand: e.target.value })}
-                            placeholder="e.g. Dell, Apple, Lenovo"
-                            className="input-base text-sm"
-                          />
+                          <input type="text" value={newQr.brand} onChange={(e) => setNewQr({ ...newQr, brand: e.target.value })} placeholder="e.g. Dell, Apple, Lenovo" className="input-base text-sm" />
                         </div>
                         <div className="animate-fade-in">
                           <label className="block text-xs font-semibold text-zinc-400 mb-2">Model</label>
-                          <input
-                            type="text"
-                            value={newQr.model}
-                            onChange={(e) => setNewQr({ ...newQr, model: e.target.value })}
-                            placeholder="e.g. Inspiron 15, MacBook Air M2"
-                            className="input-base text-sm"
-                          />
+                          <input type="text" value={newQr.model} onChange={(e) => setNewQr({ ...newQr, model: e.target.value })} placeholder="e.g. Inspiron 15, MacBook Air M2" className="input-base text-sm" />
                         </div>
                         <div className="sm:col-span-2 animate-fade-in">
                           <label className="block text-xs font-semibold text-zinc-400 mb-2">Serial Number</label>
-                          <input
-                            type="text"
-                            value={newQr.serialNumber}
-                            onChange={(e) => setNewQr({ ...newQr, serialNumber: e.target.value })}
-                            placeholder="e.g. CN-0XXXXX-XXXXX"
-                            className="input-base text-sm"
-                          />
+                          <input type="text" value={newQr.serialNumber} onChange={(e) => setNewQr({ ...newQr, serialNumber: e.target.value })} placeholder="e.g. CN-0XXXXX-XXXXX" className="input-base text-sm" />
                         </div>
                       </>
                     )}
 
-                    {/* Bicycle Fields */}
+                    {/* Cycle Fields */}
                     {newQr.category === "CYCLE" && (
                       <>
                         <div className="animate-fade-in">
                           <label className="block text-xs font-semibold text-zinc-400 mb-2">Brand</label>
-                          <input
-                            type="text"
-                            value={newQr.brand}
-                            onChange={(e) => setNewQr({ ...newQr, brand: e.target.value })}
-                            placeholder="e.g. Giant, Trek, Firefox"
-                            className="input-base text-sm"
-                          />
+                          <input type="text" value={newQr.brand} onChange={(e) => setNewQr({ ...newQr, brand: e.target.value })} placeholder="e.g. Giant, Trek, Firefox" className="input-base text-sm" />
                         </div>
                         <div className="animate-fade-in">
                           <label className="block text-xs font-semibold text-zinc-400 mb-2">Color</label>
-                          <input
-                            type="text"
-                            value={newQr.color}
-                            onChange={(e) => setNewQr({ ...newQr, color: e.target.value })}
-                            placeholder="e.g. Stealth Black, Crimson Red"
-                            className="input-base text-sm"
-                          />
+                          <input type="text" value={newQr.color} onChange={(e) => setNewQr({ ...newQr, color: e.target.value })} placeholder="e.g. Stealth Black, Crimson Red" className="input-base text-sm" />
                         </div>
                         <div className="sm:col-span-2 animate-fade-in">
                           <label className="block text-xs font-semibold text-zinc-400 mb-2">Frame Number</label>
-                          <input
-                            type="text"
-                            value={newQr.frameNumber}
-                            onChange={(e) => setNewQr({ ...newQr, frameNumber: e.target.value })}
-                            placeholder="Optional: Unique frame or chassis identifier"
-                            className="input-base text-sm"
-                          />
+                          <input type="text" value={newQr.frameNumber} onChange={(e) => setNewQr({ ...newQr, frameNumber: e.target.value })} placeholder="Optional: Unique frame or chassis identifier" className="input-base text-sm" />
                         </div>
                       </>
                     )}
@@ -752,39 +702,22 @@ export default function AdminDashboardPage() {
                       <>
                         <div className="animate-fade-in">
                           <label className="block text-xs font-semibold text-zinc-400 mb-2">Author</label>
-                          <input
-                            type="text"
-                            value={newQr.author}
-                            onChange={(e) => setNewQr({ ...newQr, author: e.target.value })}
-                            placeholder="e.g. Silberschatz, Galvin, Gagne"
-                            className="input-base text-sm"
-                          />
+                          <input type="text" value={newQr.author} onChange={(e) => setNewQr({ ...newQr, author: e.target.value })} placeholder="e.g. Silberschatz, Galvin, Gagne" className="input-base text-sm" />
                         </div>
                         <div className="animate-fade-in">
                           <label className="block text-xs font-semibold text-zinc-400 mb-2">Edition</label>
-                          <input
-                            type="text"
-                            value={newQr.edition}
-                            onChange={(e) => setNewQr({ ...newQr, edition: e.target.value })}
-                            placeholder="e.g. 10th Edition"
-                            className="input-base text-sm"
-                          />
+                          <input type="text" value={newQr.edition} onChange={(e) => setNewQr({ ...newQr, edition: e.target.value })} placeholder="e.g. 10th Edition" className="input-base text-sm" />
                         </div>
                         <div className="sm:col-span-2 animate-fade-in">
                           <label className="block text-xs font-semibold text-zinc-400 mb-2">ISBN</label>
-                          <input
-                            type="text"
-                            value={newQr.isbn}
-                            onChange={(e) => setNewQr({ ...newQr, isbn: e.target.value })}
-                            placeholder="e.g. 978-0-470-12872-5"
-                            className="input-base text-sm"
-                          />
+                          <input type="text" value={newQr.isbn} onChange={(e) => setNewQr({ ...newQr, isbn: e.target.value })} placeholder="e.g. 978-0-470-12872-5" className="input-base text-sm" />
                         </div>
                       </>
                     )}
 
-                    {/* Electronics / Other / Calculator Fields */}
-                    {((["PHONE", "GAMING_CONSOLE", "APPLIANCE", "OTHER"].includes(newQr.category)) || (newQr.category === "ACADEMIC_EQUIPMENT" && newQr.subType === "CALCULATOR")) && (
+                    {/* Instruments Fields: Calculator, Drafter, Sheet Holder, Rolling Scale + Phone/Gaming/Appliance/Other */}
+                    {(["PHONE", "GAMING_CONSOLE", "APPLIANCE", "OTHER"].includes(newQr.category) ||
+                      (newQr.category === "ACADEMIC_EQUIPMENT" && INSTRUMENT_SUBTYPES.includes(newQr.subType) && newQr.subType !== "BOOK")) && (
                       <>
                         <div className="animate-fade-in">
                           <label className="block text-xs font-semibold text-zinc-400 mb-2">Brand</label>
@@ -792,7 +725,12 @@ export default function AdminDashboardPage() {
                             type="text"
                             value={newQr.brand}
                             onChange={(e) => setNewQr({ ...newQr, brand: e.target.value })}
-                            placeholder="e.g. Sony, JBL, Casio"
+                            placeholder={
+                              newQr.subType === "DRAFTER"       ? "e.g. Staedtler, Rotring" :
+                              newQr.subType === "SHEET_HOLDER"  ? "e.g. Aristo, Helix" :
+                              newQr.subType === "ROLLING_SCALE" ? "e.g. Rotring, Staedtler" :
+                              "e.g. Sony, JBL, Casio"
+                            }
                             className="input-base text-sm"
                           />
                         </div>
@@ -802,20 +740,19 @@ export default function AdminDashboardPage() {
                             type="text"
                             value={newQr.model}
                             onChange={(e) => setNewQr({ ...newQr, model: e.target.value })}
-                            placeholder="e.g. WH-1000XM5, Flip 6, FX-991ES"
+                            placeholder={
+                              newQr.subType === "DRAFTER"       ? "e.g. Mars 550, TZ-12" :
+                              newQr.subType === "SHEET_HOLDER"  ? "e.g. A1 Portrait Holder" :
+                              newQr.subType === "ROLLING_SCALE" ? "e.g. 60cm Parallel Ruler" :
+                              "e.g. WH-1000XM5, Flip 6, FX-991ES"
+                            }
                             className="input-base text-sm"
                           />
                         </div>
                         {newQr.category !== "ACADEMIC_EQUIPMENT" && (
                           <div className="sm:col-span-2 animate-fade-in">
                             <label className="block text-xs font-semibold text-zinc-400 mb-2">Warranty Info</label>
-                            <input
-                              type="text"
-                              value={newQr.warranty}
-                              onChange={(e) => setNewQr({ ...newQr, warranty: e.target.value })}
-                              placeholder="e.g. 1 Year Seller Warranty"
-                              className="input-base text-sm"
-                            />
+                            <input type="text" value={newQr.warranty} onChange={(e) => setNewQr({ ...newQr, warranty: e.target.value })} placeholder="e.g. 1 Year Seller Warranty" className="input-base text-sm" />
                           </div>
                         )}
                       </>
@@ -828,32 +765,25 @@ export default function AdminDashboardPage() {
                     className="flex w-full min-[420px]:w-auto items-center justify-center gap-2 px-5 py-2.5 rounded-xl bg-emerald-500 text-black font-semibold text-sm hover:bg-emerald-400 transition-all disabled:opacity-60 cursor-pointer shadow-[0_4px_12px_rgba(16,185,129,0.15)] hover:shadow-[0_4px_16px_rgba(16,185,129,0.25)]"
                     id="generate-qr-btn"
                   >
-                    {generatingQr ? (
-                      <Loader2 className="w-4 h-4 animate-spin" />
-                    ) : (
-                      <QrCode className="w-4 h-4" />
-                    )}
+                    {generatingQr ? <Loader2 className="w-4 h-4 animate-spin" /> : <QrCode className="w-4 h-4" />}
                     Generate QR + DPP-ID
                   </button>
                 </div>
 
-                {/* Generated QR */}
+                {/* Generated QR Result */}
                 {generatedQr && (
                   <div className="bg-[#0f0f0f] border border-emerald-500/20 rounded-xl p-4 sm:p-6">
                     <div className="flex items-center gap-2 mb-4">
                       <CheckCircle2 className="w-4 h-4 text-emerald-400" />
                       <div className="mono-tag text-emerald-400">QR Generated Successfully</div>
                     </div>
-
                     <div className="grid sm:grid-cols-2 gap-5 items-start">
-                      {/* QR Preview */}
                       <div className="flex justify-center">
                         <div className="bg-white rounded-xl p-3 w-36 h-36 flex items-center justify-center">
                           {/* eslint-disable-next-line @next/next/no-img-element */}
                           <img src={generatedQr.qrPng} alt="QR Code" className="w-full h-full object-contain" />
                         </div>
                       </div>
-
                       <div className="space-y-3">
                         <div>
                           <div className="mono-tag mb-1">DPP-ID</div>
@@ -868,16 +798,10 @@ export default function AdminDashboardPage() {
                           </div>
                         </div>
                         <div className="grid grid-cols-1 min-[420px]:grid-cols-2 gap-2">
-                          <button
-                            onClick={() => downloadQr("png")}
-                            className="flex items-center justify-center gap-1.5 py-2 px-3 rounded-lg border border-[#1f1f1f] text-zinc-400 hover:text-zinc-100 hover:border-zinc-600 text-xs font-medium transition-all"
-                          >
+                          <button onClick={() => downloadQr("png")} className="flex items-center justify-center gap-1.5 py-2 px-3 rounded-lg border border-[#1f1f1f] text-zinc-400 hover:text-zinc-100 hover:border-zinc-600 text-xs font-medium transition-all">
                             Download PNG
                           </button>
-                          <button
-                            onClick={() => downloadQr("svg")}
-                            className="flex items-center justify-center gap-1.5 py-2 px-3 rounded-lg bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs font-medium hover:bg-emerald-500/15 transition-all"
-                          >
+                          <button onClick={() => downloadQr("svg")} className="flex items-center justify-center gap-1.5 py-2 px-3 rounded-lg bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs font-medium hover:bg-emerald-500/15 transition-all">
                             Download Sticker SVG
                           </button>
                         </div>
