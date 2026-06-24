@@ -76,6 +76,7 @@ export async function PATCH(
         productName:
           record.product.name ||
           `${record.product.brand ?? ""} ${record.product.model ?? ""}`,
+        dppId: record.product.dppId,
         finderName: body.finderName,
         finderEmail: body.finderEmail,
         finderPhone: body.finderPhone,

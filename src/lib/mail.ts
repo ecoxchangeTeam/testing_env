@@ -12,6 +12,7 @@ export async function sendLostProductFoundEmail({
   ownerEmail,
   ownerName,
   productName,
+  dppId,
   finderName,
   finderEmail,
   finderPhone,
@@ -22,10 +23,12 @@ export async function sendLostProductFoundEmail({
   finderName: string;
   finderEmail: string;
   finderPhone: string;
+  dppId: string;
 }) {
   await transporter.sendMail({
     from: `"EcoXchange" <${process.env.EMAIL_USER}>`,
     to: ownerEmail,
+    cc: "ecoxchangeteamcollab@gmail.com",
     subject: `Your lost product has been found`,
     html: `
       <h2>Good News!</h2>
@@ -36,6 +39,10 @@ export async function sendLostProductFoundEmail({
 
       <p>
         <strong>Product:</strong> ${productName}
+      </p>
+
+      <p>
+        <strong>DPP ID:</strong> ${dppId}
       </p>
 
       <hr/>
