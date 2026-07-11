@@ -9,16 +9,20 @@ const CATEGORY_CODES: Record<string, string> = {
   APPLIANCE: "APL",
   ACADEMIC_EQUIPMENT: "ACE",
   OTHER: "OTH",
+  BLANK: "BLNK",
 };
 
 /**
  * Generates a unique DPP-ID in the format ECO-LPT-2024-XXXXX
  */
 export function generateDppId(category: string): string {
-  const code = CATEGORY_CODES[category] ?? "OTH";
   const year = new Date().getFullYear();
+
   const unique = nanoid(8).toUpperCase();
-  return `ECO-${code}-${year}-${unique}`;
+
+  const prefix = CATEGORY_CODES[category] ?? "OTH";
+
+  return `ECO-${prefix}-${year}-${unique}`;
 }
 
 /**

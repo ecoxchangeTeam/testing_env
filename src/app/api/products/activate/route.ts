@@ -11,6 +11,7 @@ import {
 import crypto from "crypto";
 import { qrPrisma } from "@/lib/qr-prisma";
 import { calculateProductTrustScore } from "@/lib/trust-score";
+import { ProductCategory } from "@prisma/client";
 
 // GET /api/products/activate?dppId=... — Get product for activation page
 export async function GET(request: Request) {
@@ -23,14 +24,55 @@ export async function GET(request: Request) {
 
   const product = await prisma.product.findUnique({
     where: { dppId },
-    include: { currentOwner: { select: { name: true } } },
+    include: {
+      currentOwner: {
+        select: {
+          name: true,
+        },
+      },
+    },
   });
 
-  if (!product) {
-    return NextResponse.json({ error: "Product not found" }, { status: 404 });
+  // Product exists normally
+  if (product) {
+    return NextResponse.json({
+      type: "PRODUCT",
+      product,
+    });
   }
 
-  return NextResponse.json({ product });
+  // Check QR inventory backup database
+  const blankQR = await qrPrisma.qRInventory.findUnique({
+    where: {
+      dppId,
+    },
+  });
+
+  if (!blankQR) {
+    return NextResponse.json(
+      {
+        error: "QR not found",
+      },
+      {
+        status: 404,
+      }
+    );
+  }
+
+  const session = await auth();
+
+
+console.log("SESSION USER:", session?.user);
+console.log("IS ADMIN:", (session?.user as any)?.isAdmin);
+
+  return NextResponse.json({
+    type: "BLANK",
+    qr: blankQR,
+    canLink:
+      blankQR.status === "UNUSED" &&
+      !!session?.user &&
+      (session.user as { isAdmin?: boolean }).isAdmin,
+  });
 }
 
 // POST /api/products/activate — Activate a product
@@ -50,11 +92,16 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "DPP ID required" }, { status: 400 });
   }
 
-  const product = await prisma.product.findUnique({ where: { dppId } });
-  if (!product) {
-    return NextResponse.json({ error: "Product not found" }, { status: 404 });
-  }
+  let product = await prisma.product.findUnique({
+    where: { dppId },
+  });
 
+  if (!product) {
+    return NextResponse.json(
+      { error: "Product not found" },
+      { status: 404 }
+    );
+  }
   if (product.status !== "UNCLAIMED") {
     return NextResponse.json(
       { error: "This product has already been activated" },
@@ -122,6 +169,27 @@ export async function POST(request: Request) {
   await qrPrisma.productSnapshot.update({
     where: { dppId },
     data: { status: "ACTIVE", owner: session.user.id },
+  });
+
+  await qrPrisma.qRInventory.update({
+    where: { dppId },
+    data: {
+      status: "ACTIVE",
+    },
+  });
+
+  await prisma.qRInventory.update({
+    where: { dppId },
+    data: {
+      status: "ACTIVE",
+    },
+  });
+
+  await qrPrisma.qRRecord.update({
+    where: { dppId },
+    data: {
+      status: "ACTIVE",
+    },
   });
 
   // ── Upload invoice document if provided ───────────────────
@@ -216,29 +284,72 @@ export async function PUT(request: Request) {
     .digest("hex");
 
   console.log("START PRODUCT GENERATION");
-  const product = await prisma.product.create({
+  const product = await prisma.$transaction(async (tx) => {
+    const product = await tx.product.create({
+      data: {
+        dppId,
+        qrCodeUrl: qrPng,
+        qrCodeSvg: qrSticker,
+        category,
+        name,
+        brand,
+        model,
+        serialNumber,
+        color,
+        author,
+        edition,
+        isbn,
+        warranty,
+        frameNumber,
+        status: "UNCLAIMED",
+        trustScore: 0,
+      },
+    });
+
+    //     console.log(process.env.QR_DATABASE_URL);
+    //     const result = await tx.$queryRawUnsafe(`
+    // SELECT current_database() AS db,
+    //        current_schema() AS schema;
+    // `);
+
+    //     console.log(result);
+    console.log("Creating QRInventory in MAIN DB...");
+    await tx.qRInventory.create({
+      data: {
+        dppId: product.dppId,
+        status: "UNCLAIMED",
+        category: product.category,
+        name: product.name,
+        brand: product.brand,
+        model: product.model,
+      },
+    });
+    console.log("Created QRInventory in MAIN DB");
+
+    return product;
+  });
+
+  await qrPrisma.qRInventory.create({
     data: {
-      dppId,
-      qrCodeUrl: qrPng,
-      qrCodeSvg: qrSticker,
-      category,
-      name,
-      brand,
-      model,
-      serialNumber,
-      color,
-      author,
-      edition,
-      isbn,
-      warranty,
-      frameNumber,
+      dppId: product.dppId,
       status: "UNCLAIMED",
-      // Unclaimed products start at 0 — score builds when activated & documents are added
-      trustScore: 0,
+
+      category: product.category,
+      name: product.name,
+      brand: product.brand,
+      model: product.model,
     },
   });
-  console.log("PRODUCT CREATED:", product.id);
-
+  // await prisma.qRInventory.create({
+  //   data: {
+  //     dppId: product.dppId,
+  //     status: "UNCLAIMED",
+  //     category: product.category,
+  //     name: product.name,
+  //     brand: product.brand,
+  //     model: product.model,
+  //   },
+  // });
   console.log("WRITING TO QR DATABASE");
   await qrPrisma.qRRecord.create({
     data: {
@@ -246,7 +357,7 @@ export async function PUT(request: Request) {
       productId: product.id,
       activationUrl,
       generatedBy: session.user.id,
-      status: "ACTIVE",
+      status: "UNCLAIMED",
       qrHash,
     },
   });

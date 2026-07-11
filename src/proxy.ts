@@ -24,6 +24,7 @@ export async function proxy(request: NextRequest) {
     return NextResponse.redirect(signInUrl);
   }
 
+  console.log("PROXY TOKEN:", token);
   if (isAdmin && !token.isAdmin) {
     return NextResponse.redirect(new URL("/dashboard", request.url));
   }

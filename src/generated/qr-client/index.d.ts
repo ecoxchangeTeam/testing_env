@@ -14,11 +14,6 @@ export type PrismaPromise<T> = $Public.PrismaPromise<T>
 
 
 /**
- * Model QRRecord
- * 
- */
-export type QRRecord = $Result.DefaultSelection<Prisma.$QRRecordPayload>
-/**
  * Model ActivationRecord
  * 
  */
@@ -28,6 +23,16 @@ export type ActivationRecord = $Result.DefaultSelection<Prisma.$ActivationRecord
  * 
  */
 export type ProductSnapshot = $Result.DefaultSelection<Prisma.$ProductSnapshotPayload>
+/**
+ * Model QRRecord
+ * 
+ */
+export type QRRecord = $Result.DefaultSelection<Prisma.$QRRecordPayload>
+/**
+ * Model QRInventory
+ * 
+ */
+export type QRInventory = $Result.DefaultSelection<Prisma.$QRInventoryPayload>
 
 /**
  * ##  Prisma Client ʲˢ
@@ -38,8 +43,8 @@ export type ProductSnapshot = $Result.DefaultSelection<Prisma.$ProductSnapshotPa
  * const prisma = new PrismaClient({
  *   adapter: new PrismaPg({ connectionString: process.env.DATABASE_URL })
  * })
- * // Fetch zero or more QRRecords
- * const qRRecords = await prisma.qRRecord.findMany()
+ * // Fetch zero or more ActivationRecords
+ * const activationRecords = await prisma.activationRecord.findMany()
  * ```
  *
  *
@@ -61,8 +66,8 @@ export class PrismaClient<
    * const prisma = new PrismaClient({
    *   adapter: new PrismaPg({ connectionString: process.env.DATABASE_URL })
    * })
-   * // Fetch zero or more QRRecords
-   * const qRRecords = await prisma.qRRecord.findMany()
+   * // Fetch zero or more ActivationRecords
+   * const activationRecords = await prisma.activationRecord.findMany()
    * ```
    *
    *
@@ -151,16 +156,6 @@ export class PrismaClient<
   }>>
 
       /**
-   * `prisma.qRRecord`: Exposes CRUD operations for the **QRRecord** model.
-    * Example usage:
-    * ```ts
-    * // Fetch zero or more QRRecords
-    * const qRRecords = await prisma.qRRecord.findMany()
-    * ```
-    */
-  get qRRecord(): Prisma.QRRecordDelegate<ExtArgs, ClientOptions>;
-
-  /**
    * `prisma.activationRecord`: Exposes CRUD operations for the **ActivationRecord** model.
     * Example usage:
     * ```ts
@@ -179,6 +174,26 @@ export class PrismaClient<
     * ```
     */
   get productSnapshot(): Prisma.ProductSnapshotDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.qRRecord`: Exposes CRUD operations for the **QRRecord** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more QRRecords
+    * const qRRecords = await prisma.qRRecord.findMany()
+    * ```
+    */
+  get qRRecord(): Prisma.QRRecordDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.qRInventory`: Exposes CRUD operations for the **QRInventory** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more QRInventories
+    * const qRInventories = await prisma.qRInventory.findMany()
+    * ```
+    */
+  get qRInventory(): Prisma.QRInventoryDelegate<ExtArgs, ClientOptions>;
 }
 
 export namespace Prisma {
@@ -613,9 +628,10 @@ export namespace Prisma {
 
 
   export const ModelName: {
-    QRRecord: 'QRRecord',
     ActivationRecord: 'ActivationRecord',
-    ProductSnapshot: 'ProductSnapshot'
+    ProductSnapshot: 'ProductSnapshot',
+    QRRecord: 'QRRecord',
+    QRInventory: 'QRInventory'
   };
 
   export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -631,84 +647,10 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "qRRecord" | "activationRecord" | "productSnapshot"
+      modelProps: "activationRecord" | "productSnapshot" | "qRRecord" | "qRInventory"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
-      QRRecord: {
-        payload: Prisma.$QRRecordPayload<ExtArgs>
-        fields: Prisma.QRRecordFieldRefs
-        operations: {
-          findUnique: {
-            args: Prisma.QRRecordFindUniqueArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$QRRecordPayload> | null
-          }
-          findUniqueOrThrow: {
-            args: Prisma.QRRecordFindUniqueOrThrowArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$QRRecordPayload>
-          }
-          findFirst: {
-            args: Prisma.QRRecordFindFirstArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$QRRecordPayload> | null
-          }
-          findFirstOrThrow: {
-            args: Prisma.QRRecordFindFirstOrThrowArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$QRRecordPayload>
-          }
-          findMany: {
-            args: Prisma.QRRecordFindManyArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$QRRecordPayload>[]
-          }
-          create: {
-            args: Prisma.QRRecordCreateArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$QRRecordPayload>
-          }
-          createMany: {
-            args: Prisma.QRRecordCreateManyArgs<ExtArgs>
-            result: BatchPayload
-          }
-          createManyAndReturn: {
-            args: Prisma.QRRecordCreateManyAndReturnArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$QRRecordPayload>[]
-          }
-          delete: {
-            args: Prisma.QRRecordDeleteArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$QRRecordPayload>
-          }
-          update: {
-            args: Prisma.QRRecordUpdateArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$QRRecordPayload>
-          }
-          deleteMany: {
-            args: Prisma.QRRecordDeleteManyArgs<ExtArgs>
-            result: BatchPayload
-          }
-          updateMany: {
-            args: Prisma.QRRecordUpdateManyArgs<ExtArgs>
-            result: BatchPayload
-          }
-          updateManyAndReturn: {
-            args: Prisma.QRRecordUpdateManyAndReturnArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$QRRecordPayload>[]
-          }
-          upsert: {
-            args: Prisma.QRRecordUpsertArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$QRRecordPayload>
-          }
-          aggregate: {
-            args: Prisma.QRRecordAggregateArgs<ExtArgs>
-            result: $Utils.Optional<AggregateQRRecord>
-          }
-          groupBy: {
-            args: Prisma.QRRecordGroupByArgs<ExtArgs>
-            result: $Utils.Optional<QRRecordGroupByOutputType>[]
-          }
-          count: {
-            args: Prisma.QRRecordCountArgs<ExtArgs>
-            result: $Utils.Optional<QRRecordCountAggregateOutputType> | number
-          }
-        }
-      }
       ActivationRecord: {
         payload: Prisma.$ActivationRecordPayload<ExtArgs>
         fields: Prisma.ActivationRecordFieldRefs
@@ -857,6 +799,154 @@ export namespace Prisma {
           }
         }
       }
+      QRRecord: {
+        payload: Prisma.$QRRecordPayload<ExtArgs>
+        fields: Prisma.QRRecordFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.QRRecordFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$QRRecordPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.QRRecordFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$QRRecordPayload>
+          }
+          findFirst: {
+            args: Prisma.QRRecordFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$QRRecordPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.QRRecordFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$QRRecordPayload>
+          }
+          findMany: {
+            args: Prisma.QRRecordFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$QRRecordPayload>[]
+          }
+          create: {
+            args: Prisma.QRRecordCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$QRRecordPayload>
+          }
+          createMany: {
+            args: Prisma.QRRecordCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.QRRecordCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$QRRecordPayload>[]
+          }
+          delete: {
+            args: Prisma.QRRecordDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$QRRecordPayload>
+          }
+          update: {
+            args: Prisma.QRRecordUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$QRRecordPayload>
+          }
+          deleteMany: {
+            args: Prisma.QRRecordDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.QRRecordUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.QRRecordUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$QRRecordPayload>[]
+          }
+          upsert: {
+            args: Prisma.QRRecordUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$QRRecordPayload>
+          }
+          aggregate: {
+            args: Prisma.QRRecordAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateQRRecord>
+          }
+          groupBy: {
+            args: Prisma.QRRecordGroupByArgs<ExtArgs>
+            result: $Utils.Optional<QRRecordGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.QRRecordCountArgs<ExtArgs>
+            result: $Utils.Optional<QRRecordCountAggregateOutputType> | number
+          }
+        }
+      }
+      QRInventory: {
+        payload: Prisma.$QRInventoryPayload<ExtArgs>
+        fields: Prisma.QRInventoryFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.QRInventoryFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$QRInventoryPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.QRInventoryFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$QRInventoryPayload>
+          }
+          findFirst: {
+            args: Prisma.QRInventoryFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$QRInventoryPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.QRInventoryFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$QRInventoryPayload>
+          }
+          findMany: {
+            args: Prisma.QRInventoryFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$QRInventoryPayload>[]
+          }
+          create: {
+            args: Prisma.QRInventoryCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$QRInventoryPayload>
+          }
+          createMany: {
+            args: Prisma.QRInventoryCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.QRInventoryCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$QRInventoryPayload>[]
+          }
+          delete: {
+            args: Prisma.QRInventoryDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$QRInventoryPayload>
+          }
+          update: {
+            args: Prisma.QRInventoryUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$QRInventoryPayload>
+          }
+          deleteMany: {
+            args: Prisma.QRInventoryDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.QRInventoryUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.QRInventoryUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$QRInventoryPayload>[]
+          }
+          upsert: {
+            args: Prisma.QRInventoryUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$QRInventoryPayload>
+          }
+          aggregate: {
+            args: Prisma.QRInventoryAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateQRInventory>
+          }
+          groupBy: {
+            args: Prisma.QRInventoryGroupByArgs<ExtArgs>
+            result: $Utils.Optional<QRInventoryGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.QRInventoryCountArgs<ExtArgs>
+            result: $Utils.Optional<QRInventoryCountAggregateOutputType> | number
+          }
+        }
+      }
     }
   } & {
     other: {
@@ -965,9 +1055,10 @@ export namespace Prisma {
     comments?: runtime.SqlCommenterPlugin[]
   }
   export type GlobalOmitConfig = {
-    qRRecord?: QRRecordOmit
     activationRecord?: ActivationRecordOmit
     productSnapshot?: ProductSnapshotOmit
+    qRRecord?: QRRecordOmit
+    qRInventory?: QRInventoryOmit
   }
 
   /* Types for Logging */
@@ -1049,1105 +1140,6 @@ export namespace Prisma {
    */
 
   /**
-   * Model QRRecord
-   */
-
-  export type AggregateQRRecord = {
-    _count: QRRecordCountAggregateOutputType | null
-    _avg: QRRecordAvgAggregateOutputType | null
-    _sum: QRRecordSumAggregateOutputType | null
-    _min: QRRecordMinAggregateOutputType | null
-    _max: QRRecordMaxAggregateOutputType | null
-  }
-
-  export type QRRecordAvgAggregateOutputType = {
-    scanCount: number | null
-  }
-
-  export type QRRecordSumAggregateOutputType = {
-    scanCount: number | null
-  }
-
-  export type QRRecordMinAggregateOutputType = {
-    id: string | null
-    dppId: string | null
-    productId: string | null
-    activationUrl: string | null
-    generatedBy: string | null
-    generatedAt: Date | null
-    status: string | null
-    scanCount: number | null
-    lastScannedAt: Date | null
-    qrHash: string | null
-  }
-
-  export type QRRecordMaxAggregateOutputType = {
-    id: string | null
-    dppId: string | null
-    productId: string | null
-    activationUrl: string | null
-    generatedBy: string | null
-    generatedAt: Date | null
-    status: string | null
-    scanCount: number | null
-    lastScannedAt: Date | null
-    qrHash: string | null
-  }
-
-  export type QRRecordCountAggregateOutputType = {
-    id: number
-    dppId: number
-    productId: number
-    activationUrl: number
-    generatedBy: number
-    generatedAt: number
-    status: number
-    scanCount: number
-    lastScannedAt: number
-    qrHash: number
-    _all: number
-  }
-
-
-  export type QRRecordAvgAggregateInputType = {
-    scanCount?: true
-  }
-
-  export type QRRecordSumAggregateInputType = {
-    scanCount?: true
-  }
-
-  export type QRRecordMinAggregateInputType = {
-    id?: true
-    dppId?: true
-    productId?: true
-    activationUrl?: true
-    generatedBy?: true
-    generatedAt?: true
-    status?: true
-    scanCount?: true
-    lastScannedAt?: true
-    qrHash?: true
-  }
-
-  export type QRRecordMaxAggregateInputType = {
-    id?: true
-    dppId?: true
-    productId?: true
-    activationUrl?: true
-    generatedBy?: true
-    generatedAt?: true
-    status?: true
-    scanCount?: true
-    lastScannedAt?: true
-    qrHash?: true
-  }
-
-  export type QRRecordCountAggregateInputType = {
-    id?: true
-    dppId?: true
-    productId?: true
-    activationUrl?: true
-    generatedBy?: true
-    generatedAt?: true
-    status?: true
-    scanCount?: true
-    lastScannedAt?: true
-    qrHash?: true
-    _all?: true
-  }
-
-  export type QRRecordAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Filter which QRRecord to aggregate.
-     */
-    where?: QRRecordWhereInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
-     * 
-     * Determine the order of QRRecords to fetch.
-     */
-    orderBy?: QRRecordOrderByWithRelationInput | QRRecordOrderByWithRelationInput[]
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
-     * 
-     * Sets the start position
-     */
-    cursor?: QRRecordWhereUniqueInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Take `±n` QRRecords from the position of the cursor.
-     */
-    take?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Skip the first `n` QRRecords.
-     */
-    skip?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
-     * Count returned QRRecords
-    **/
-    _count?: true | QRRecordCountAggregateInputType
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
-     * Select which fields to average
-    **/
-    _avg?: QRRecordAvgAggregateInputType
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
-     * Select which fields to sum
-    **/
-    _sum?: QRRecordSumAggregateInputType
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
-     * Select which fields to find the minimum value
-    **/
-    _min?: QRRecordMinAggregateInputType
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
-     * Select which fields to find the maximum value
-    **/
-    _max?: QRRecordMaxAggregateInputType
-  }
-
-  export type GetQRRecordAggregateType<T extends QRRecordAggregateArgs> = {
-        [P in keyof T & keyof AggregateQRRecord]: P extends '_count' | 'count'
-      ? T[P] extends true
-        ? number
-        : GetScalarType<T[P], AggregateQRRecord[P]>
-      : GetScalarType<T[P], AggregateQRRecord[P]>
-  }
-
-
-
-
-  export type QRRecordGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    where?: QRRecordWhereInput
-    orderBy?: QRRecordOrderByWithAggregationInput | QRRecordOrderByWithAggregationInput[]
-    by: QRRecordScalarFieldEnum[] | QRRecordScalarFieldEnum
-    having?: QRRecordScalarWhereWithAggregatesInput
-    take?: number
-    skip?: number
-    _count?: QRRecordCountAggregateInputType | true
-    _avg?: QRRecordAvgAggregateInputType
-    _sum?: QRRecordSumAggregateInputType
-    _min?: QRRecordMinAggregateInputType
-    _max?: QRRecordMaxAggregateInputType
-  }
-
-  export type QRRecordGroupByOutputType = {
-    id: string
-    dppId: string
-    productId: string
-    activationUrl: string
-    generatedBy: string | null
-    generatedAt: Date
-    status: string
-    scanCount: number
-    lastScannedAt: Date | null
-    qrHash: string
-    _count: QRRecordCountAggregateOutputType | null
-    _avg: QRRecordAvgAggregateOutputType | null
-    _sum: QRRecordSumAggregateOutputType | null
-    _min: QRRecordMinAggregateOutputType | null
-    _max: QRRecordMaxAggregateOutputType | null
-  }
-
-  type GetQRRecordGroupByPayload<T extends QRRecordGroupByArgs> = Prisma.PrismaPromise<
-    Array<
-      PickEnumerable<QRRecordGroupByOutputType, T['by']> &
-        {
-          [P in ((keyof T) & (keyof QRRecordGroupByOutputType))]: P extends '_count'
-            ? T[P] extends boolean
-              ? number
-              : GetScalarType<T[P], QRRecordGroupByOutputType[P]>
-            : GetScalarType<T[P], QRRecordGroupByOutputType[P]>
-        }
-      >
-    >
-
-
-  export type QRRecordSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
-    id?: boolean
-    dppId?: boolean
-    productId?: boolean
-    activationUrl?: boolean
-    generatedBy?: boolean
-    generatedAt?: boolean
-    status?: boolean
-    scanCount?: boolean
-    lastScannedAt?: boolean
-    qrHash?: boolean
-  }, ExtArgs["result"]["qRRecord"]>
-
-  export type QRRecordSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
-    id?: boolean
-    dppId?: boolean
-    productId?: boolean
-    activationUrl?: boolean
-    generatedBy?: boolean
-    generatedAt?: boolean
-    status?: boolean
-    scanCount?: boolean
-    lastScannedAt?: boolean
-    qrHash?: boolean
-  }, ExtArgs["result"]["qRRecord"]>
-
-  export type QRRecordSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
-    id?: boolean
-    dppId?: boolean
-    productId?: boolean
-    activationUrl?: boolean
-    generatedBy?: boolean
-    generatedAt?: boolean
-    status?: boolean
-    scanCount?: boolean
-    lastScannedAt?: boolean
-    qrHash?: boolean
-  }, ExtArgs["result"]["qRRecord"]>
-
-  export type QRRecordSelectScalar = {
-    id?: boolean
-    dppId?: boolean
-    productId?: boolean
-    activationUrl?: boolean
-    generatedBy?: boolean
-    generatedAt?: boolean
-    status?: boolean
-    scanCount?: boolean
-    lastScannedAt?: boolean
-    qrHash?: boolean
-  }
-
-  export type QRRecordOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "dppId" | "productId" | "activationUrl" | "generatedBy" | "generatedAt" | "status" | "scanCount" | "lastScannedAt" | "qrHash", ExtArgs["result"]["qRRecord"]>
-
-  export type $QRRecordPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    name: "QRRecord"
-    objects: {}
-    scalars: $Extensions.GetPayloadResult<{
-      id: string
-      dppId: string
-      productId: string
-      activationUrl: string
-      generatedBy: string | null
-      generatedAt: Date
-      status: string
-      scanCount: number
-      lastScannedAt: Date | null
-      qrHash: string
-    }, ExtArgs["result"]["qRRecord"]>
-    composites: {}
-  }
-
-  type QRRecordGetPayload<S extends boolean | null | undefined | QRRecordDefaultArgs> = $Result.GetResult<Prisma.$QRRecordPayload, S>
-
-  type QRRecordCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
-    Omit<QRRecordFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
-      select?: QRRecordCountAggregateInputType | true
-    }
-
-  export interface QRRecordDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
-    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['QRRecord'], meta: { name: 'QRRecord' } }
-    /**
-     * Find zero or one QRRecord that matches the filter.
-     * @param {QRRecordFindUniqueArgs} args - Arguments to find a QRRecord
-     * @example
-     * // Get one QRRecord
-     * const qRRecord = await prisma.qRRecord.findUnique({
-     *   where: {
-     *     // ... provide filter here
-     *   }
-     * })
-     */
-    findUnique<T extends QRRecordFindUniqueArgs>(args: SelectSubset<T, QRRecordFindUniqueArgs<ExtArgs>>): Prisma__QRRecordClient<$Result.GetResult<Prisma.$QRRecordPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
-
-    /**
-     * Find one QRRecord that matches the filter or throw an error with `error.code='P2025'`
-     * if no matches were found.
-     * @param {QRRecordFindUniqueOrThrowArgs} args - Arguments to find a QRRecord
-     * @example
-     * // Get one QRRecord
-     * const qRRecord = await prisma.qRRecord.findUniqueOrThrow({
-     *   where: {
-     *     // ... provide filter here
-     *   }
-     * })
-     */
-    findUniqueOrThrow<T extends QRRecordFindUniqueOrThrowArgs>(args: SelectSubset<T, QRRecordFindUniqueOrThrowArgs<ExtArgs>>): Prisma__QRRecordClient<$Result.GetResult<Prisma.$QRRecordPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
-
-    /**
-     * Find the first QRRecord that matches the filter.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {QRRecordFindFirstArgs} args - Arguments to find a QRRecord
-     * @example
-     * // Get one QRRecord
-     * const qRRecord = await prisma.qRRecord.findFirst({
-     *   where: {
-     *     // ... provide filter here
-     *   }
-     * })
-     */
-    findFirst<T extends QRRecordFindFirstArgs>(args?: SelectSubset<T, QRRecordFindFirstArgs<ExtArgs>>): Prisma__QRRecordClient<$Result.GetResult<Prisma.$QRRecordPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
-
-    /**
-     * Find the first QRRecord that matches the filter or
-     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {QRRecordFindFirstOrThrowArgs} args - Arguments to find a QRRecord
-     * @example
-     * // Get one QRRecord
-     * const qRRecord = await prisma.qRRecord.findFirstOrThrow({
-     *   where: {
-     *     // ... provide filter here
-     *   }
-     * })
-     */
-    findFirstOrThrow<T extends QRRecordFindFirstOrThrowArgs>(args?: SelectSubset<T, QRRecordFindFirstOrThrowArgs<ExtArgs>>): Prisma__QRRecordClient<$Result.GetResult<Prisma.$QRRecordPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
-
-    /**
-     * Find zero or more QRRecords that matches the filter.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {QRRecordFindManyArgs} args - Arguments to filter and select certain fields only.
-     * @example
-     * // Get all QRRecords
-     * const qRRecords = await prisma.qRRecord.findMany()
-     * 
-     * // Get first 10 QRRecords
-     * const qRRecords = await prisma.qRRecord.findMany({ take: 10 })
-     * 
-     * // Only select the `id`
-     * const qRRecordWithIdOnly = await prisma.qRRecord.findMany({ select: { id: true } })
-     * 
-     */
-    findMany<T extends QRRecordFindManyArgs>(args?: SelectSubset<T, QRRecordFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$QRRecordPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
-
-    /**
-     * Create a QRRecord.
-     * @param {QRRecordCreateArgs} args - Arguments to create a QRRecord.
-     * @example
-     * // Create one QRRecord
-     * const QRRecord = await prisma.qRRecord.create({
-     *   data: {
-     *     // ... data to create a QRRecord
-     *   }
-     * })
-     * 
-     */
-    create<T extends QRRecordCreateArgs>(args: SelectSubset<T, QRRecordCreateArgs<ExtArgs>>): Prisma__QRRecordClient<$Result.GetResult<Prisma.$QRRecordPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
-
-    /**
-     * Create many QRRecords.
-     * @param {QRRecordCreateManyArgs} args - Arguments to create many QRRecords.
-     * @example
-     * // Create many QRRecords
-     * const qRRecord = await prisma.qRRecord.createMany({
-     *   data: [
-     *     // ... provide data here
-     *   ]
-     * })
-     *     
-     */
-    createMany<T extends QRRecordCreateManyArgs>(args?: SelectSubset<T, QRRecordCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
-
-    /**
-     * Create many QRRecords and returns the data saved in the database.
-     * @param {QRRecordCreateManyAndReturnArgs} args - Arguments to create many QRRecords.
-     * @example
-     * // Create many QRRecords
-     * const qRRecord = await prisma.qRRecord.createManyAndReturn({
-     *   data: [
-     *     // ... provide data here
-     *   ]
-     * })
-     * 
-     * // Create many QRRecords and only return the `id`
-     * const qRRecordWithIdOnly = await prisma.qRRecord.createManyAndReturn({
-     *   select: { id: true },
-     *   data: [
-     *     // ... provide data here
-     *   ]
-     * })
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * 
-     */
-    createManyAndReturn<T extends QRRecordCreateManyAndReturnArgs>(args?: SelectSubset<T, QRRecordCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$QRRecordPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
-
-    /**
-     * Delete a QRRecord.
-     * @param {QRRecordDeleteArgs} args - Arguments to delete one QRRecord.
-     * @example
-     * // Delete one QRRecord
-     * const QRRecord = await prisma.qRRecord.delete({
-     *   where: {
-     *     // ... filter to delete one QRRecord
-     *   }
-     * })
-     * 
-     */
-    delete<T extends QRRecordDeleteArgs>(args: SelectSubset<T, QRRecordDeleteArgs<ExtArgs>>): Prisma__QRRecordClient<$Result.GetResult<Prisma.$QRRecordPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
-
-    /**
-     * Update one QRRecord.
-     * @param {QRRecordUpdateArgs} args - Arguments to update one QRRecord.
-     * @example
-     * // Update one QRRecord
-     * const qRRecord = await prisma.qRRecord.update({
-     *   where: {
-     *     // ... provide filter here
-     *   },
-     *   data: {
-     *     // ... provide data here
-     *   }
-     * })
-     * 
-     */
-    update<T extends QRRecordUpdateArgs>(args: SelectSubset<T, QRRecordUpdateArgs<ExtArgs>>): Prisma__QRRecordClient<$Result.GetResult<Prisma.$QRRecordPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
-
-    /**
-     * Delete zero or more QRRecords.
-     * @param {QRRecordDeleteManyArgs} args - Arguments to filter QRRecords to delete.
-     * @example
-     * // Delete a few QRRecords
-     * const { count } = await prisma.qRRecord.deleteMany({
-     *   where: {
-     *     // ... provide filter here
-     *   }
-     * })
-     * 
-     */
-    deleteMany<T extends QRRecordDeleteManyArgs>(args?: SelectSubset<T, QRRecordDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
-
-    /**
-     * Update zero or more QRRecords.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {QRRecordUpdateManyArgs} args - Arguments to update one or more rows.
-     * @example
-     * // Update many QRRecords
-     * const qRRecord = await prisma.qRRecord.updateMany({
-     *   where: {
-     *     // ... provide filter here
-     *   },
-     *   data: {
-     *     // ... provide data here
-     *   }
-     * })
-     * 
-     */
-    updateMany<T extends QRRecordUpdateManyArgs>(args: SelectSubset<T, QRRecordUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
-
-    /**
-     * Update zero or more QRRecords and returns the data updated in the database.
-     * @param {QRRecordUpdateManyAndReturnArgs} args - Arguments to update many QRRecords.
-     * @example
-     * // Update many QRRecords
-     * const qRRecord = await prisma.qRRecord.updateManyAndReturn({
-     *   where: {
-     *     // ... provide filter here
-     *   },
-     *   data: [
-     *     // ... provide data here
-     *   ]
-     * })
-     * 
-     * // Update zero or more QRRecords and only return the `id`
-     * const qRRecordWithIdOnly = await prisma.qRRecord.updateManyAndReturn({
-     *   select: { id: true },
-     *   where: {
-     *     // ... provide filter here
-     *   },
-     *   data: [
-     *     // ... provide data here
-     *   ]
-     * })
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * 
-     */
-    updateManyAndReturn<T extends QRRecordUpdateManyAndReturnArgs>(args: SelectSubset<T, QRRecordUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$QRRecordPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
-
-    /**
-     * Create or update one QRRecord.
-     * @param {QRRecordUpsertArgs} args - Arguments to update or create a QRRecord.
-     * @example
-     * // Update or create a QRRecord
-     * const qRRecord = await prisma.qRRecord.upsert({
-     *   create: {
-     *     // ... data to create a QRRecord
-     *   },
-     *   update: {
-     *     // ... in case it already exists, update
-     *   },
-     *   where: {
-     *     // ... the filter for the QRRecord we want to update
-     *   }
-     * })
-     */
-    upsert<T extends QRRecordUpsertArgs>(args: SelectSubset<T, QRRecordUpsertArgs<ExtArgs>>): Prisma__QRRecordClient<$Result.GetResult<Prisma.$QRRecordPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
-
-
-    /**
-     * Count the number of QRRecords.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {QRRecordCountArgs} args - Arguments to filter QRRecords to count.
-     * @example
-     * // Count the number of QRRecords
-     * const count = await prisma.qRRecord.count({
-     *   where: {
-     *     // ... the filter for the QRRecords we want to count
-     *   }
-     * })
-    **/
-    count<T extends QRRecordCountArgs>(
-      args?: Subset<T, QRRecordCountArgs>,
-    ): Prisma.PrismaPromise<
-      T extends $Utils.Record<'select', any>
-        ? T['select'] extends true
-          ? number
-          : GetScalarType<T['select'], QRRecordCountAggregateOutputType>
-        : number
-    >
-
-    /**
-     * Allows you to perform aggregations operations on a QRRecord.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {QRRecordAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
-     * @example
-     * // Ordered by age ascending
-     * // Where email contains prisma.io
-     * // Limited to the 10 users
-     * const aggregations = await prisma.user.aggregate({
-     *   _avg: {
-     *     age: true,
-     *   },
-     *   where: {
-     *     email: {
-     *       contains: "prisma.io",
-     *     },
-     *   },
-     *   orderBy: {
-     *     age: "asc",
-     *   },
-     *   take: 10,
-     * })
-    **/
-    aggregate<T extends QRRecordAggregateArgs>(args: Subset<T, QRRecordAggregateArgs>): Prisma.PrismaPromise<GetQRRecordAggregateType<T>>
-
-    /**
-     * Group by QRRecord.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {QRRecordGroupByArgs} args - Group by arguments.
-     * @example
-     * // Group by city, order by createdAt, get count
-     * const result = await prisma.user.groupBy({
-     *   by: ['city', 'createdAt'],
-     *   orderBy: {
-     *     createdAt: true
-     *   },
-     *   _count: {
-     *     _all: true
-     *   },
-     * })
-     * 
-    **/
-    groupBy<
-      T extends QRRecordGroupByArgs,
-      HasSelectOrTake extends Or<
-        Extends<'skip', Keys<T>>,
-        Extends<'take', Keys<T>>
-      >,
-      OrderByArg extends True extends HasSelectOrTake
-        ? { orderBy: QRRecordGroupByArgs['orderBy'] }
-        : { orderBy?: QRRecordGroupByArgs['orderBy'] },
-      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
-      ByFields extends MaybeTupleToUnion<T['by']>,
-      ByValid extends Has<ByFields, OrderFields>,
-      HavingFields extends GetHavingFields<T['having']>,
-      HavingValid extends Has<ByFields, HavingFields>,
-      ByEmpty extends T['by'] extends never[] ? True : False,
-      InputErrors extends ByEmpty extends True
-      ? `Error: "by" must not be empty.`
-      : HavingValid extends False
-      ? {
-          [P in HavingFields]: P extends ByFields
-            ? never
-            : P extends string
-            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
-            : [
-                Error,
-                'Field ',
-                P,
-                ` in "having" needs to be provided in "by"`,
-              ]
-        }[HavingFields]
-      : 'take' extends Keys<T>
-      ? 'orderBy' extends Keys<T>
-        ? ByValid extends True
-          ? {}
-          : {
-              [P in OrderFields]: P extends ByFields
-                ? never
-                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
-            }[OrderFields]
-        : 'Error: If you provide "take", you also need to provide "orderBy"'
-      : 'skip' extends Keys<T>
-      ? 'orderBy' extends Keys<T>
-        ? ByValid extends True
-          ? {}
-          : {
-              [P in OrderFields]: P extends ByFields
-                ? never
-                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
-            }[OrderFields]
-        : 'Error: If you provide "skip", you also need to provide "orderBy"'
-      : ByValid extends True
-      ? {}
-      : {
-          [P in OrderFields]: P extends ByFields
-            ? never
-            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
-        }[OrderFields]
-    >(args: SubsetIntersection<T, QRRecordGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetQRRecordGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
-  /**
-   * Fields of the QRRecord model
-   */
-  readonly fields: QRRecordFieldRefs;
-  }
-
-  /**
-   * The delegate class that acts as a "Promise-like" for QRRecord.
-   * Why is this prefixed with `Prisma__`?
-   * Because we want to prevent naming conflicts as mentioned in
-   * https://github.com/prisma/prisma-client-js/issues/707
-   */
-  export interface Prisma__QRRecordClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
-    readonly [Symbol.toStringTag]: "PrismaPromise"
-    /**
-     * Attaches callbacks for the resolution and/or rejection of the Promise.
-     * @param onfulfilled The callback to execute when the Promise is resolved.
-     * @param onrejected The callback to execute when the Promise is rejected.
-     * @returns A Promise for the completion of which ever callback is executed.
-     */
-    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
-    /**
-     * Attaches a callback for only the rejection of the Promise.
-     * @param onrejected The callback to execute when the Promise is rejected.
-     * @returns A Promise for the completion of the callback.
-     */
-    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
-    /**
-     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
-     * resolved value cannot be modified from the callback.
-     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
-     * @returns A Promise for the completion of the callback.
-     */
-    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
-  }
-
-
-
-
-  /**
-   * Fields of the QRRecord model
-   */
-  interface QRRecordFieldRefs {
-    readonly id: FieldRef<"QRRecord", 'String'>
-    readonly dppId: FieldRef<"QRRecord", 'String'>
-    readonly productId: FieldRef<"QRRecord", 'String'>
-    readonly activationUrl: FieldRef<"QRRecord", 'String'>
-    readonly generatedBy: FieldRef<"QRRecord", 'String'>
-    readonly generatedAt: FieldRef<"QRRecord", 'DateTime'>
-    readonly status: FieldRef<"QRRecord", 'String'>
-    readonly scanCount: FieldRef<"QRRecord", 'Int'>
-    readonly lastScannedAt: FieldRef<"QRRecord", 'DateTime'>
-    readonly qrHash: FieldRef<"QRRecord", 'String'>
-  }
-    
-
-  // Custom InputTypes
-  /**
-   * QRRecord findUnique
-   */
-  export type QRRecordFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the QRRecord
-     */
-    select?: QRRecordSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the QRRecord
-     */
-    omit?: QRRecordOmit<ExtArgs> | null
-    /**
-     * Filter, which QRRecord to fetch.
-     */
-    where: QRRecordWhereUniqueInput
-  }
-
-  /**
-   * QRRecord findUniqueOrThrow
-   */
-  export type QRRecordFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the QRRecord
-     */
-    select?: QRRecordSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the QRRecord
-     */
-    omit?: QRRecordOmit<ExtArgs> | null
-    /**
-     * Filter, which QRRecord to fetch.
-     */
-    where: QRRecordWhereUniqueInput
-  }
-
-  /**
-   * QRRecord findFirst
-   */
-  export type QRRecordFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the QRRecord
-     */
-    select?: QRRecordSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the QRRecord
-     */
-    omit?: QRRecordOmit<ExtArgs> | null
-    /**
-     * Filter, which QRRecord to fetch.
-     */
-    where?: QRRecordWhereInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
-     * 
-     * Determine the order of QRRecords to fetch.
-     */
-    orderBy?: QRRecordOrderByWithRelationInput | QRRecordOrderByWithRelationInput[]
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
-     * 
-     * Sets the position for searching for QRRecords.
-     */
-    cursor?: QRRecordWhereUniqueInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Take `±n` QRRecords from the position of the cursor.
-     */
-    take?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Skip the first `n` QRRecords.
-     */
-    skip?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
-     * 
-     * Filter by unique combinations of QRRecords.
-     */
-    distinct?: QRRecordScalarFieldEnum | QRRecordScalarFieldEnum[]
-  }
-
-  /**
-   * QRRecord findFirstOrThrow
-   */
-  export type QRRecordFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the QRRecord
-     */
-    select?: QRRecordSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the QRRecord
-     */
-    omit?: QRRecordOmit<ExtArgs> | null
-    /**
-     * Filter, which QRRecord to fetch.
-     */
-    where?: QRRecordWhereInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
-     * 
-     * Determine the order of QRRecords to fetch.
-     */
-    orderBy?: QRRecordOrderByWithRelationInput | QRRecordOrderByWithRelationInput[]
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
-     * 
-     * Sets the position for searching for QRRecords.
-     */
-    cursor?: QRRecordWhereUniqueInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Take `±n` QRRecords from the position of the cursor.
-     */
-    take?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Skip the first `n` QRRecords.
-     */
-    skip?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
-     * 
-     * Filter by unique combinations of QRRecords.
-     */
-    distinct?: QRRecordScalarFieldEnum | QRRecordScalarFieldEnum[]
-  }
-
-  /**
-   * QRRecord findMany
-   */
-  export type QRRecordFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the QRRecord
-     */
-    select?: QRRecordSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the QRRecord
-     */
-    omit?: QRRecordOmit<ExtArgs> | null
-    /**
-     * Filter, which QRRecords to fetch.
-     */
-    where?: QRRecordWhereInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
-     * 
-     * Determine the order of QRRecords to fetch.
-     */
-    orderBy?: QRRecordOrderByWithRelationInput | QRRecordOrderByWithRelationInput[]
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
-     * 
-     * Sets the position for listing QRRecords.
-     */
-    cursor?: QRRecordWhereUniqueInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Take `±n` QRRecords from the position of the cursor.
-     */
-    take?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Skip the first `n` QRRecords.
-     */
-    skip?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
-     * 
-     * Filter by unique combinations of QRRecords.
-     */
-    distinct?: QRRecordScalarFieldEnum | QRRecordScalarFieldEnum[]
-  }
-
-  /**
-   * QRRecord create
-   */
-  export type QRRecordCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the QRRecord
-     */
-    select?: QRRecordSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the QRRecord
-     */
-    omit?: QRRecordOmit<ExtArgs> | null
-    /**
-     * The data needed to create a QRRecord.
-     */
-    data: XOR<QRRecordCreateInput, QRRecordUncheckedCreateInput>
-  }
-
-  /**
-   * QRRecord createMany
-   */
-  export type QRRecordCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * The data used to create many QRRecords.
-     */
-    data: QRRecordCreateManyInput | QRRecordCreateManyInput[]
-    skipDuplicates?: boolean
-  }
-
-  /**
-   * QRRecord createManyAndReturn
-   */
-  export type QRRecordCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the QRRecord
-     */
-    select?: QRRecordSelectCreateManyAndReturn<ExtArgs> | null
-    /**
-     * Omit specific fields from the QRRecord
-     */
-    omit?: QRRecordOmit<ExtArgs> | null
-    /**
-     * The data used to create many QRRecords.
-     */
-    data: QRRecordCreateManyInput | QRRecordCreateManyInput[]
-    skipDuplicates?: boolean
-  }
-
-  /**
-   * QRRecord update
-   */
-  export type QRRecordUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the QRRecord
-     */
-    select?: QRRecordSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the QRRecord
-     */
-    omit?: QRRecordOmit<ExtArgs> | null
-    /**
-     * The data needed to update a QRRecord.
-     */
-    data: XOR<QRRecordUpdateInput, QRRecordUncheckedUpdateInput>
-    /**
-     * Choose, which QRRecord to update.
-     */
-    where: QRRecordWhereUniqueInput
-  }
-
-  /**
-   * QRRecord updateMany
-   */
-  export type QRRecordUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * The data used to update QRRecords.
-     */
-    data: XOR<QRRecordUpdateManyMutationInput, QRRecordUncheckedUpdateManyInput>
-    /**
-     * Filter which QRRecords to update
-     */
-    where?: QRRecordWhereInput
-    /**
-     * Limit how many QRRecords to update.
-     */
-    limit?: number
-  }
-
-  /**
-   * QRRecord updateManyAndReturn
-   */
-  export type QRRecordUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the QRRecord
-     */
-    select?: QRRecordSelectUpdateManyAndReturn<ExtArgs> | null
-    /**
-     * Omit specific fields from the QRRecord
-     */
-    omit?: QRRecordOmit<ExtArgs> | null
-    /**
-     * The data used to update QRRecords.
-     */
-    data: XOR<QRRecordUpdateManyMutationInput, QRRecordUncheckedUpdateManyInput>
-    /**
-     * Filter which QRRecords to update
-     */
-    where?: QRRecordWhereInput
-    /**
-     * Limit how many QRRecords to update.
-     */
-    limit?: number
-  }
-
-  /**
-   * QRRecord upsert
-   */
-  export type QRRecordUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the QRRecord
-     */
-    select?: QRRecordSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the QRRecord
-     */
-    omit?: QRRecordOmit<ExtArgs> | null
-    /**
-     * The filter to search for the QRRecord to update in case it exists.
-     */
-    where: QRRecordWhereUniqueInput
-    /**
-     * In case the QRRecord found by the `where` argument doesn't exist, create a new QRRecord with this data.
-     */
-    create: XOR<QRRecordCreateInput, QRRecordUncheckedCreateInput>
-    /**
-     * In case the QRRecord was found with the provided `where` argument, update it with this data.
-     */
-    update: XOR<QRRecordUpdateInput, QRRecordUncheckedUpdateInput>
-  }
-
-  /**
-   * QRRecord delete
-   */
-  export type QRRecordDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the QRRecord
-     */
-    select?: QRRecordSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the QRRecord
-     */
-    omit?: QRRecordOmit<ExtArgs> | null
-    /**
-     * Filter which QRRecord to delete.
-     */
-    where: QRRecordWhereUniqueInput
-  }
-
-  /**
-   * QRRecord deleteMany
-   */
-  export type QRRecordDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Filter which QRRecords to delete
-     */
-    where?: QRRecordWhereInput
-    /**
-     * Limit how many QRRecords to delete.
-     */
-    limit?: number
-  }
-
-  /**
-   * QRRecord without action
-   */
-  export type QRRecordDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the QRRecord
-     */
-    select?: QRRecordSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the QRRecord
-     */
-    omit?: QRRecordOmit<ExtArgs> | null
-  }
-
-
-  /**
    * Model ActivationRecord
    */
 
@@ -2161,36 +1153,36 @@ export namespace Prisma {
     id: string | null
     dppId: string | null
     productId: string | null
-    qrRecordId: string | null
-    activatedBy: string | null
+    status: string | null
     activatedAt: Date | null
     ipAddress: string | null
     deviceInfo: string | null
-    status: string | null
+    activatedBy: string | null
+    qrRecordId: string | null
   }
 
   export type ActivationRecordMaxAggregateOutputType = {
     id: string | null
     dppId: string | null
     productId: string | null
-    qrRecordId: string | null
-    activatedBy: string | null
+    status: string | null
     activatedAt: Date | null
     ipAddress: string | null
     deviceInfo: string | null
-    status: string | null
+    activatedBy: string | null
+    qrRecordId: string | null
   }
 
   export type ActivationRecordCountAggregateOutputType = {
     id: number
     dppId: number
     productId: number
-    qrRecordId: number
-    activatedBy: number
+    status: number
     activatedAt: number
     ipAddress: number
     deviceInfo: number
-    status: number
+    activatedBy: number
+    qrRecordId: number
     _all: number
   }
 
@@ -2199,36 +1191,36 @@ export namespace Prisma {
     id?: true
     dppId?: true
     productId?: true
-    qrRecordId?: true
-    activatedBy?: true
+    status?: true
     activatedAt?: true
     ipAddress?: true
     deviceInfo?: true
-    status?: true
+    activatedBy?: true
+    qrRecordId?: true
   }
 
   export type ActivationRecordMaxAggregateInputType = {
     id?: true
     dppId?: true
     productId?: true
-    qrRecordId?: true
-    activatedBy?: true
+    status?: true
     activatedAt?: true
     ipAddress?: true
     deviceInfo?: true
-    status?: true
+    activatedBy?: true
+    qrRecordId?: true
   }
 
   export type ActivationRecordCountAggregateInputType = {
     id?: true
     dppId?: true
     productId?: true
-    qrRecordId?: true
-    activatedBy?: true
+    status?: true
     activatedAt?: true
     ipAddress?: true
     deviceInfo?: true
-    status?: true
+    activatedBy?: true
+    qrRecordId?: true
     _all?: true
   }
 
@@ -2308,12 +1300,12 @@ export namespace Prisma {
     id: string
     dppId: string
     productId: string
-    qrRecordId: string | null
-    activatedBy: string | null
+    status: string
     activatedAt: Date
     ipAddress: string | null
     deviceInfo: string | null
-    status: string
+    activatedBy: string | null
+    qrRecordId: string | null
     _count: ActivationRecordCountAggregateOutputType | null
     _min: ActivationRecordMinAggregateOutputType | null
     _max: ActivationRecordMaxAggregateOutputType | null
@@ -2337,51 +1329,51 @@ export namespace Prisma {
     id?: boolean
     dppId?: boolean
     productId?: boolean
-    qrRecordId?: boolean
-    activatedBy?: boolean
+    status?: boolean
     activatedAt?: boolean
     ipAddress?: boolean
     deviceInfo?: boolean
-    status?: boolean
+    activatedBy?: boolean
+    qrRecordId?: boolean
   }, ExtArgs["result"]["activationRecord"]>
 
   export type ActivationRecordSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     dppId?: boolean
     productId?: boolean
-    qrRecordId?: boolean
-    activatedBy?: boolean
+    status?: boolean
     activatedAt?: boolean
     ipAddress?: boolean
     deviceInfo?: boolean
-    status?: boolean
+    activatedBy?: boolean
+    qrRecordId?: boolean
   }, ExtArgs["result"]["activationRecord"]>
 
   export type ActivationRecordSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     dppId?: boolean
     productId?: boolean
-    qrRecordId?: boolean
-    activatedBy?: boolean
+    status?: boolean
     activatedAt?: boolean
     ipAddress?: boolean
     deviceInfo?: boolean
-    status?: boolean
+    activatedBy?: boolean
+    qrRecordId?: boolean
   }, ExtArgs["result"]["activationRecord"]>
 
   export type ActivationRecordSelectScalar = {
     id?: boolean
     dppId?: boolean
     productId?: boolean
-    qrRecordId?: boolean
-    activatedBy?: boolean
+    status?: boolean
     activatedAt?: boolean
     ipAddress?: boolean
     deviceInfo?: boolean
-    status?: boolean
+    activatedBy?: boolean
+    qrRecordId?: boolean
   }
 
-  export type ActivationRecordOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "dppId" | "productId" | "qrRecordId" | "activatedBy" | "activatedAt" | "ipAddress" | "deviceInfo" | "status", ExtArgs["result"]["activationRecord"]>
+  export type ActivationRecordOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "dppId" | "productId" | "status" | "activatedAt" | "ipAddress" | "deviceInfo" | "activatedBy" | "qrRecordId", ExtArgs["result"]["activationRecord"]>
 
   export type $ActivationRecordPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "ActivationRecord"
@@ -2390,12 +1382,12 @@ export namespace Prisma {
       id: string
       dppId: string
       productId: string
-      qrRecordId: string | null
-      activatedBy: string | null
+      status: string
       activatedAt: Date
       ipAddress: string | null
       deviceInfo: string | null
-      status: string
+      activatedBy: string | null
+      qrRecordId: string | null
     }, ExtArgs["result"]["activationRecord"]>
     composites: {}
   }
@@ -2822,12 +1814,12 @@ export namespace Prisma {
     readonly id: FieldRef<"ActivationRecord", 'String'>
     readonly dppId: FieldRef<"ActivationRecord", 'String'>
     readonly productId: FieldRef<"ActivationRecord", 'String'>
-    readonly qrRecordId: FieldRef<"ActivationRecord", 'String'>
-    readonly activatedBy: FieldRef<"ActivationRecord", 'String'>
+    readonly status: FieldRef<"ActivationRecord", 'String'>
     readonly activatedAt: FieldRef<"ActivationRecord", 'DateTime'>
     readonly ipAddress: FieldRef<"ActivationRecord", 'String'>
     readonly deviceInfo: FieldRef<"ActivationRecord", 'String'>
-    readonly status: FieldRef<"ActivationRecord", 'String'>
+    readonly activatedBy: FieldRef<"ActivationRecord", 'String'>
+    readonly qrRecordId: FieldRef<"ActivationRecord", 'String'>
   }
     
 
@@ -3212,13 +2204,13 @@ export namespace Prisma {
   }
 
   export type ProductSnapshotAvgAggregateOutputType = {
-    trustScore: number | null
     conditionScore: number | null
+    trustScore: number | null
   }
 
   export type ProductSnapshotSumAggregateOutputType = {
-    trustScore: number | null
     conditionScore: number | null
+    trustScore: number | null
   }
 
   export type ProductSnapshotMinAggregateOutputType = {
@@ -3230,11 +2222,11 @@ export namespace Prisma {
     brand: string | null
     model: string | null
     serialNumber: string | null
-    owner: string | null
-    trustScore: number | null
-    conditionScore: number | null
     status: string | null
     createdAt: Date | null
+    conditionScore: number | null
+    owner: string | null
+    trustScore: number | null
     updatedAt: Date | null
   }
 
@@ -3247,11 +2239,11 @@ export namespace Prisma {
     brand: string | null
     model: string | null
     serialNumber: string | null
-    owner: string | null
-    trustScore: number | null
-    conditionScore: number | null
     status: string | null
     createdAt: Date | null
+    conditionScore: number | null
+    owner: string | null
+    trustScore: number | null
     updatedAt: Date | null
   }
 
@@ -3264,24 +2256,24 @@ export namespace Prisma {
     brand: number
     model: number
     serialNumber: number
-    owner: number
-    trustScore: number
-    conditionScore: number
     status: number
     createdAt: number
+    conditionScore: number
+    owner: number
+    trustScore: number
     updatedAt: number
     _all: number
   }
 
 
   export type ProductSnapshotAvgAggregateInputType = {
-    trustScore?: true
     conditionScore?: true
+    trustScore?: true
   }
 
   export type ProductSnapshotSumAggregateInputType = {
-    trustScore?: true
     conditionScore?: true
+    trustScore?: true
   }
 
   export type ProductSnapshotMinAggregateInputType = {
@@ -3293,11 +2285,11 @@ export namespace Prisma {
     brand?: true
     model?: true
     serialNumber?: true
-    owner?: true
-    trustScore?: true
-    conditionScore?: true
     status?: true
     createdAt?: true
+    conditionScore?: true
+    owner?: true
+    trustScore?: true
     updatedAt?: true
   }
 
@@ -3310,11 +2302,11 @@ export namespace Prisma {
     brand?: true
     model?: true
     serialNumber?: true
-    owner?: true
-    trustScore?: true
-    conditionScore?: true
     status?: true
     createdAt?: true
+    conditionScore?: true
+    owner?: true
+    trustScore?: true
     updatedAt?: true
   }
 
@@ -3327,11 +2319,11 @@ export namespace Prisma {
     brand?: true
     model?: true
     serialNumber?: true
-    owner?: true
-    trustScore?: true
-    conditionScore?: true
     status?: true
     createdAt?: true
+    conditionScore?: true
+    owner?: true
+    trustScore?: true
     updatedAt?: true
     _all?: true
   }
@@ -3431,11 +2423,11 @@ export namespace Prisma {
     brand: string | null
     model: string | null
     serialNumber: string | null
-    owner: string | null
-    trustScore: number | null
-    conditionScore: number | null
     status: string
     createdAt: Date
+    conditionScore: number | null
+    owner: string | null
+    trustScore: number | null
     updatedAt: Date
     _count: ProductSnapshotCountAggregateOutputType | null
     _avg: ProductSnapshotAvgAggregateOutputType | null
@@ -3467,11 +2459,11 @@ export namespace Prisma {
     brand?: boolean
     model?: boolean
     serialNumber?: boolean
-    owner?: boolean
-    trustScore?: boolean
-    conditionScore?: boolean
     status?: boolean
     createdAt?: boolean
+    conditionScore?: boolean
+    owner?: boolean
+    trustScore?: boolean
     updatedAt?: boolean
   }, ExtArgs["result"]["productSnapshot"]>
 
@@ -3484,11 +2476,11 @@ export namespace Prisma {
     brand?: boolean
     model?: boolean
     serialNumber?: boolean
-    owner?: boolean
-    trustScore?: boolean
-    conditionScore?: boolean
     status?: boolean
     createdAt?: boolean
+    conditionScore?: boolean
+    owner?: boolean
+    trustScore?: boolean
     updatedAt?: boolean
   }, ExtArgs["result"]["productSnapshot"]>
 
@@ -3501,11 +2493,11 @@ export namespace Prisma {
     brand?: boolean
     model?: boolean
     serialNumber?: boolean
-    owner?: boolean
-    trustScore?: boolean
-    conditionScore?: boolean
     status?: boolean
     createdAt?: boolean
+    conditionScore?: boolean
+    owner?: boolean
+    trustScore?: boolean
     updatedAt?: boolean
   }, ExtArgs["result"]["productSnapshot"]>
 
@@ -3518,15 +2510,15 @@ export namespace Prisma {
     brand?: boolean
     model?: boolean
     serialNumber?: boolean
-    owner?: boolean
-    trustScore?: boolean
-    conditionScore?: boolean
     status?: boolean
     createdAt?: boolean
+    conditionScore?: boolean
+    owner?: boolean
+    trustScore?: boolean
     updatedAt?: boolean
   }
 
-  export type ProductSnapshotOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "dppId" | "productId" | "productName" | "category" | "brand" | "model" | "serialNumber" | "owner" | "trustScore" | "conditionScore" | "status" | "createdAt" | "updatedAt", ExtArgs["result"]["productSnapshot"]>
+  export type ProductSnapshotOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "dppId" | "productId" | "productName" | "category" | "brand" | "model" | "serialNumber" | "status" | "createdAt" | "conditionScore" | "owner" | "trustScore" | "updatedAt", ExtArgs["result"]["productSnapshot"]>
 
   export type $ProductSnapshotPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "ProductSnapshot"
@@ -3540,11 +2532,11 @@ export namespace Prisma {
       brand: string | null
       model: string | null
       serialNumber: string | null
-      owner: string | null
-      trustScore: number | null
-      conditionScore: number | null
       status: string
       createdAt: Date
+      conditionScore: number | null
+      owner: string | null
+      trustScore: number | null
       updatedAt: Date
     }, ExtArgs["result"]["productSnapshot"]>
     composites: {}
@@ -3977,11 +2969,11 @@ export namespace Prisma {
     readonly brand: FieldRef<"ProductSnapshot", 'String'>
     readonly model: FieldRef<"ProductSnapshot", 'String'>
     readonly serialNumber: FieldRef<"ProductSnapshot", 'String'>
-    readonly owner: FieldRef<"ProductSnapshot", 'String'>
-    readonly trustScore: FieldRef<"ProductSnapshot", 'Int'>
-    readonly conditionScore: FieldRef<"ProductSnapshot", 'Int'>
     readonly status: FieldRef<"ProductSnapshot", 'String'>
     readonly createdAt: FieldRef<"ProductSnapshot", 'DateTime'>
+    readonly conditionScore: FieldRef<"ProductSnapshot", 'Int'>
+    readonly owner: FieldRef<"ProductSnapshot", 'String'>
+    readonly trustScore: FieldRef<"ProductSnapshot", 'Int'>
     readonly updatedAt: FieldRef<"ProductSnapshot", 'DateTime'>
   }
     
@@ -4355,6 +3347,2157 @@ export namespace Prisma {
 
 
   /**
+   * Model QRRecord
+   */
+
+  export type AggregateQRRecord = {
+    _count: QRRecordCountAggregateOutputType | null
+    _avg: QRRecordAvgAggregateOutputType | null
+    _sum: QRRecordSumAggregateOutputType | null
+    _min: QRRecordMinAggregateOutputType | null
+    _max: QRRecordMaxAggregateOutputType | null
+  }
+
+  export type QRRecordAvgAggregateOutputType = {
+    scanCount: number | null
+  }
+
+  export type QRRecordSumAggregateOutputType = {
+    scanCount: number | null
+  }
+
+  export type QRRecordMinAggregateOutputType = {
+    id: string | null
+    dppId: string | null
+    productId: string | null
+    activationUrl: string | null
+    status: string | null
+    scanCount: number | null
+    generatedAt: Date | null
+    lastScannedAt: Date | null
+    qrHash: string | null
+    generatedBy: string | null
+  }
+
+  export type QRRecordMaxAggregateOutputType = {
+    id: string | null
+    dppId: string | null
+    productId: string | null
+    activationUrl: string | null
+    status: string | null
+    scanCount: number | null
+    generatedAt: Date | null
+    lastScannedAt: Date | null
+    qrHash: string | null
+    generatedBy: string | null
+  }
+
+  export type QRRecordCountAggregateOutputType = {
+    id: number
+    dppId: number
+    productId: number
+    activationUrl: number
+    status: number
+    scanCount: number
+    generatedAt: number
+    lastScannedAt: number
+    qrHash: number
+    generatedBy: number
+    _all: number
+  }
+
+
+  export type QRRecordAvgAggregateInputType = {
+    scanCount?: true
+  }
+
+  export type QRRecordSumAggregateInputType = {
+    scanCount?: true
+  }
+
+  export type QRRecordMinAggregateInputType = {
+    id?: true
+    dppId?: true
+    productId?: true
+    activationUrl?: true
+    status?: true
+    scanCount?: true
+    generatedAt?: true
+    lastScannedAt?: true
+    qrHash?: true
+    generatedBy?: true
+  }
+
+  export type QRRecordMaxAggregateInputType = {
+    id?: true
+    dppId?: true
+    productId?: true
+    activationUrl?: true
+    status?: true
+    scanCount?: true
+    generatedAt?: true
+    lastScannedAt?: true
+    qrHash?: true
+    generatedBy?: true
+  }
+
+  export type QRRecordCountAggregateInputType = {
+    id?: true
+    dppId?: true
+    productId?: true
+    activationUrl?: true
+    status?: true
+    scanCount?: true
+    generatedAt?: true
+    lastScannedAt?: true
+    qrHash?: true
+    generatedBy?: true
+    _all?: true
+  }
+
+  export type QRRecordAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which QRRecord to aggregate.
+     */
+    where?: QRRecordWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of QRRecords to fetch.
+     */
+    orderBy?: QRRecordOrderByWithRelationInput | QRRecordOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: QRRecordWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` QRRecords from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` QRRecords.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned QRRecords
+    **/
+    _count?: true | QRRecordCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: QRRecordAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: QRRecordSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: QRRecordMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: QRRecordMaxAggregateInputType
+  }
+
+  export type GetQRRecordAggregateType<T extends QRRecordAggregateArgs> = {
+        [P in keyof T & keyof AggregateQRRecord]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateQRRecord[P]>
+      : GetScalarType<T[P], AggregateQRRecord[P]>
+  }
+
+
+
+
+  export type QRRecordGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: QRRecordWhereInput
+    orderBy?: QRRecordOrderByWithAggregationInput | QRRecordOrderByWithAggregationInput[]
+    by: QRRecordScalarFieldEnum[] | QRRecordScalarFieldEnum
+    having?: QRRecordScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: QRRecordCountAggregateInputType | true
+    _avg?: QRRecordAvgAggregateInputType
+    _sum?: QRRecordSumAggregateInputType
+    _min?: QRRecordMinAggregateInputType
+    _max?: QRRecordMaxAggregateInputType
+  }
+
+  export type QRRecordGroupByOutputType = {
+    id: string
+    dppId: string
+    productId: string
+    activationUrl: string
+    status: string
+    scanCount: number
+    generatedAt: Date
+    lastScannedAt: Date | null
+    qrHash: string
+    generatedBy: string | null
+    _count: QRRecordCountAggregateOutputType | null
+    _avg: QRRecordAvgAggregateOutputType | null
+    _sum: QRRecordSumAggregateOutputType | null
+    _min: QRRecordMinAggregateOutputType | null
+    _max: QRRecordMaxAggregateOutputType | null
+  }
+
+  type GetQRRecordGroupByPayload<T extends QRRecordGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<QRRecordGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof QRRecordGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], QRRecordGroupByOutputType[P]>
+            : GetScalarType<T[P], QRRecordGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type QRRecordSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    dppId?: boolean
+    productId?: boolean
+    activationUrl?: boolean
+    status?: boolean
+    scanCount?: boolean
+    generatedAt?: boolean
+    lastScannedAt?: boolean
+    qrHash?: boolean
+    generatedBy?: boolean
+  }, ExtArgs["result"]["qRRecord"]>
+
+  export type QRRecordSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    dppId?: boolean
+    productId?: boolean
+    activationUrl?: boolean
+    status?: boolean
+    scanCount?: boolean
+    generatedAt?: boolean
+    lastScannedAt?: boolean
+    qrHash?: boolean
+    generatedBy?: boolean
+  }, ExtArgs["result"]["qRRecord"]>
+
+  export type QRRecordSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    dppId?: boolean
+    productId?: boolean
+    activationUrl?: boolean
+    status?: boolean
+    scanCount?: boolean
+    generatedAt?: boolean
+    lastScannedAt?: boolean
+    qrHash?: boolean
+    generatedBy?: boolean
+  }, ExtArgs["result"]["qRRecord"]>
+
+  export type QRRecordSelectScalar = {
+    id?: boolean
+    dppId?: boolean
+    productId?: boolean
+    activationUrl?: boolean
+    status?: boolean
+    scanCount?: boolean
+    generatedAt?: boolean
+    lastScannedAt?: boolean
+    qrHash?: boolean
+    generatedBy?: boolean
+  }
+
+  export type QRRecordOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "dppId" | "productId" | "activationUrl" | "status" | "scanCount" | "generatedAt" | "lastScannedAt" | "qrHash" | "generatedBy", ExtArgs["result"]["qRRecord"]>
+
+  export type $QRRecordPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "QRRecord"
+    objects: {}
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      dppId: string
+      productId: string
+      activationUrl: string
+      status: string
+      scanCount: number
+      generatedAt: Date
+      lastScannedAt: Date | null
+      qrHash: string
+      generatedBy: string | null
+    }, ExtArgs["result"]["qRRecord"]>
+    composites: {}
+  }
+
+  type QRRecordGetPayload<S extends boolean | null | undefined | QRRecordDefaultArgs> = $Result.GetResult<Prisma.$QRRecordPayload, S>
+
+  type QRRecordCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<QRRecordFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: QRRecordCountAggregateInputType | true
+    }
+
+  export interface QRRecordDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['QRRecord'], meta: { name: 'QRRecord' } }
+    /**
+     * Find zero or one QRRecord that matches the filter.
+     * @param {QRRecordFindUniqueArgs} args - Arguments to find a QRRecord
+     * @example
+     * // Get one QRRecord
+     * const qRRecord = await prisma.qRRecord.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends QRRecordFindUniqueArgs>(args: SelectSubset<T, QRRecordFindUniqueArgs<ExtArgs>>): Prisma__QRRecordClient<$Result.GetResult<Prisma.$QRRecordPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one QRRecord that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {QRRecordFindUniqueOrThrowArgs} args - Arguments to find a QRRecord
+     * @example
+     * // Get one QRRecord
+     * const qRRecord = await prisma.qRRecord.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends QRRecordFindUniqueOrThrowArgs>(args: SelectSubset<T, QRRecordFindUniqueOrThrowArgs<ExtArgs>>): Prisma__QRRecordClient<$Result.GetResult<Prisma.$QRRecordPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first QRRecord that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {QRRecordFindFirstArgs} args - Arguments to find a QRRecord
+     * @example
+     * // Get one QRRecord
+     * const qRRecord = await prisma.qRRecord.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends QRRecordFindFirstArgs>(args?: SelectSubset<T, QRRecordFindFirstArgs<ExtArgs>>): Prisma__QRRecordClient<$Result.GetResult<Prisma.$QRRecordPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first QRRecord that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {QRRecordFindFirstOrThrowArgs} args - Arguments to find a QRRecord
+     * @example
+     * // Get one QRRecord
+     * const qRRecord = await prisma.qRRecord.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends QRRecordFindFirstOrThrowArgs>(args?: SelectSubset<T, QRRecordFindFirstOrThrowArgs<ExtArgs>>): Prisma__QRRecordClient<$Result.GetResult<Prisma.$QRRecordPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more QRRecords that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {QRRecordFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all QRRecords
+     * const qRRecords = await prisma.qRRecord.findMany()
+     * 
+     * // Get first 10 QRRecords
+     * const qRRecords = await prisma.qRRecord.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const qRRecordWithIdOnly = await prisma.qRRecord.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends QRRecordFindManyArgs>(args?: SelectSubset<T, QRRecordFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$QRRecordPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a QRRecord.
+     * @param {QRRecordCreateArgs} args - Arguments to create a QRRecord.
+     * @example
+     * // Create one QRRecord
+     * const QRRecord = await prisma.qRRecord.create({
+     *   data: {
+     *     // ... data to create a QRRecord
+     *   }
+     * })
+     * 
+     */
+    create<T extends QRRecordCreateArgs>(args: SelectSubset<T, QRRecordCreateArgs<ExtArgs>>): Prisma__QRRecordClient<$Result.GetResult<Prisma.$QRRecordPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many QRRecords.
+     * @param {QRRecordCreateManyArgs} args - Arguments to create many QRRecords.
+     * @example
+     * // Create many QRRecords
+     * const qRRecord = await prisma.qRRecord.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends QRRecordCreateManyArgs>(args?: SelectSubset<T, QRRecordCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many QRRecords and returns the data saved in the database.
+     * @param {QRRecordCreateManyAndReturnArgs} args - Arguments to create many QRRecords.
+     * @example
+     * // Create many QRRecords
+     * const qRRecord = await prisma.qRRecord.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many QRRecords and only return the `id`
+     * const qRRecordWithIdOnly = await prisma.qRRecord.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends QRRecordCreateManyAndReturnArgs>(args?: SelectSubset<T, QRRecordCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$QRRecordPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a QRRecord.
+     * @param {QRRecordDeleteArgs} args - Arguments to delete one QRRecord.
+     * @example
+     * // Delete one QRRecord
+     * const QRRecord = await prisma.qRRecord.delete({
+     *   where: {
+     *     // ... filter to delete one QRRecord
+     *   }
+     * })
+     * 
+     */
+    delete<T extends QRRecordDeleteArgs>(args: SelectSubset<T, QRRecordDeleteArgs<ExtArgs>>): Prisma__QRRecordClient<$Result.GetResult<Prisma.$QRRecordPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one QRRecord.
+     * @param {QRRecordUpdateArgs} args - Arguments to update one QRRecord.
+     * @example
+     * // Update one QRRecord
+     * const qRRecord = await prisma.qRRecord.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends QRRecordUpdateArgs>(args: SelectSubset<T, QRRecordUpdateArgs<ExtArgs>>): Prisma__QRRecordClient<$Result.GetResult<Prisma.$QRRecordPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more QRRecords.
+     * @param {QRRecordDeleteManyArgs} args - Arguments to filter QRRecords to delete.
+     * @example
+     * // Delete a few QRRecords
+     * const { count } = await prisma.qRRecord.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends QRRecordDeleteManyArgs>(args?: SelectSubset<T, QRRecordDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more QRRecords.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {QRRecordUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many QRRecords
+     * const qRRecord = await prisma.qRRecord.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends QRRecordUpdateManyArgs>(args: SelectSubset<T, QRRecordUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more QRRecords and returns the data updated in the database.
+     * @param {QRRecordUpdateManyAndReturnArgs} args - Arguments to update many QRRecords.
+     * @example
+     * // Update many QRRecords
+     * const qRRecord = await prisma.qRRecord.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more QRRecords and only return the `id`
+     * const qRRecordWithIdOnly = await prisma.qRRecord.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends QRRecordUpdateManyAndReturnArgs>(args: SelectSubset<T, QRRecordUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$QRRecordPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one QRRecord.
+     * @param {QRRecordUpsertArgs} args - Arguments to update or create a QRRecord.
+     * @example
+     * // Update or create a QRRecord
+     * const qRRecord = await prisma.qRRecord.upsert({
+     *   create: {
+     *     // ... data to create a QRRecord
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the QRRecord we want to update
+     *   }
+     * })
+     */
+    upsert<T extends QRRecordUpsertArgs>(args: SelectSubset<T, QRRecordUpsertArgs<ExtArgs>>): Prisma__QRRecordClient<$Result.GetResult<Prisma.$QRRecordPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of QRRecords.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {QRRecordCountArgs} args - Arguments to filter QRRecords to count.
+     * @example
+     * // Count the number of QRRecords
+     * const count = await prisma.qRRecord.count({
+     *   where: {
+     *     // ... the filter for the QRRecords we want to count
+     *   }
+     * })
+    **/
+    count<T extends QRRecordCountArgs>(
+      args?: Subset<T, QRRecordCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], QRRecordCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a QRRecord.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {QRRecordAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends QRRecordAggregateArgs>(args: Subset<T, QRRecordAggregateArgs>): Prisma.PrismaPromise<GetQRRecordAggregateType<T>>
+
+    /**
+     * Group by QRRecord.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {QRRecordGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends QRRecordGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: QRRecordGroupByArgs['orderBy'] }
+        : { orderBy?: QRRecordGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, QRRecordGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetQRRecordGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the QRRecord model
+   */
+  readonly fields: QRRecordFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for QRRecord.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__QRRecordClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the QRRecord model
+   */
+  interface QRRecordFieldRefs {
+    readonly id: FieldRef<"QRRecord", 'String'>
+    readonly dppId: FieldRef<"QRRecord", 'String'>
+    readonly productId: FieldRef<"QRRecord", 'String'>
+    readonly activationUrl: FieldRef<"QRRecord", 'String'>
+    readonly status: FieldRef<"QRRecord", 'String'>
+    readonly scanCount: FieldRef<"QRRecord", 'Int'>
+    readonly generatedAt: FieldRef<"QRRecord", 'DateTime'>
+    readonly lastScannedAt: FieldRef<"QRRecord", 'DateTime'>
+    readonly qrHash: FieldRef<"QRRecord", 'String'>
+    readonly generatedBy: FieldRef<"QRRecord", 'String'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * QRRecord findUnique
+   */
+  export type QRRecordFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the QRRecord
+     */
+    select?: QRRecordSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the QRRecord
+     */
+    omit?: QRRecordOmit<ExtArgs> | null
+    /**
+     * Filter, which QRRecord to fetch.
+     */
+    where: QRRecordWhereUniqueInput
+  }
+
+  /**
+   * QRRecord findUniqueOrThrow
+   */
+  export type QRRecordFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the QRRecord
+     */
+    select?: QRRecordSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the QRRecord
+     */
+    omit?: QRRecordOmit<ExtArgs> | null
+    /**
+     * Filter, which QRRecord to fetch.
+     */
+    where: QRRecordWhereUniqueInput
+  }
+
+  /**
+   * QRRecord findFirst
+   */
+  export type QRRecordFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the QRRecord
+     */
+    select?: QRRecordSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the QRRecord
+     */
+    omit?: QRRecordOmit<ExtArgs> | null
+    /**
+     * Filter, which QRRecord to fetch.
+     */
+    where?: QRRecordWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of QRRecords to fetch.
+     */
+    orderBy?: QRRecordOrderByWithRelationInput | QRRecordOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for QRRecords.
+     */
+    cursor?: QRRecordWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` QRRecords from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` QRRecords.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of QRRecords.
+     */
+    distinct?: QRRecordScalarFieldEnum | QRRecordScalarFieldEnum[]
+  }
+
+  /**
+   * QRRecord findFirstOrThrow
+   */
+  export type QRRecordFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the QRRecord
+     */
+    select?: QRRecordSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the QRRecord
+     */
+    omit?: QRRecordOmit<ExtArgs> | null
+    /**
+     * Filter, which QRRecord to fetch.
+     */
+    where?: QRRecordWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of QRRecords to fetch.
+     */
+    orderBy?: QRRecordOrderByWithRelationInput | QRRecordOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for QRRecords.
+     */
+    cursor?: QRRecordWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` QRRecords from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` QRRecords.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of QRRecords.
+     */
+    distinct?: QRRecordScalarFieldEnum | QRRecordScalarFieldEnum[]
+  }
+
+  /**
+   * QRRecord findMany
+   */
+  export type QRRecordFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the QRRecord
+     */
+    select?: QRRecordSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the QRRecord
+     */
+    omit?: QRRecordOmit<ExtArgs> | null
+    /**
+     * Filter, which QRRecords to fetch.
+     */
+    where?: QRRecordWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of QRRecords to fetch.
+     */
+    orderBy?: QRRecordOrderByWithRelationInput | QRRecordOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing QRRecords.
+     */
+    cursor?: QRRecordWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` QRRecords from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` QRRecords.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of QRRecords.
+     */
+    distinct?: QRRecordScalarFieldEnum | QRRecordScalarFieldEnum[]
+  }
+
+  /**
+   * QRRecord create
+   */
+  export type QRRecordCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the QRRecord
+     */
+    select?: QRRecordSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the QRRecord
+     */
+    omit?: QRRecordOmit<ExtArgs> | null
+    /**
+     * The data needed to create a QRRecord.
+     */
+    data: XOR<QRRecordCreateInput, QRRecordUncheckedCreateInput>
+  }
+
+  /**
+   * QRRecord createMany
+   */
+  export type QRRecordCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many QRRecords.
+     */
+    data: QRRecordCreateManyInput | QRRecordCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * QRRecord createManyAndReturn
+   */
+  export type QRRecordCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the QRRecord
+     */
+    select?: QRRecordSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the QRRecord
+     */
+    omit?: QRRecordOmit<ExtArgs> | null
+    /**
+     * The data used to create many QRRecords.
+     */
+    data: QRRecordCreateManyInput | QRRecordCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * QRRecord update
+   */
+  export type QRRecordUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the QRRecord
+     */
+    select?: QRRecordSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the QRRecord
+     */
+    omit?: QRRecordOmit<ExtArgs> | null
+    /**
+     * The data needed to update a QRRecord.
+     */
+    data: XOR<QRRecordUpdateInput, QRRecordUncheckedUpdateInput>
+    /**
+     * Choose, which QRRecord to update.
+     */
+    where: QRRecordWhereUniqueInput
+  }
+
+  /**
+   * QRRecord updateMany
+   */
+  export type QRRecordUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update QRRecords.
+     */
+    data: XOR<QRRecordUpdateManyMutationInput, QRRecordUncheckedUpdateManyInput>
+    /**
+     * Filter which QRRecords to update
+     */
+    where?: QRRecordWhereInput
+    /**
+     * Limit how many QRRecords to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * QRRecord updateManyAndReturn
+   */
+  export type QRRecordUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the QRRecord
+     */
+    select?: QRRecordSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the QRRecord
+     */
+    omit?: QRRecordOmit<ExtArgs> | null
+    /**
+     * The data used to update QRRecords.
+     */
+    data: XOR<QRRecordUpdateManyMutationInput, QRRecordUncheckedUpdateManyInput>
+    /**
+     * Filter which QRRecords to update
+     */
+    where?: QRRecordWhereInput
+    /**
+     * Limit how many QRRecords to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * QRRecord upsert
+   */
+  export type QRRecordUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the QRRecord
+     */
+    select?: QRRecordSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the QRRecord
+     */
+    omit?: QRRecordOmit<ExtArgs> | null
+    /**
+     * The filter to search for the QRRecord to update in case it exists.
+     */
+    where: QRRecordWhereUniqueInput
+    /**
+     * In case the QRRecord found by the `where` argument doesn't exist, create a new QRRecord with this data.
+     */
+    create: XOR<QRRecordCreateInput, QRRecordUncheckedCreateInput>
+    /**
+     * In case the QRRecord was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<QRRecordUpdateInput, QRRecordUncheckedUpdateInput>
+  }
+
+  /**
+   * QRRecord delete
+   */
+  export type QRRecordDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the QRRecord
+     */
+    select?: QRRecordSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the QRRecord
+     */
+    omit?: QRRecordOmit<ExtArgs> | null
+    /**
+     * Filter which QRRecord to delete.
+     */
+    where: QRRecordWhereUniqueInput
+  }
+
+  /**
+   * QRRecord deleteMany
+   */
+  export type QRRecordDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which QRRecords to delete
+     */
+    where?: QRRecordWhereInput
+    /**
+     * Limit how many QRRecords to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * QRRecord without action
+   */
+  export type QRRecordDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the QRRecord
+     */
+    select?: QRRecordSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the QRRecord
+     */
+    omit?: QRRecordOmit<ExtArgs> | null
+  }
+
+
+  /**
+   * Model QRInventory
+   */
+
+  export type AggregateQRInventory = {
+    _count: QRInventoryCountAggregateOutputType | null
+    _min: QRInventoryMinAggregateOutputType | null
+    _max: QRInventoryMaxAggregateOutputType | null
+  }
+
+  export type QRInventoryMinAggregateOutputType = {
+    id: string | null
+    dppId: string | null
+    status: string | null
+    category: string | null
+    name: string | null
+    brand: string | null
+    model: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type QRInventoryMaxAggregateOutputType = {
+    id: string | null
+    dppId: string | null
+    status: string | null
+    category: string | null
+    name: string | null
+    brand: string | null
+    model: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type QRInventoryCountAggregateOutputType = {
+    id: number
+    dppId: number
+    status: number
+    category: number
+    name: number
+    brand: number
+    model: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type QRInventoryMinAggregateInputType = {
+    id?: true
+    dppId?: true
+    status?: true
+    category?: true
+    name?: true
+    brand?: true
+    model?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type QRInventoryMaxAggregateInputType = {
+    id?: true
+    dppId?: true
+    status?: true
+    category?: true
+    name?: true
+    brand?: true
+    model?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type QRInventoryCountAggregateInputType = {
+    id?: true
+    dppId?: true
+    status?: true
+    category?: true
+    name?: true
+    brand?: true
+    model?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type QRInventoryAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which QRInventory to aggregate.
+     */
+    where?: QRInventoryWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of QRInventories to fetch.
+     */
+    orderBy?: QRInventoryOrderByWithRelationInput | QRInventoryOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: QRInventoryWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` QRInventories from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` QRInventories.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned QRInventories
+    **/
+    _count?: true | QRInventoryCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: QRInventoryMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: QRInventoryMaxAggregateInputType
+  }
+
+  export type GetQRInventoryAggregateType<T extends QRInventoryAggregateArgs> = {
+        [P in keyof T & keyof AggregateQRInventory]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateQRInventory[P]>
+      : GetScalarType<T[P], AggregateQRInventory[P]>
+  }
+
+
+
+
+  export type QRInventoryGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: QRInventoryWhereInput
+    orderBy?: QRInventoryOrderByWithAggregationInput | QRInventoryOrderByWithAggregationInput[]
+    by: QRInventoryScalarFieldEnum[] | QRInventoryScalarFieldEnum
+    having?: QRInventoryScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: QRInventoryCountAggregateInputType | true
+    _min?: QRInventoryMinAggregateInputType
+    _max?: QRInventoryMaxAggregateInputType
+  }
+
+  export type QRInventoryGroupByOutputType = {
+    id: string
+    dppId: string
+    status: string
+    category: string | null
+    name: string | null
+    brand: string | null
+    model: string | null
+    createdAt: Date
+    updatedAt: Date
+    _count: QRInventoryCountAggregateOutputType | null
+    _min: QRInventoryMinAggregateOutputType | null
+    _max: QRInventoryMaxAggregateOutputType | null
+  }
+
+  type GetQRInventoryGroupByPayload<T extends QRInventoryGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<QRInventoryGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof QRInventoryGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], QRInventoryGroupByOutputType[P]>
+            : GetScalarType<T[P], QRInventoryGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type QRInventorySelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    dppId?: boolean
+    status?: boolean
+    category?: boolean
+    name?: boolean
+    brand?: boolean
+    model?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["qRInventory"]>
+
+  export type QRInventorySelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    dppId?: boolean
+    status?: boolean
+    category?: boolean
+    name?: boolean
+    brand?: boolean
+    model?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["qRInventory"]>
+
+  export type QRInventorySelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    dppId?: boolean
+    status?: boolean
+    category?: boolean
+    name?: boolean
+    brand?: boolean
+    model?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["qRInventory"]>
+
+  export type QRInventorySelectScalar = {
+    id?: boolean
+    dppId?: boolean
+    status?: boolean
+    category?: boolean
+    name?: boolean
+    brand?: boolean
+    model?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type QRInventoryOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "dppId" | "status" | "category" | "name" | "brand" | "model" | "createdAt" | "updatedAt", ExtArgs["result"]["qRInventory"]>
+
+  export type $QRInventoryPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "QRInventory"
+    objects: {}
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      dppId: string
+      status: string
+      category: string | null
+      name: string | null
+      brand: string | null
+      model: string | null
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["qRInventory"]>
+    composites: {}
+  }
+
+  type QRInventoryGetPayload<S extends boolean | null | undefined | QRInventoryDefaultArgs> = $Result.GetResult<Prisma.$QRInventoryPayload, S>
+
+  type QRInventoryCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<QRInventoryFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: QRInventoryCountAggregateInputType | true
+    }
+
+  export interface QRInventoryDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['QRInventory'], meta: { name: 'QRInventory' } }
+    /**
+     * Find zero or one QRInventory that matches the filter.
+     * @param {QRInventoryFindUniqueArgs} args - Arguments to find a QRInventory
+     * @example
+     * // Get one QRInventory
+     * const qRInventory = await prisma.qRInventory.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends QRInventoryFindUniqueArgs>(args: SelectSubset<T, QRInventoryFindUniqueArgs<ExtArgs>>): Prisma__QRInventoryClient<$Result.GetResult<Prisma.$QRInventoryPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one QRInventory that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {QRInventoryFindUniqueOrThrowArgs} args - Arguments to find a QRInventory
+     * @example
+     * // Get one QRInventory
+     * const qRInventory = await prisma.qRInventory.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends QRInventoryFindUniqueOrThrowArgs>(args: SelectSubset<T, QRInventoryFindUniqueOrThrowArgs<ExtArgs>>): Prisma__QRInventoryClient<$Result.GetResult<Prisma.$QRInventoryPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first QRInventory that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {QRInventoryFindFirstArgs} args - Arguments to find a QRInventory
+     * @example
+     * // Get one QRInventory
+     * const qRInventory = await prisma.qRInventory.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends QRInventoryFindFirstArgs>(args?: SelectSubset<T, QRInventoryFindFirstArgs<ExtArgs>>): Prisma__QRInventoryClient<$Result.GetResult<Prisma.$QRInventoryPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first QRInventory that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {QRInventoryFindFirstOrThrowArgs} args - Arguments to find a QRInventory
+     * @example
+     * // Get one QRInventory
+     * const qRInventory = await prisma.qRInventory.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends QRInventoryFindFirstOrThrowArgs>(args?: SelectSubset<T, QRInventoryFindFirstOrThrowArgs<ExtArgs>>): Prisma__QRInventoryClient<$Result.GetResult<Prisma.$QRInventoryPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more QRInventories that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {QRInventoryFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all QRInventories
+     * const qRInventories = await prisma.qRInventory.findMany()
+     * 
+     * // Get first 10 QRInventories
+     * const qRInventories = await prisma.qRInventory.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const qRInventoryWithIdOnly = await prisma.qRInventory.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends QRInventoryFindManyArgs>(args?: SelectSubset<T, QRInventoryFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$QRInventoryPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a QRInventory.
+     * @param {QRInventoryCreateArgs} args - Arguments to create a QRInventory.
+     * @example
+     * // Create one QRInventory
+     * const QRInventory = await prisma.qRInventory.create({
+     *   data: {
+     *     // ... data to create a QRInventory
+     *   }
+     * })
+     * 
+     */
+    create<T extends QRInventoryCreateArgs>(args: SelectSubset<T, QRInventoryCreateArgs<ExtArgs>>): Prisma__QRInventoryClient<$Result.GetResult<Prisma.$QRInventoryPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many QRInventories.
+     * @param {QRInventoryCreateManyArgs} args - Arguments to create many QRInventories.
+     * @example
+     * // Create many QRInventories
+     * const qRInventory = await prisma.qRInventory.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends QRInventoryCreateManyArgs>(args?: SelectSubset<T, QRInventoryCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many QRInventories and returns the data saved in the database.
+     * @param {QRInventoryCreateManyAndReturnArgs} args - Arguments to create many QRInventories.
+     * @example
+     * // Create many QRInventories
+     * const qRInventory = await prisma.qRInventory.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many QRInventories and only return the `id`
+     * const qRInventoryWithIdOnly = await prisma.qRInventory.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends QRInventoryCreateManyAndReturnArgs>(args?: SelectSubset<T, QRInventoryCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$QRInventoryPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a QRInventory.
+     * @param {QRInventoryDeleteArgs} args - Arguments to delete one QRInventory.
+     * @example
+     * // Delete one QRInventory
+     * const QRInventory = await prisma.qRInventory.delete({
+     *   where: {
+     *     // ... filter to delete one QRInventory
+     *   }
+     * })
+     * 
+     */
+    delete<T extends QRInventoryDeleteArgs>(args: SelectSubset<T, QRInventoryDeleteArgs<ExtArgs>>): Prisma__QRInventoryClient<$Result.GetResult<Prisma.$QRInventoryPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one QRInventory.
+     * @param {QRInventoryUpdateArgs} args - Arguments to update one QRInventory.
+     * @example
+     * // Update one QRInventory
+     * const qRInventory = await prisma.qRInventory.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends QRInventoryUpdateArgs>(args: SelectSubset<T, QRInventoryUpdateArgs<ExtArgs>>): Prisma__QRInventoryClient<$Result.GetResult<Prisma.$QRInventoryPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more QRInventories.
+     * @param {QRInventoryDeleteManyArgs} args - Arguments to filter QRInventories to delete.
+     * @example
+     * // Delete a few QRInventories
+     * const { count } = await prisma.qRInventory.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends QRInventoryDeleteManyArgs>(args?: SelectSubset<T, QRInventoryDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more QRInventories.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {QRInventoryUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many QRInventories
+     * const qRInventory = await prisma.qRInventory.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends QRInventoryUpdateManyArgs>(args: SelectSubset<T, QRInventoryUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more QRInventories and returns the data updated in the database.
+     * @param {QRInventoryUpdateManyAndReturnArgs} args - Arguments to update many QRInventories.
+     * @example
+     * // Update many QRInventories
+     * const qRInventory = await prisma.qRInventory.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more QRInventories and only return the `id`
+     * const qRInventoryWithIdOnly = await prisma.qRInventory.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends QRInventoryUpdateManyAndReturnArgs>(args: SelectSubset<T, QRInventoryUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$QRInventoryPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one QRInventory.
+     * @param {QRInventoryUpsertArgs} args - Arguments to update or create a QRInventory.
+     * @example
+     * // Update or create a QRInventory
+     * const qRInventory = await prisma.qRInventory.upsert({
+     *   create: {
+     *     // ... data to create a QRInventory
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the QRInventory we want to update
+     *   }
+     * })
+     */
+    upsert<T extends QRInventoryUpsertArgs>(args: SelectSubset<T, QRInventoryUpsertArgs<ExtArgs>>): Prisma__QRInventoryClient<$Result.GetResult<Prisma.$QRInventoryPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of QRInventories.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {QRInventoryCountArgs} args - Arguments to filter QRInventories to count.
+     * @example
+     * // Count the number of QRInventories
+     * const count = await prisma.qRInventory.count({
+     *   where: {
+     *     // ... the filter for the QRInventories we want to count
+     *   }
+     * })
+    **/
+    count<T extends QRInventoryCountArgs>(
+      args?: Subset<T, QRInventoryCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], QRInventoryCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a QRInventory.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {QRInventoryAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends QRInventoryAggregateArgs>(args: Subset<T, QRInventoryAggregateArgs>): Prisma.PrismaPromise<GetQRInventoryAggregateType<T>>
+
+    /**
+     * Group by QRInventory.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {QRInventoryGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends QRInventoryGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: QRInventoryGroupByArgs['orderBy'] }
+        : { orderBy?: QRInventoryGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, QRInventoryGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetQRInventoryGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the QRInventory model
+   */
+  readonly fields: QRInventoryFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for QRInventory.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__QRInventoryClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the QRInventory model
+   */
+  interface QRInventoryFieldRefs {
+    readonly id: FieldRef<"QRInventory", 'String'>
+    readonly dppId: FieldRef<"QRInventory", 'String'>
+    readonly status: FieldRef<"QRInventory", 'String'>
+    readonly category: FieldRef<"QRInventory", 'String'>
+    readonly name: FieldRef<"QRInventory", 'String'>
+    readonly brand: FieldRef<"QRInventory", 'String'>
+    readonly model: FieldRef<"QRInventory", 'String'>
+    readonly createdAt: FieldRef<"QRInventory", 'DateTime'>
+    readonly updatedAt: FieldRef<"QRInventory", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * QRInventory findUnique
+   */
+  export type QRInventoryFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the QRInventory
+     */
+    select?: QRInventorySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the QRInventory
+     */
+    omit?: QRInventoryOmit<ExtArgs> | null
+    /**
+     * Filter, which QRInventory to fetch.
+     */
+    where: QRInventoryWhereUniqueInput
+  }
+
+  /**
+   * QRInventory findUniqueOrThrow
+   */
+  export type QRInventoryFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the QRInventory
+     */
+    select?: QRInventorySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the QRInventory
+     */
+    omit?: QRInventoryOmit<ExtArgs> | null
+    /**
+     * Filter, which QRInventory to fetch.
+     */
+    where: QRInventoryWhereUniqueInput
+  }
+
+  /**
+   * QRInventory findFirst
+   */
+  export type QRInventoryFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the QRInventory
+     */
+    select?: QRInventorySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the QRInventory
+     */
+    omit?: QRInventoryOmit<ExtArgs> | null
+    /**
+     * Filter, which QRInventory to fetch.
+     */
+    where?: QRInventoryWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of QRInventories to fetch.
+     */
+    orderBy?: QRInventoryOrderByWithRelationInput | QRInventoryOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for QRInventories.
+     */
+    cursor?: QRInventoryWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` QRInventories from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` QRInventories.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of QRInventories.
+     */
+    distinct?: QRInventoryScalarFieldEnum | QRInventoryScalarFieldEnum[]
+  }
+
+  /**
+   * QRInventory findFirstOrThrow
+   */
+  export type QRInventoryFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the QRInventory
+     */
+    select?: QRInventorySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the QRInventory
+     */
+    omit?: QRInventoryOmit<ExtArgs> | null
+    /**
+     * Filter, which QRInventory to fetch.
+     */
+    where?: QRInventoryWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of QRInventories to fetch.
+     */
+    orderBy?: QRInventoryOrderByWithRelationInput | QRInventoryOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for QRInventories.
+     */
+    cursor?: QRInventoryWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` QRInventories from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` QRInventories.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of QRInventories.
+     */
+    distinct?: QRInventoryScalarFieldEnum | QRInventoryScalarFieldEnum[]
+  }
+
+  /**
+   * QRInventory findMany
+   */
+  export type QRInventoryFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the QRInventory
+     */
+    select?: QRInventorySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the QRInventory
+     */
+    omit?: QRInventoryOmit<ExtArgs> | null
+    /**
+     * Filter, which QRInventories to fetch.
+     */
+    where?: QRInventoryWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of QRInventories to fetch.
+     */
+    orderBy?: QRInventoryOrderByWithRelationInput | QRInventoryOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing QRInventories.
+     */
+    cursor?: QRInventoryWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` QRInventories from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` QRInventories.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of QRInventories.
+     */
+    distinct?: QRInventoryScalarFieldEnum | QRInventoryScalarFieldEnum[]
+  }
+
+  /**
+   * QRInventory create
+   */
+  export type QRInventoryCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the QRInventory
+     */
+    select?: QRInventorySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the QRInventory
+     */
+    omit?: QRInventoryOmit<ExtArgs> | null
+    /**
+     * The data needed to create a QRInventory.
+     */
+    data: XOR<QRInventoryCreateInput, QRInventoryUncheckedCreateInput>
+  }
+
+  /**
+   * QRInventory createMany
+   */
+  export type QRInventoryCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many QRInventories.
+     */
+    data: QRInventoryCreateManyInput | QRInventoryCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * QRInventory createManyAndReturn
+   */
+  export type QRInventoryCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the QRInventory
+     */
+    select?: QRInventorySelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the QRInventory
+     */
+    omit?: QRInventoryOmit<ExtArgs> | null
+    /**
+     * The data used to create many QRInventories.
+     */
+    data: QRInventoryCreateManyInput | QRInventoryCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * QRInventory update
+   */
+  export type QRInventoryUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the QRInventory
+     */
+    select?: QRInventorySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the QRInventory
+     */
+    omit?: QRInventoryOmit<ExtArgs> | null
+    /**
+     * The data needed to update a QRInventory.
+     */
+    data: XOR<QRInventoryUpdateInput, QRInventoryUncheckedUpdateInput>
+    /**
+     * Choose, which QRInventory to update.
+     */
+    where: QRInventoryWhereUniqueInput
+  }
+
+  /**
+   * QRInventory updateMany
+   */
+  export type QRInventoryUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update QRInventories.
+     */
+    data: XOR<QRInventoryUpdateManyMutationInput, QRInventoryUncheckedUpdateManyInput>
+    /**
+     * Filter which QRInventories to update
+     */
+    where?: QRInventoryWhereInput
+    /**
+     * Limit how many QRInventories to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * QRInventory updateManyAndReturn
+   */
+  export type QRInventoryUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the QRInventory
+     */
+    select?: QRInventorySelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the QRInventory
+     */
+    omit?: QRInventoryOmit<ExtArgs> | null
+    /**
+     * The data used to update QRInventories.
+     */
+    data: XOR<QRInventoryUpdateManyMutationInput, QRInventoryUncheckedUpdateManyInput>
+    /**
+     * Filter which QRInventories to update
+     */
+    where?: QRInventoryWhereInput
+    /**
+     * Limit how many QRInventories to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * QRInventory upsert
+   */
+  export type QRInventoryUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the QRInventory
+     */
+    select?: QRInventorySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the QRInventory
+     */
+    omit?: QRInventoryOmit<ExtArgs> | null
+    /**
+     * The filter to search for the QRInventory to update in case it exists.
+     */
+    where: QRInventoryWhereUniqueInput
+    /**
+     * In case the QRInventory found by the `where` argument doesn't exist, create a new QRInventory with this data.
+     */
+    create: XOR<QRInventoryCreateInput, QRInventoryUncheckedCreateInput>
+    /**
+     * In case the QRInventory was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<QRInventoryUpdateInput, QRInventoryUncheckedUpdateInput>
+  }
+
+  /**
+   * QRInventory delete
+   */
+  export type QRInventoryDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the QRInventory
+     */
+    select?: QRInventorySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the QRInventory
+     */
+    omit?: QRInventoryOmit<ExtArgs> | null
+    /**
+     * Filter which QRInventory to delete.
+     */
+    where: QRInventoryWhereUniqueInput
+  }
+
+  /**
+   * QRInventory deleteMany
+   */
+  export type QRInventoryDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which QRInventories to delete
+     */
+    where?: QRInventoryWhereInput
+    /**
+     * Limit how many QRInventories to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * QRInventory without action
+   */
+  export type QRInventoryDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the QRInventory
+     */
+    select?: QRInventorySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the QRInventory
+     */
+    omit?: QRInventoryOmit<ExtArgs> | null
+  }
+
+
+  /**
    * Enums
    */
 
@@ -4368,32 +5511,16 @@ export namespace Prisma {
   export type TransactionIsolationLevel = (typeof TransactionIsolationLevel)[keyof typeof TransactionIsolationLevel]
 
 
-  export const QRRecordScalarFieldEnum: {
-    id: 'id',
-    dppId: 'dppId',
-    productId: 'productId',
-    activationUrl: 'activationUrl',
-    generatedBy: 'generatedBy',
-    generatedAt: 'generatedAt',
-    status: 'status',
-    scanCount: 'scanCount',
-    lastScannedAt: 'lastScannedAt',
-    qrHash: 'qrHash'
-  };
-
-  export type QRRecordScalarFieldEnum = (typeof QRRecordScalarFieldEnum)[keyof typeof QRRecordScalarFieldEnum]
-
-
   export const ActivationRecordScalarFieldEnum: {
     id: 'id',
     dppId: 'dppId',
     productId: 'productId',
-    qrRecordId: 'qrRecordId',
-    activatedBy: 'activatedBy',
+    status: 'status',
     activatedAt: 'activatedAt',
     ipAddress: 'ipAddress',
     deviceInfo: 'deviceInfo',
-    status: 'status'
+    activatedBy: 'activatedBy',
+    qrRecordId: 'qrRecordId'
   };
 
   export type ActivationRecordScalarFieldEnum = (typeof ActivationRecordScalarFieldEnum)[keyof typeof ActivationRecordScalarFieldEnum]
@@ -4408,15 +5535,46 @@ export namespace Prisma {
     brand: 'brand',
     model: 'model',
     serialNumber: 'serialNumber',
-    owner: 'owner',
-    trustScore: 'trustScore',
-    conditionScore: 'conditionScore',
     status: 'status',
     createdAt: 'createdAt',
+    conditionScore: 'conditionScore',
+    owner: 'owner',
+    trustScore: 'trustScore',
     updatedAt: 'updatedAt'
   };
 
   export type ProductSnapshotScalarFieldEnum = (typeof ProductSnapshotScalarFieldEnum)[keyof typeof ProductSnapshotScalarFieldEnum]
+
+
+  export const QRRecordScalarFieldEnum: {
+    id: 'id',
+    dppId: 'dppId',
+    productId: 'productId',
+    activationUrl: 'activationUrl',
+    status: 'status',
+    scanCount: 'scanCount',
+    generatedAt: 'generatedAt',
+    lastScannedAt: 'lastScannedAt',
+    qrHash: 'qrHash',
+    generatedBy: 'generatedBy'
+  };
+
+  export type QRRecordScalarFieldEnum = (typeof QRRecordScalarFieldEnum)[keyof typeof QRRecordScalarFieldEnum]
+
+
+  export const QRInventoryScalarFieldEnum: {
+    id: 'id',
+    dppId: 'dppId',
+    status: 'status',
+    category: 'category',
+    name: 'name',
+    brand: 'brand',
+    model: 'model',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type QRInventoryScalarFieldEnum = (typeof QRInventoryScalarFieldEnum)[keyof typeof QRInventoryScalarFieldEnum]
 
 
   export const SortOrder: {
@@ -4507,85 +5665,6 @@ export namespace Prisma {
    */
 
 
-  export type QRRecordWhereInput = {
-    AND?: QRRecordWhereInput | QRRecordWhereInput[]
-    OR?: QRRecordWhereInput[]
-    NOT?: QRRecordWhereInput | QRRecordWhereInput[]
-    id?: StringFilter<"QRRecord"> | string
-    dppId?: StringFilter<"QRRecord"> | string
-    productId?: StringFilter<"QRRecord"> | string
-    activationUrl?: StringFilter<"QRRecord"> | string
-    generatedBy?: StringNullableFilter<"QRRecord"> | string | null
-    generatedAt?: DateTimeFilter<"QRRecord"> | Date | string
-    status?: StringFilter<"QRRecord"> | string
-    scanCount?: IntFilter<"QRRecord"> | number
-    lastScannedAt?: DateTimeNullableFilter<"QRRecord"> | Date | string | null
-    qrHash?: StringFilter<"QRRecord"> | string
-  }
-
-  export type QRRecordOrderByWithRelationInput = {
-    id?: SortOrder
-    dppId?: SortOrder
-    productId?: SortOrder
-    activationUrl?: SortOrder
-    generatedBy?: SortOrderInput | SortOrder
-    generatedAt?: SortOrder
-    status?: SortOrder
-    scanCount?: SortOrder
-    lastScannedAt?: SortOrderInput | SortOrder
-    qrHash?: SortOrder
-  }
-
-  export type QRRecordWhereUniqueInput = Prisma.AtLeast<{
-    id?: string
-    dppId?: string
-    AND?: QRRecordWhereInput | QRRecordWhereInput[]
-    OR?: QRRecordWhereInput[]
-    NOT?: QRRecordWhereInput | QRRecordWhereInput[]
-    productId?: StringFilter<"QRRecord"> | string
-    activationUrl?: StringFilter<"QRRecord"> | string
-    generatedBy?: StringNullableFilter<"QRRecord"> | string | null
-    generatedAt?: DateTimeFilter<"QRRecord"> | Date | string
-    status?: StringFilter<"QRRecord"> | string
-    scanCount?: IntFilter<"QRRecord"> | number
-    lastScannedAt?: DateTimeNullableFilter<"QRRecord"> | Date | string | null
-    qrHash?: StringFilter<"QRRecord"> | string
-  }, "id" | "dppId">
-
-  export type QRRecordOrderByWithAggregationInput = {
-    id?: SortOrder
-    dppId?: SortOrder
-    productId?: SortOrder
-    activationUrl?: SortOrder
-    generatedBy?: SortOrderInput | SortOrder
-    generatedAt?: SortOrder
-    status?: SortOrder
-    scanCount?: SortOrder
-    lastScannedAt?: SortOrderInput | SortOrder
-    qrHash?: SortOrder
-    _count?: QRRecordCountOrderByAggregateInput
-    _avg?: QRRecordAvgOrderByAggregateInput
-    _max?: QRRecordMaxOrderByAggregateInput
-    _min?: QRRecordMinOrderByAggregateInput
-    _sum?: QRRecordSumOrderByAggregateInput
-  }
-
-  export type QRRecordScalarWhereWithAggregatesInput = {
-    AND?: QRRecordScalarWhereWithAggregatesInput | QRRecordScalarWhereWithAggregatesInput[]
-    OR?: QRRecordScalarWhereWithAggregatesInput[]
-    NOT?: QRRecordScalarWhereWithAggregatesInput | QRRecordScalarWhereWithAggregatesInput[]
-    id?: StringWithAggregatesFilter<"QRRecord"> | string
-    dppId?: StringWithAggregatesFilter<"QRRecord"> | string
-    productId?: StringWithAggregatesFilter<"QRRecord"> | string
-    activationUrl?: StringWithAggregatesFilter<"QRRecord"> | string
-    generatedBy?: StringNullableWithAggregatesFilter<"QRRecord"> | string | null
-    generatedAt?: DateTimeWithAggregatesFilter<"QRRecord"> | Date | string
-    status?: StringWithAggregatesFilter<"QRRecord"> | string
-    scanCount?: IntWithAggregatesFilter<"QRRecord"> | number
-    lastScannedAt?: DateTimeNullableWithAggregatesFilter<"QRRecord"> | Date | string | null
-    qrHash?: StringWithAggregatesFilter<"QRRecord"> | string
-  }
-
   export type ActivationRecordWhereInput = {
     AND?: ActivationRecordWhereInput | ActivationRecordWhereInput[]
     OR?: ActivationRecordWhereInput[]
@@ -4593,24 +5672,24 @@ export namespace Prisma {
     id?: StringFilter<"ActivationRecord"> | string
     dppId?: StringFilter<"ActivationRecord"> | string
     productId?: StringFilter<"ActivationRecord"> | string
-    qrRecordId?: StringNullableFilter<"ActivationRecord"> | string | null
-    activatedBy?: StringNullableFilter<"ActivationRecord"> | string | null
+    status?: StringFilter<"ActivationRecord"> | string
     activatedAt?: DateTimeFilter<"ActivationRecord"> | Date | string
     ipAddress?: StringNullableFilter<"ActivationRecord"> | string | null
     deviceInfo?: StringNullableFilter<"ActivationRecord"> | string | null
-    status?: StringFilter<"ActivationRecord"> | string
+    activatedBy?: StringNullableFilter<"ActivationRecord"> | string | null
+    qrRecordId?: StringNullableFilter<"ActivationRecord"> | string | null
   }
 
   export type ActivationRecordOrderByWithRelationInput = {
     id?: SortOrder
     dppId?: SortOrder
     productId?: SortOrder
-    qrRecordId?: SortOrderInput | SortOrder
-    activatedBy?: SortOrderInput | SortOrder
+    status?: SortOrder
     activatedAt?: SortOrder
     ipAddress?: SortOrderInput | SortOrder
     deviceInfo?: SortOrderInput | SortOrder
-    status?: SortOrder
+    activatedBy?: SortOrderInput | SortOrder
+    qrRecordId?: SortOrderInput | SortOrder
   }
 
   export type ActivationRecordWhereUniqueInput = Prisma.AtLeast<{
@@ -4620,24 +5699,24 @@ export namespace Prisma {
     NOT?: ActivationRecordWhereInput | ActivationRecordWhereInput[]
     dppId?: StringFilter<"ActivationRecord"> | string
     productId?: StringFilter<"ActivationRecord"> | string
-    qrRecordId?: StringNullableFilter<"ActivationRecord"> | string | null
-    activatedBy?: StringNullableFilter<"ActivationRecord"> | string | null
+    status?: StringFilter<"ActivationRecord"> | string
     activatedAt?: DateTimeFilter<"ActivationRecord"> | Date | string
     ipAddress?: StringNullableFilter<"ActivationRecord"> | string | null
     deviceInfo?: StringNullableFilter<"ActivationRecord"> | string | null
-    status?: StringFilter<"ActivationRecord"> | string
+    activatedBy?: StringNullableFilter<"ActivationRecord"> | string | null
+    qrRecordId?: StringNullableFilter<"ActivationRecord"> | string | null
   }, "id">
 
   export type ActivationRecordOrderByWithAggregationInput = {
     id?: SortOrder
     dppId?: SortOrder
     productId?: SortOrder
-    qrRecordId?: SortOrderInput | SortOrder
-    activatedBy?: SortOrderInput | SortOrder
+    status?: SortOrder
     activatedAt?: SortOrder
     ipAddress?: SortOrderInput | SortOrder
     deviceInfo?: SortOrderInput | SortOrder
-    status?: SortOrder
+    activatedBy?: SortOrderInput | SortOrder
+    qrRecordId?: SortOrderInput | SortOrder
     _count?: ActivationRecordCountOrderByAggregateInput
     _max?: ActivationRecordMaxOrderByAggregateInput
     _min?: ActivationRecordMinOrderByAggregateInput
@@ -4650,12 +5729,12 @@ export namespace Prisma {
     id?: StringWithAggregatesFilter<"ActivationRecord"> | string
     dppId?: StringWithAggregatesFilter<"ActivationRecord"> | string
     productId?: StringWithAggregatesFilter<"ActivationRecord"> | string
-    qrRecordId?: StringNullableWithAggregatesFilter<"ActivationRecord"> | string | null
-    activatedBy?: StringNullableWithAggregatesFilter<"ActivationRecord"> | string | null
+    status?: StringWithAggregatesFilter<"ActivationRecord"> | string
     activatedAt?: DateTimeWithAggregatesFilter<"ActivationRecord"> | Date | string
     ipAddress?: StringNullableWithAggregatesFilter<"ActivationRecord"> | string | null
     deviceInfo?: StringNullableWithAggregatesFilter<"ActivationRecord"> | string | null
-    status?: StringWithAggregatesFilter<"ActivationRecord"> | string
+    activatedBy?: StringNullableWithAggregatesFilter<"ActivationRecord"> | string | null
+    qrRecordId?: StringNullableWithAggregatesFilter<"ActivationRecord"> | string | null
   }
 
   export type ProductSnapshotWhereInput = {
@@ -4670,11 +5749,11 @@ export namespace Prisma {
     brand?: StringNullableFilter<"ProductSnapshot"> | string | null
     model?: StringNullableFilter<"ProductSnapshot"> | string | null
     serialNumber?: StringNullableFilter<"ProductSnapshot"> | string | null
-    owner?: StringNullableFilter<"ProductSnapshot"> | string | null
-    trustScore?: IntNullableFilter<"ProductSnapshot"> | number | null
-    conditionScore?: IntNullableFilter<"ProductSnapshot"> | number | null
     status?: StringFilter<"ProductSnapshot"> | string
     createdAt?: DateTimeFilter<"ProductSnapshot"> | Date | string
+    conditionScore?: IntNullableFilter<"ProductSnapshot"> | number | null
+    owner?: StringNullableFilter<"ProductSnapshot"> | string | null
+    trustScore?: IntNullableFilter<"ProductSnapshot"> | number | null
     updatedAt?: DateTimeFilter<"ProductSnapshot"> | Date | string
   }
 
@@ -4687,11 +5766,11 @@ export namespace Prisma {
     brand?: SortOrderInput | SortOrder
     model?: SortOrderInput | SortOrder
     serialNumber?: SortOrderInput | SortOrder
-    owner?: SortOrderInput | SortOrder
-    trustScore?: SortOrderInput | SortOrder
-    conditionScore?: SortOrderInput | SortOrder
     status?: SortOrder
     createdAt?: SortOrder
+    conditionScore?: SortOrderInput | SortOrder
+    owner?: SortOrderInput | SortOrder
+    trustScore?: SortOrderInput | SortOrder
     updatedAt?: SortOrder
   }
 
@@ -4707,11 +5786,11 @@ export namespace Prisma {
     brand?: StringNullableFilter<"ProductSnapshot"> | string | null
     model?: StringNullableFilter<"ProductSnapshot"> | string | null
     serialNumber?: StringNullableFilter<"ProductSnapshot"> | string | null
-    owner?: StringNullableFilter<"ProductSnapshot"> | string | null
-    trustScore?: IntNullableFilter<"ProductSnapshot"> | number | null
-    conditionScore?: IntNullableFilter<"ProductSnapshot"> | number | null
     status?: StringFilter<"ProductSnapshot"> | string
     createdAt?: DateTimeFilter<"ProductSnapshot"> | Date | string
+    conditionScore?: IntNullableFilter<"ProductSnapshot"> | number | null
+    owner?: StringNullableFilter<"ProductSnapshot"> | string | null
+    trustScore?: IntNullableFilter<"ProductSnapshot"> | number | null
     updatedAt?: DateTimeFilter<"ProductSnapshot"> | Date | string
   }, "id" | "dppId">
 
@@ -4724,11 +5803,11 @@ export namespace Prisma {
     brand?: SortOrderInput | SortOrder
     model?: SortOrderInput | SortOrder
     serialNumber?: SortOrderInput | SortOrder
-    owner?: SortOrderInput | SortOrder
-    trustScore?: SortOrderInput | SortOrder
-    conditionScore?: SortOrderInput | SortOrder
     status?: SortOrder
     createdAt?: SortOrder
+    conditionScore?: SortOrderInput | SortOrder
+    owner?: SortOrderInput | SortOrder
+    trustScore?: SortOrderInput | SortOrder
     updatedAt?: SortOrder
     _count?: ProductSnapshotCountOrderByAggregateInput
     _avg?: ProductSnapshotAvgOrderByAggregateInput
@@ -4749,187 +5828,247 @@ export namespace Prisma {
     brand?: StringNullableWithAggregatesFilter<"ProductSnapshot"> | string | null
     model?: StringNullableWithAggregatesFilter<"ProductSnapshot"> | string | null
     serialNumber?: StringNullableWithAggregatesFilter<"ProductSnapshot"> | string | null
-    owner?: StringNullableWithAggregatesFilter<"ProductSnapshot"> | string | null
-    trustScore?: IntNullableWithAggregatesFilter<"ProductSnapshot"> | number | null
-    conditionScore?: IntNullableWithAggregatesFilter<"ProductSnapshot"> | number | null
     status?: StringWithAggregatesFilter<"ProductSnapshot"> | string
     createdAt?: DateTimeWithAggregatesFilter<"ProductSnapshot"> | Date | string
+    conditionScore?: IntNullableWithAggregatesFilter<"ProductSnapshot"> | number | null
+    owner?: StringNullableWithAggregatesFilter<"ProductSnapshot"> | string | null
+    trustScore?: IntNullableWithAggregatesFilter<"ProductSnapshot"> | number | null
     updatedAt?: DateTimeWithAggregatesFilter<"ProductSnapshot"> | Date | string
   }
 
-  export type QRRecordCreateInput = {
+  export type QRRecordWhereInput = {
+    AND?: QRRecordWhereInput | QRRecordWhereInput[]
+    OR?: QRRecordWhereInput[]
+    NOT?: QRRecordWhereInput | QRRecordWhereInput[]
+    id?: StringFilter<"QRRecord"> | string
+    dppId?: StringFilter<"QRRecord"> | string
+    productId?: StringFilter<"QRRecord"> | string
+    activationUrl?: StringFilter<"QRRecord"> | string
+    status?: StringFilter<"QRRecord"> | string
+    scanCount?: IntFilter<"QRRecord"> | number
+    generatedAt?: DateTimeFilter<"QRRecord"> | Date | string
+    lastScannedAt?: DateTimeNullableFilter<"QRRecord"> | Date | string | null
+    qrHash?: StringFilter<"QRRecord"> | string
+    generatedBy?: StringNullableFilter<"QRRecord"> | string | null
+  }
+
+  export type QRRecordOrderByWithRelationInput = {
+    id?: SortOrder
+    dppId?: SortOrder
+    productId?: SortOrder
+    activationUrl?: SortOrder
+    status?: SortOrder
+    scanCount?: SortOrder
+    generatedAt?: SortOrder
+    lastScannedAt?: SortOrderInput | SortOrder
+    qrHash?: SortOrder
+    generatedBy?: SortOrderInput | SortOrder
+  }
+
+  export type QRRecordWhereUniqueInput = Prisma.AtLeast<{
     id?: string
-    dppId: string
-    productId: string
-    activationUrl: string
-    generatedBy?: string | null
-    generatedAt?: Date | string
-    status: string
-    scanCount?: number
-    lastScannedAt?: Date | string | null
-    qrHash: string
+    dppId?: string
+    AND?: QRRecordWhereInput | QRRecordWhereInput[]
+    OR?: QRRecordWhereInput[]
+    NOT?: QRRecordWhereInput | QRRecordWhereInput[]
+    productId?: StringFilter<"QRRecord"> | string
+    activationUrl?: StringFilter<"QRRecord"> | string
+    status?: StringFilter<"QRRecord"> | string
+    scanCount?: IntFilter<"QRRecord"> | number
+    generatedAt?: DateTimeFilter<"QRRecord"> | Date | string
+    lastScannedAt?: DateTimeNullableFilter<"QRRecord"> | Date | string | null
+    qrHash?: StringFilter<"QRRecord"> | string
+    generatedBy?: StringNullableFilter<"QRRecord"> | string | null
+  }, "id" | "dppId">
+
+  export type QRRecordOrderByWithAggregationInput = {
+    id?: SortOrder
+    dppId?: SortOrder
+    productId?: SortOrder
+    activationUrl?: SortOrder
+    status?: SortOrder
+    scanCount?: SortOrder
+    generatedAt?: SortOrder
+    lastScannedAt?: SortOrderInput | SortOrder
+    qrHash?: SortOrder
+    generatedBy?: SortOrderInput | SortOrder
+    _count?: QRRecordCountOrderByAggregateInput
+    _avg?: QRRecordAvgOrderByAggregateInput
+    _max?: QRRecordMaxOrderByAggregateInput
+    _min?: QRRecordMinOrderByAggregateInput
+    _sum?: QRRecordSumOrderByAggregateInput
   }
 
-  export type QRRecordUncheckedCreateInput = {
+  export type QRRecordScalarWhereWithAggregatesInput = {
+    AND?: QRRecordScalarWhereWithAggregatesInput | QRRecordScalarWhereWithAggregatesInput[]
+    OR?: QRRecordScalarWhereWithAggregatesInput[]
+    NOT?: QRRecordScalarWhereWithAggregatesInput | QRRecordScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"QRRecord"> | string
+    dppId?: StringWithAggregatesFilter<"QRRecord"> | string
+    productId?: StringWithAggregatesFilter<"QRRecord"> | string
+    activationUrl?: StringWithAggregatesFilter<"QRRecord"> | string
+    status?: StringWithAggregatesFilter<"QRRecord"> | string
+    scanCount?: IntWithAggregatesFilter<"QRRecord"> | number
+    generatedAt?: DateTimeWithAggregatesFilter<"QRRecord"> | Date | string
+    lastScannedAt?: DateTimeNullableWithAggregatesFilter<"QRRecord"> | Date | string | null
+    qrHash?: StringWithAggregatesFilter<"QRRecord"> | string
+    generatedBy?: StringNullableWithAggregatesFilter<"QRRecord"> | string | null
+  }
+
+  export type QRInventoryWhereInput = {
+    AND?: QRInventoryWhereInput | QRInventoryWhereInput[]
+    OR?: QRInventoryWhereInput[]
+    NOT?: QRInventoryWhereInput | QRInventoryWhereInput[]
+    id?: StringFilter<"QRInventory"> | string
+    dppId?: StringFilter<"QRInventory"> | string
+    status?: StringFilter<"QRInventory"> | string
+    category?: StringNullableFilter<"QRInventory"> | string | null
+    name?: StringNullableFilter<"QRInventory"> | string | null
+    brand?: StringNullableFilter<"QRInventory"> | string | null
+    model?: StringNullableFilter<"QRInventory"> | string | null
+    createdAt?: DateTimeFilter<"QRInventory"> | Date | string
+    updatedAt?: DateTimeFilter<"QRInventory"> | Date | string
+  }
+
+  export type QRInventoryOrderByWithRelationInput = {
+    id?: SortOrder
+    dppId?: SortOrder
+    status?: SortOrder
+    category?: SortOrderInput | SortOrder
+    name?: SortOrderInput | SortOrder
+    brand?: SortOrderInput | SortOrder
+    model?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type QRInventoryWhereUniqueInput = Prisma.AtLeast<{
     id?: string
-    dppId: string
-    productId: string
-    activationUrl: string
-    generatedBy?: string | null
-    generatedAt?: Date | string
-    status: string
-    scanCount?: number
-    lastScannedAt?: Date | string | null
-    qrHash: string
+    dppId?: string
+    AND?: QRInventoryWhereInput | QRInventoryWhereInput[]
+    OR?: QRInventoryWhereInput[]
+    NOT?: QRInventoryWhereInput | QRInventoryWhereInput[]
+    status?: StringFilter<"QRInventory"> | string
+    category?: StringNullableFilter<"QRInventory"> | string | null
+    name?: StringNullableFilter<"QRInventory"> | string | null
+    brand?: StringNullableFilter<"QRInventory"> | string | null
+    model?: StringNullableFilter<"QRInventory"> | string | null
+    createdAt?: DateTimeFilter<"QRInventory"> | Date | string
+    updatedAt?: DateTimeFilter<"QRInventory"> | Date | string
+  }, "id" | "dppId">
+
+  export type QRInventoryOrderByWithAggregationInput = {
+    id?: SortOrder
+    dppId?: SortOrder
+    status?: SortOrder
+    category?: SortOrderInput | SortOrder
+    name?: SortOrderInput | SortOrder
+    brand?: SortOrderInput | SortOrder
+    model?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: QRInventoryCountOrderByAggregateInput
+    _max?: QRInventoryMaxOrderByAggregateInput
+    _min?: QRInventoryMinOrderByAggregateInput
   }
 
-  export type QRRecordUpdateInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    dppId?: StringFieldUpdateOperationsInput | string
-    productId?: StringFieldUpdateOperationsInput | string
-    activationUrl?: StringFieldUpdateOperationsInput | string
-    generatedBy?: NullableStringFieldUpdateOperationsInput | string | null
-    generatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    status?: StringFieldUpdateOperationsInput | string
-    scanCount?: IntFieldUpdateOperationsInput | number
-    lastScannedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    qrHash?: StringFieldUpdateOperationsInput | string
-  }
-
-  export type QRRecordUncheckedUpdateInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    dppId?: StringFieldUpdateOperationsInput | string
-    productId?: StringFieldUpdateOperationsInput | string
-    activationUrl?: StringFieldUpdateOperationsInput | string
-    generatedBy?: NullableStringFieldUpdateOperationsInput | string | null
-    generatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    status?: StringFieldUpdateOperationsInput | string
-    scanCount?: IntFieldUpdateOperationsInput | number
-    lastScannedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    qrHash?: StringFieldUpdateOperationsInput | string
-  }
-
-  export type QRRecordCreateManyInput = {
-    id?: string
-    dppId: string
-    productId: string
-    activationUrl: string
-    generatedBy?: string | null
-    generatedAt?: Date | string
-    status: string
-    scanCount?: number
-    lastScannedAt?: Date | string | null
-    qrHash: string
-  }
-
-  export type QRRecordUpdateManyMutationInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    dppId?: StringFieldUpdateOperationsInput | string
-    productId?: StringFieldUpdateOperationsInput | string
-    activationUrl?: StringFieldUpdateOperationsInput | string
-    generatedBy?: NullableStringFieldUpdateOperationsInput | string | null
-    generatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    status?: StringFieldUpdateOperationsInput | string
-    scanCount?: IntFieldUpdateOperationsInput | number
-    lastScannedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    qrHash?: StringFieldUpdateOperationsInput | string
-  }
-
-  export type QRRecordUncheckedUpdateManyInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    dppId?: StringFieldUpdateOperationsInput | string
-    productId?: StringFieldUpdateOperationsInput | string
-    activationUrl?: StringFieldUpdateOperationsInput | string
-    generatedBy?: NullableStringFieldUpdateOperationsInput | string | null
-    generatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    status?: StringFieldUpdateOperationsInput | string
-    scanCount?: IntFieldUpdateOperationsInput | number
-    lastScannedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    qrHash?: StringFieldUpdateOperationsInput | string
+  export type QRInventoryScalarWhereWithAggregatesInput = {
+    AND?: QRInventoryScalarWhereWithAggregatesInput | QRInventoryScalarWhereWithAggregatesInput[]
+    OR?: QRInventoryScalarWhereWithAggregatesInput[]
+    NOT?: QRInventoryScalarWhereWithAggregatesInput | QRInventoryScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"QRInventory"> | string
+    dppId?: StringWithAggregatesFilter<"QRInventory"> | string
+    status?: StringWithAggregatesFilter<"QRInventory"> | string
+    category?: StringNullableWithAggregatesFilter<"QRInventory"> | string | null
+    name?: StringNullableWithAggregatesFilter<"QRInventory"> | string | null
+    brand?: StringNullableWithAggregatesFilter<"QRInventory"> | string | null
+    model?: StringNullableWithAggregatesFilter<"QRInventory"> | string | null
+    createdAt?: DateTimeWithAggregatesFilter<"QRInventory"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"QRInventory"> | Date | string
   }
 
   export type ActivationRecordCreateInput = {
     id?: string
     dppId: string
     productId: string
-    qrRecordId?: string | null
-    activatedBy?: string | null
+    status: string
     activatedAt?: Date | string
     ipAddress?: string | null
     deviceInfo?: string | null
-    status: string
+    activatedBy?: string | null
+    qrRecordId?: string | null
   }
 
   export type ActivationRecordUncheckedCreateInput = {
     id?: string
     dppId: string
     productId: string
-    qrRecordId?: string | null
-    activatedBy?: string | null
+    status: string
     activatedAt?: Date | string
     ipAddress?: string | null
     deviceInfo?: string | null
-    status: string
+    activatedBy?: string | null
+    qrRecordId?: string | null
   }
 
   export type ActivationRecordUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     dppId?: StringFieldUpdateOperationsInput | string
     productId?: StringFieldUpdateOperationsInput | string
-    qrRecordId?: NullableStringFieldUpdateOperationsInput | string | null
-    activatedBy?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: StringFieldUpdateOperationsInput | string
     activatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     ipAddress?: NullableStringFieldUpdateOperationsInput | string | null
     deviceInfo?: NullableStringFieldUpdateOperationsInput | string | null
-    status?: StringFieldUpdateOperationsInput | string
+    activatedBy?: NullableStringFieldUpdateOperationsInput | string | null
+    qrRecordId?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type ActivationRecordUncheckedUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     dppId?: StringFieldUpdateOperationsInput | string
     productId?: StringFieldUpdateOperationsInput | string
-    qrRecordId?: NullableStringFieldUpdateOperationsInput | string | null
-    activatedBy?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: StringFieldUpdateOperationsInput | string
     activatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     ipAddress?: NullableStringFieldUpdateOperationsInput | string | null
     deviceInfo?: NullableStringFieldUpdateOperationsInput | string | null
-    status?: StringFieldUpdateOperationsInput | string
+    activatedBy?: NullableStringFieldUpdateOperationsInput | string | null
+    qrRecordId?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type ActivationRecordCreateManyInput = {
     id?: string
     dppId: string
     productId: string
-    qrRecordId?: string | null
-    activatedBy?: string | null
+    status: string
     activatedAt?: Date | string
     ipAddress?: string | null
     deviceInfo?: string | null
-    status: string
+    activatedBy?: string | null
+    qrRecordId?: string | null
   }
 
   export type ActivationRecordUpdateManyMutationInput = {
     id?: StringFieldUpdateOperationsInput | string
     dppId?: StringFieldUpdateOperationsInput | string
     productId?: StringFieldUpdateOperationsInput | string
-    qrRecordId?: NullableStringFieldUpdateOperationsInput | string | null
-    activatedBy?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: StringFieldUpdateOperationsInput | string
     activatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     ipAddress?: NullableStringFieldUpdateOperationsInput | string | null
     deviceInfo?: NullableStringFieldUpdateOperationsInput | string | null
-    status?: StringFieldUpdateOperationsInput | string
+    activatedBy?: NullableStringFieldUpdateOperationsInput | string | null
+    qrRecordId?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type ActivationRecordUncheckedUpdateManyInput = {
     id?: StringFieldUpdateOperationsInput | string
     dppId?: StringFieldUpdateOperationsInput | string
     productId?: StringFieldUpdateOperationsInput | string
-    qrRecordId?: NullableStringFieldUpdateOperationsInput | string | null
-    activatedBy?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: StringFieldUpdateOperationsInput | string
     activatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     ipAddress?: NullableStringFieldUpdateOperationsInput | string | null
     deviceInfo?: NullableStringFieldUpdateOperationsInput | string | null
-    status?: StringFieldUpdateOperationsInput | string
+    activatedBy?: NullableStringFieldUpdateOperationsInput | string | null
+    qrRecordId?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type ProductSnapshotCreateInput = {
@@ -4941,11 +6080,11 @@ export namespace Prisma {
     brand?: string | null
     model?: string | null
     serialNumber?: string | null
-    owner?: string | null
-    trustScore?: number | null
-    conditionScore?: number | null
     status: string
     createdAt?: Date | string
+    conditionScore?: number | null
+    owner?: string | null
+    trustScore?: number | null
     updatedAt?: Date | string
   }
 
@@ -4958,11 +6097,11 @@ export namespace Prisma {
     brand?: string | null
     model?: string | null
     serialNumber?: string | null
-    owner?: string | null
-    trustScore?: number | null
-    conditionScore?: number | null
     status: string
     createdAt?: Date | string
+    conditionScore?: number | null
+    owner?: string | null
+    trustScore?: number | null
     updatedAt?: Date | string
   }
 
@@ -4975,11 +6114,11 @@ export namespace Prisma {
     brand?: NullableStringFieldUpdateOperationsInput | string | null
     model?: NullableStringFieldUpdateOperationsInput | string | null
     serialNumber?: NullableStringFieldUpdateOperationsInput | string | null
-    owner?: NullableStringFieldUpdateOperationsInput | string | null
-    trustScore?: NullableIntFieldUpdateOperationsInput | number | null
-    conditionScore?: NullableIntFieldUpdateOperationsInput | number | null
     status?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    conditionScore?: NullableIntFieldUpdateOperationsInput | number | null
+    owner?: NullableStringFieldUpdateOperationsInput | string | null
+    trustScore?: NullableIntFieldUpdateOperationsInput | number | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -4992,11 +6131,11 @@ export namespace Prisma {
     brand?: NullableStringFieldUpdateOperationsInput | string | null
     model?: NullableStringFieldUpdateOperationsInput | string | null
     serialNumber?: NullableStringFieldUpdateOperationsInput | string | null
-    owner?: NullableStringFieldUpdateOperationsInput | string | null
-    trustScore?: NullableIntFieldUpdateOperationsInput | number | null
-    conditionScore?: NullableIntFieldUpdateOperationsInput | number | null
     status?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    conditionScore?: NullableIntFieldUpdateOperationsInput | number | null
+    owner?: NullableStringFieldUpdateOperationsInput | string | null
+    trustScore?: NullableIntFieldUpdateOperationsInput | number | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -5009,11 +6148,11 @@ export namespace Prisma {
     brand?: string | null
     model?: string | null
     serialNumber?: string | null
-    owner?: string | null
-    trustScore?: number | null
-    conditionScore?: number | null
     status: string
     createdAt?: Date | string
+    conditionScore?: number | null
+    owner?: string | null
+    trustScore?: number | null
     updatedAt?: Date | string
   }
 
@@ -5026,11 +6165,11 @@ export namespace Prisma {
     brand?: NullableStringFieldUpdateOperationsInput | string | null
     model?: NullableStringFieldUpdateOperationsInput | string | null
     serialNumber?: NullableStringFieldUpdateOperationsInput | string | null
-    owner?: NullableStringFieldUpdateOperationsInput | string | null
-    trustScore?: NullableIntFieldUpdateOperationsInput | number | null
-    conditionScore?: NullableIntFieldUpdateOperationsInput | number | null
     status?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    conditionScore?: NullableIntFieldUpdateOperationsInput | number | null
+    owner?: NullableStringFieldUpdateOperationsInput | string | null
+    trustScore?: NullableIntFieldUpdateOperationsInput | number | null
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -5043,10 +6182,185 @@ export namespace Prisma {
     brand?: NullableStringFieldUpdateOperationsInput | string | null
     model?: NullableStringFieldUpdateOperationsInput | string | null
     serialNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    conditionScore?: NullableIntFieldUpdateOperationsInput | number | null
     owner?: NullableStringFieldUpdateOperationsInput | string | null
     trustScore?: NullableIntFieldUpdateOperationsInput | number | null
-    conditionScore?: NullableIntFieldUpdateOperationsInput | number | null
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type QRRecordCreateInput = {
+    id?: string
+    dppId: string
+    productId: string
+    activationUrl: string
+    status: string
+    scanCount?: number
+    generatedAt?: Date | string
+    lastScannedAt?: Date | string | null
+    qrHash: string
+    generatedBy?: string | null
+  }
+
+  export type QRRecordUncheckedCreateInput = {
+    id?: string
+    dppId: string
+    productId: string
+    activationUrl: string
+    status: string
+    scanCount?: number
+    generatedAt?: Date | string
+    lastScannedAt?: Date | string | null
+    qrHash: string
+    generatedBy?: string | null
+  }
+
+  export type QRRecordUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    dppId?: StringFieldUpdateOperationsInput | string
+    productId?: StringFieldUpdateOperationsInput | string
+    activationUrl?: StringFieldUpdateOperationsInput | string
     status?: StringFieldUpdateOperationsInput | string
+    scanCount?: IntFieldUpdateOperationsInput | number
+    generatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    lastScannedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    qrHash?: StringFieldUpdateOperationsInput | string
+    generatedBy?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type QRRecordUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    dppId?: StringFieldUpdateOperationsInput | string
+    productId?: StringFieldUpdateOperationsInput | string
+    activationUrl?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    scanCount?: IntFieldUpdateOperationsInput | number
+    generatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    lastScannedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    qrHash?: StringFieldUpdateOperationsInput | string
+    generatedBy?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type QRRecordCreateManyInput = {
+    id?: string
+    dppId: string
+    productId: string
+    activationUrl: string
+    status: string
+    scanCount?: number
+    generatedAt?: Date | string
+    lastScannedAt?: Date | string | null
+    qrHash: string
+    generatedBy?: string | null
+  }
+
+  export type QRRecordUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    dppId?: StringFieldUpdateOperationsInput | string
+    productId?: StringFieldUpdateOperationsInput | string
+    activationUrl?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    scanCount?: IntFieldUpdateOperationsInput | number
+    generatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    lastScannedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    qrHash?: StringFieldUpdateOperationsInput | string
+    generatedBy?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type QRRecordUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    dppId?: StringFieldUpdateOperationsInput | string
+    productId?: StringFieldUpdateOperationsInput | string
+    activationUrl?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    scanCount?: IntFieldUpdateOperationsInput | number
+    generatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    lastScannedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    qrHash?: StringFieldUpdateOperationsInput | string
+    generatedBy?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type QRInventoryCreateInput = {
+    id?: string
+    dppId: string
+    status: string
+    category?: string | null
+    name?: string | null
+    brand?: string | null
+    model?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type QRInventoryUncheckedCreateInput = {
+    id?: string
+    dppId: string
+    status: string
+    category?: string | null
+    name?: string | null
+    brand?: string | null
+    model?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type QRInventoryUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    dppId?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    category?: NullableStringFieldUpdateOperationsInput | string | null
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    brand?: NullableStringFieldUpdateOperationsInput | string | null
+    model?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type QRInventoryUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    dppId?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    category?: NullableStringFieldUpdateOperationsInput | string | null
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    brand?: NullableStringFieldUpdateOperationsInput | string | null
+    model?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type QRInventoryCreateManyInput = {
+    id?: string
+    dppId: string
+    status: string
+    category?: string | null
+    name?: string | null
+    brand?: string | null
+    model?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type QRInventoryUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    dppId?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    category?: NullableStringFieldUpdateOperationsInput | string | null
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    brand?: NullableStringFieldUpdateOperationsInput | string | null
+    model?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type QRInventoryUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    dppId?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    category?: NullableStringFieldUpdateOperationsInput | string | null
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    brand?: NullableStringFieldUpdateOperationsInput | string | null
+    model?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -5066,6 +6380,17 @@ export namespace Prisma {
     not?: NestedStringFilter<$PrismaModel> | string
   }
 
+  export type DateTimeFilter<$PrismaModel = never> = {
+    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
+    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
+    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    not?: NestedDateTimeFilter<$PrismaModel> | Date | string
+  }
+
   export type StringNullableFilter<$PrismaModel = never> = {
     equals?: string | StringFieldRefInput<$PrismaModel> | null
     in?: string[] | ListStringFieldRefInput<$PrismaModel> | null
@@ -5081,7 +6406,66 @@ export namespace Prisma {
     not?: NestedStringNullableFilter<$PrismaModel> | string | null
   }
 
-  export type DateTimeFilter<$PrismaModel = never> = {
+  export type SortOrderInput = {
+    sort: SortOrder
+    nulls?: NullsOrder
+  }
+
+  export type ActivationRecordCountOrderByAggregateInput = {
+    id?: SortOrder
+    dppId?: SortOrder
+    productId?: SortOrder
+    status?: SortOrder
+    activatedAt?: SortOrder
+    ipAddress?: SortOrder
+    deviceInfo?: SortOrder
+    activatedBy?: SortOrder
+    qrRecordId?: SortOrder
+  }
+
+  export type ActivationRecordMaxOrderByAggregateInput = {
+    id?: SortOrder
+    dppId?: SortOrder
+    productId?: SortOrder
+    status?: SortOrder
+    activatedAt?: SortOrder
+    ipAddress?: SortOrder
+    deviceInfo?: SortOrder
+    activatedBy?: SortOrder
+    qrRecordId?: SortOrder
+  }
+
+  export type ActivationRecordMinOrderByAggregateInput = {
+    id?: SortOrder
+    dppId?: SortOrder
+    productId?: SortOrder
+    status?: SortOrder
+    activatedAt?: SortOrder
+    ipAddress?: SortOrder
+    deviceInfo?: SortOrder
+    activatedBy?: SortOrder
+    qrRecordId?: SortOrder
+  }
+
+  export type StringWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: string | StringFieldRefInput<$PrismaModel>
+    in?: string[] | ListStringFieldRefInput<$PrismaModel>
+    notIn?: string[] | ListStringFieldRefInput<$PrismaModel>
+    lt?: string | StringFieldRefInput<$PrismaModel>
+    lte?: string | StringFieldRefInput<$PrismaModel>
+    gt?: string | StringFieldRefInput<$PrismaModel>
+    gte?: string | StringFieldRefInput<$PrismaModel>
+    contains?: string | StringFieldRefInput<$PrismaModel>
+    startsWith?: string | StringFieldRefInput<$PrismaModel>
+    endsWith?: string | StringFieldRefInput<$PrismaModel>
+    mode?: QueryMode
+    not?: NestedStringWithAggregatesFilter<$PrismaModel> | string
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedStringFilter<$PrismaModel>
+    _max?: NestedStringFilter<$PrismaModel>
+  }
+
+  export type DateTimeWithAggregatesFilter<$PrismaModel = never> = {
     equals?: Date | string | DateTimeFieldRefInput<$PrismaModel>
     in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
     notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
@@ -5089,7 +6473,116 @@ export namespace Prisma {
     lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
     gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
     gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    not?: NestedDateTimeFilter<$PrismaModel> | Date | string
+    not?: NestedDateTimeWithAggregatesFilter<$PrismaModel> | Date | string
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedDateTimeFilter<$PrismaModel>
+    _max?: NestedDateTimeFilter<$PrismaModel>
+  }
+
+  export type StringNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: string | StringFieldRefInput<$PrismaModel> | null
+    in?: string[] | ListStringFieldRefInput<$PrismaModel> | null
+    notIn?: string[] | ListStringFieldRefInput<$PrismaModel> | null
+    lt?: string | StringFieldRefInput<$PrismaModel>
+    lte?: string | StringFieldRefInput<$PrismaModel>
+    gt?: string | StringFieldRefInput<$PrismaModel>
+    gte?: string | StringFieldRefInput<$PrismaModel>
+    contains?: string | StringFieldRefInput<$PrismaModel>
+    startsWith?: string | StringFieldRefInput<$PrismaModel>
+    endsWith?: string | StringFieldRefInput<$PrismaModel>
+    mode?: QueryMode
+    not?: NestedStringNullableWithAggregatesFilter<$PrismaModel> | string | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedStringNullableFilter<$PrismaModel>
+    _max?: NestedStringNullableFilter<$PrismaModel>
+  }
+
+  export type IntNullableFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntNullableFilter<$PrismaModel> | number | null
+  }
+
+  export type ProductSnapshotCountOrderByAggregateInput = {
+    id?: SortOrder
+    dppId?: SortOrder
+    productId?: SortOrder
+    productName?: SortOrder
+    category?: SortOrder
+    brand?: SortOrder
+    model?: SortOrder
+    serialNumber?: SortOrder
+    status?: SortOrder
+    createdAt?: SortOrder
+    conditionScore?: SortOrder
+    owner?: SortOrder
+    trustScore?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type ProductSnapshotAvgOrderByAggregateInput = {
+    conditionScore?: SortOrder
+    trustScore?: SortOrder
+  }
+
+  export type ProductSnapshotMaxOrderByAggregateInput = {
+    id?: SortOrder
+    dppId?: SortOrder
+    productId?: SortOrder
+    productName?: SortOrder
+    category?: SortOrder
+    brand?: SortOrder
+    model?: SortOrder
+    serialNumber?: SortOrder
+    status?: SortOrder
+    createdAt?: SortOrder
+    conditionScore?: SortOrder
+    owner?: SortOrder
+    trustScore?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type ProductSnapshotMinOrderByAggregateInput = {
+    id?: SortOrder
+    dppId?: SortOrder
+    productId?: SortOrder
+    productName?: SortOrder
+    category?: SortOrder
+    brand?: SortOrder
+    model?: SortOrder
+    serialNumber?: SortOrder
+    status?: SortOrder
+    createdAt?: SortOrder
+    conditionScore?: SortOrder
+    owner?: SortOrder
+    trustScore?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type ProductSnapshotSumOrderByAggregateInput = {
+    conditionScore?: SortOrder
+    trustScore?: SortOrder
+  }
+
+  export type IntNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntNullableWithAggregatesFilter<$PrismaModel> | number | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _avg?: NestedFloatNullableFilter<$PrismaModel>
+    _sum?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedIntNullableFilter<$PrismaModel>
+    _max?: NestedIntNullableFilter<$PrismaModel>
   }
 
   export type IntFilter<$PrismaModel = never> = {
@@ -5114,22 +6607,17 @@ export namespace Prisma {
     not?: NestedDateTimeNullableFilter<$PrismaModel> | Date | string | null
   }
 
-  export type SortOrderInput = {
-    sort: SortOrder
-    nulls?: NullsOrder
-  }
-
   export type QRRecordCountOrderByAggregateInput = {
     id?: SortOrder
     dppId?: SortOrder
     productId?: SortOrder
     activationUrl?: SortOrder
-    generatedBy?: SortOrder
-    generatedAt?: SortOrder
     status?: SortOrder
     scanCount?: SortOrder
+    generatedAt?: SortOrder
     lastScannedAt?: SortOrder
     qrHash?: SortOrder
+    generatedBy?: SortOrder
   }
 
   export type QRRecordAvgOrderByAggregateInput = {
@@ -5141,12 +6629,12 @@ export namespace Prisma {
     dppId?: SortOrder
     productId?: SortOrder
     activationUrl?: SortOrder
-    generatedBy?: SortOrder
-    generatedAt?: SortOrder
     status?: SortOrder
     scanCount?: SortOrder
+    generatedAt?: SortOrder
     lastScannedAt?: SortOrder
     qrHash?: SortOrder
+    generatedBy?: SortOrder
   }
 
   export type QRRecordMinOrderByAggregateInput = {
@@ -5154,66 +6642,16 @@ export namespace Prisma {
     dppId?: SortOrder
     productId?: SortOrder
     activationUrl?: SortOrder
-    generatedBy?: SortOrder
-    generatedAt?: SortOrder
     status?: SortOrder
     scanCount?: SortOrder
+    generatedAt?: SortOrder
     lastScannedAt?: SortOrder
     qrHash?: SortOrder
+    generatedBy?: SortOrder
   }
 
   export type QRRecordSumOrderByAggregateInput = {
     scanCount?: SortOrder
-  }
-
-  export type StringWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: string | StringFieldRefInput<$PrismaModel>
-    in?: string[] | ListStringFieldRefInput<$PrismaModel>
-    notIn?: string[] | ListStringFieldRefInput<$PrismaModel>
-    lt?: string | StringFieldRefInput<$PrismaModel>
-    lte?: string | StringFieldRefInput<$PrismaModel>
-    gt?: string | StringFieldRefInput<$PrismaModel>
-    gte?: string | StringFieldRefInput<$PrismaModel>
-    contains?: string | StringFieldRefInput<$PrismaModel>
-    startsWith?: string | StringFieldRefInput<$PrismaModel>
-    endsWith?: string | StringFieldRefInput<$PrismaModel>
-    mode?: QueryMode
-    not?: NestedStringWithAggregatesFilter<$PrismaModel> | string
-    _count?: NestedIntFilter<$PrismaModel>
-    _min?: NestedStringFilter<$PrismaModel>
-    _max?: NestedStringFilter<$PrismaModel>
-  }
-
-  export type StringNullableWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: string | StringFieldRefInput<$PrismaModel> | null
-    in?: string[] | ListStringFieldRefInput<$PrismaModel> | null
-    notIn?: string[] | ListStringFieldRefInput<$PrismaModel> | null
-    lt?: string | StringFieldRefInput<$PrismaModel>
-    lte?: string | StringFieldRefInput<$PrismaModel>
-    gt?: string | StringFieldRefInput<$PrismaModel>
-    gte?: string | StringFieldRefInput<$PrismaModel>
-    contains?: string | StringFieldRefInput<$PrismaModel>
-    startsWith?: string | StringFieldRefInput<$PrismaModel>
-    endsWith?: string | StringFieldRefInput<$PrismaModel>
-    mode?: QueryMode
-    not?: NestedStringNullableWithAggregatesFilter<$PrismaModel> | string | null
-    _count?: NestedIntNullableFilter<$PrismaModel>
-    _min?: NestedStringNullableFilter<$PrismaModel>
-    _max?: NestedStringNullableFilter<$PrismaModel>
-  }
-
-  export type DateTimeWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
-    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
-    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    not?: NestedDateTimeWithAggregatesFilter<$PrismaModel> | Date | string
-    _count?: NestedIntFilter<$PrismaModel>
-    _min?: NestedDateTimeFilter<$PrismaModel>
-    _max?: NestedDateTimeFilter<$PrismaModel>
   }
 
   export type IntWithAggregatesFilter<$PrismaModel = never> = {
@@ -5246,140 +6684,60 @@ export namespace Prisma {
     _max?: NestedDateTimeNullableFilter<$PrismaModel>
   }
 
-  export type ActivationRecordCountOrderByAggregateInput = {
+  export type QRInventoryCountOrderByAggregateInput = {
     id?: SortOrder
     dppId?: SortOrder
-    productId?: SortOrder
-    qrRecordId?: SortOrder
-    activatedBy?: SortOrder
-    activatedAt?: SortOrder
-    ipAddress?: SortOrder
-    deviceInfo?: SortOrder
     status?: SortOrder
-  }
-
-  export type ActivationRecordMaxOrderByAggregateInput = {
-    id?: SortOrder
-    dppId?: SortOrder
-    productId?: SortOrder
-    qrRecordId?: SortOrder
-    activatedBy?: SortOrder
-    activatedAt?: SortOrder
-    ipAddress?: SortOrder
-    deviceInfo?: SortOrder
-    status?: SortOrder
-  }
-
-  export type ActivationRecordMinOrderByAggregateInput = {
-    id?: SortOrder
-    dppId?: SortOrder
-    productId?: SortOrder
-    qrRecordId?: SortOrder
-    activatedBy?: SortOrder
-    activatedAt?: SortOrder
-    ipAddress?: SortOrder
-    deviceInfo?: SortOrder
-    status?: SortOrder
-  }
-
-  export type IntNullableFilter<$PrismaModel = never> = {
-    equals?: number | IntFieldRefInput<$PrismaModel> | null
-    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
-    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
-    lt?: number | IntFieldRefInput<$PrismaModel>
-    lte?: number | IntFieldRefInput<$PrismaModel>
-    gt?: number | IntFieldRefInput<$PrismaModel>
-    gte?: number | IntFieldRefInput<$PrismaModel>
-    not?: NestedIntNullableFilter<$PrismaModel> | number | null
-  }
-
-  export type ProductSnapshotCountOrderByAggregateInput = {
-    id?: SortOrder
-    dppId?: SortOrder
-    productId?: SortOrder
-    productName?: SortOrder
     category?: SortOrder
+    name?: SortOrder
     brand?: SortOrder
     model?: SortOrder
-    serialNumber?: SortOrder
-    owner?: SortOrder
-    trustScore?: SortOrder
-    conditionScore?: SortOrder
-    status?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
 
-  export type ProductSnapshotAvgOrderByAggregateInput = {
-    trustScore?: SortOrder
-    conditionScore?: SortOrder
-  }
-
-  export type ProductSnapshotMaxOrderByAggregateInput = {
+  export type QRInventoryMaxOrderByAggregateInput = {
     id?: SortOrder
     dppId?: SortOrder
-    productId?: SortOrder
-    productName?: SortOrder
+    status?: SortOrder
     category?: SortOrder
+    name?: SortOrder
     brand?: SortOrder
     model?: SortOrder
-    serialNumber?: SortOrder
-    owner?: SortOrder
-    trustScore?: SortOrder
-    conditionScore?: SortOrder
-    status?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
 
-  export type ProductSnapshotMinOrderByAggregateInput = {
+  export type QRInventoryMinOrderByAggregateInput = {
     id?: SortOrder
     dppId?: SortOrder
-    productId?: SortOrder
-    productName?: SortOrder
+    status?: SortOrder
     category?: SortOrder
+    name?: SortOrder
     brand?: SortOrder
     model?: SortOrder
-    serialNumber?: SortOrder
-    owner?: SortOrder
-    trustScore?: SortOrder
-    conditionScore?: SortOrder
-    status?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
-  }
-
-  export type ProductSnapshotSumOrderByAggregateInput = {
-    trustScore?: SortOrder
-    conditionScore?: SortOrder
-  }
-
-  export type IntNullableWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: number | IntFieldRefInput<$PrismaModel> | null
-    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
-    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
-    lt?: number | IntFieldRefInput<$PrismaModel>
-    lte?: number | IntFieldRefInput<$PrismaModel>
-    gt?: number | IntFieldRefInput<$PrismaModel>
-    gte?: number | IntFieldRefInput<$PrismaModel>
-    not?: NestedIntNullableWithAggregatesFilter<$PrismaModel> | number | null
-    _count?: NestedIntNullableFilter<$PrismaModel>
-    _avg?: NestedFloatNullableFilter<$PrismaModel>
-    _sum?: NestedIntNullableFilter<$PrismaModel>
-    _min?: NestedIntNullableFilter<$PrismaModel>
-    _max?: NestedIntNullableFilter<$PrismaModel>
   }
 
   export type StringFieldUpdateOperationsInput = {
     set?: string
   }
 
+  export type DateTimeFieldUpdateOperationsInput = {
+    set?: Date | string
+  }
+
   export type NullableStringFieldUpdateOperationsInput = {
     set?: string | null
   }
 
-  export type DateTimeFieldUpdateOperationsInput = {
-    set?: Date | string
+  export type NullableIntFieldUpdateOperationsInput = {
+    set?: number | null
+    increment?: number
+    decrement?: number
+    multiply?: number
+    divide?: number
   }
 
   export type IntFieldUpdateOperationsInput = {
@@ -5392,14 +6750,6 @@ export namespace Prisma {
 
   export type NullableDateTimeFieldUpdateOperationsInput = {
     set?: Date | string | null
-  }
-
-  export type NullableIntFieldUpdateOperationsInput = {
-    set?: number | null
-    increment?: number
-    decrement?: number
-    multiply?: number
-    divide?: number
   }
 
   export type NestedStringFilter<$PrismaModel = never> = {
@@ -5416,6 +6766,17 @@ export namespace Prisma {
     not?: NestedStringFilter<$PrismaModel> | string
   }
 
+  export type NestedDateTimeFilter<$PrismaModel = never> = {
+    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
+    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
+    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    not?: NestedDateTimeFilter<$PrismaModel> | Date | string
+  }
+
   export type NestedStringNullableFilter<$PrismaModel = never> = {
     equals?: string | StringFieldRefInput<$PrismaModel> | null
     in?: string[] | ListStringFieldRefInput<$PrismaModel> | null
@@ -5428,39 +6789,6 @@ export namespace Prisma {
     startsWith?: string | StringFieldRefInput<$PrismaModel>
     endsWith?: string | StringFieldRefInput<$PrismaModel>
     not?: NestedStringNullableFilter<$PrismaModel> | string | null
-  }
-
-  export type NestedDateTimeFilter<$PrismaModel = never> = {
-    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
-    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
-    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    not?: NestedDateTimeFilter<$PrismaModel> | Date | string
-  }
-
-  export type NestedIntFilter<$PrismaModel = never> = {
-    equals?: number | IntFieldRefInput<$PrismaModel>
-    in?: number[] | ListIntFieldRefInput<$PrismaModel>
-    notIn?: number[] | ListIntFieldRefInput<$PrismaModel>
-    lt?: number | IntFieldRefInput<$PrismaModel>
-    lte?: number | IntFieldRefInput<$PrismaModel>
-    gt?: number | IntFieldRefInput<$PrismaModel>
-    gte?: number | IntFieldRefInput<$PrismaModel>
-    not?: NestedIntFilter<$PrismaModel> | number
-  }
-
-  export type NestedDateTimeNullableFilter<$PrismaModel = never> = {
-    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
-    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
-    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
-    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    not?: NestedDateTimeNullableFilter<$PrismaModel> | Date | string | null
   }
 
   export type NestedStringWithAggregatesFilter<$PrismaModel = never> = {
@@ -5478,6 +6806,31 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedStringFilter<$PrismaModel>
     _max?: NestedStringFilter<$PrismaModel>
+  }
+
+  export type NestedIntFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel>
+    in?: number[] | ListIntFieldRefInput<$PrismaModel>
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel>
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntFilter<$PrismaModel> | number
+  }
+
+  export type NestedDateTimeWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
+    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
+    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    not?: NestedDateTimeWithAggregatesFilter<$PrismaModel> | Date | string
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedDateTimeFilter<$PrismaModel>
+    _max?: NestedDateTimeFilter<$PrismaModel>
   }
 
   export type NestedStringNullableWithAggregatesFilter<$PrismaModel = never> = {
@@ -5508,18 +6861,42 @@ export namespace Prisma {
     not?: NestedIntNullableFilter<$PrismaModel> | number | null
   }
 
-  export type NestedDateTimeWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
-    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
+  export type NestedIntNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntNullableWithAggregatesFilter<$PrismaModel> | number | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _avg?: NestedFloatNullableFilter<$PrismaModel>
+    _sum?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedIntNullableFilter<$PrismaModel>
+    _max?: NestedIntNullableFilter<$PrismaModel>
+  }
+
+  export type NestedFloatNullableFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatNullableFilter<$PrismaModel> | number | null
+  }
+
+  export type NestedDateTimeNullableFilter<$PrismaModel = never> = {
+    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
+    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
     lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
     lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
     gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
     gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    not?: NestedDateTimeWithAggregatesFilter<$PrismaModel> | Date | string
-    _count?: NestedIntFilter<$PrismaModel>
-    _min?: NestedDateTimeFilter<$PrismaModel>
-    _max?: NestedDateTimeFilter<$PrismaModel>
+    not?: NestedDateTimeNullableFilter<$PrismaModel> | Date | string | null
   }
 
   export type NestedIntWithAggregatesFilter<$PrismaModel = never> = {
@@ -5561,33 +6938,6 @@ export namespace Prisma {
     _count?: NestedIntNullableFilter<$PrismaModel>
     _min?: NestedDateTimeNullableFilter<$PrismaModel>
     _max?: NestedDateTimeNullableFilter<$PrismaModel>
-  }
-
-  export type NestedIntNullableWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: number | IntFieldRefInput<$PrismaModel> | null
-    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
-    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
-    lt?: number | IntFieldRefInput<$PrismaModel>
-    lte?: number | IntFieldRefInput<$PrismaModel>
-    gt?: number | IntFieldRefInput<$PrismaModel>
-    gte?: number | IntFieldRefInput<$PrismaModel>
-    not?: NestedIntNullableWithAggregatesFilter<$PrismaModel> | number | null
-    _count?: NestedIntNullableFilter<$PrismaModel>
-    _avg?: NestedFloatNullableFilter<$PrismaModel>
-    _sum?: NestedIntNullableFilter<$PrismaModel>
-    _min?: NestedIntNullableFilter<$PrismaModel>
-    _max?: NestedIntNullableFilter<$PrismaModel>
-  }
-
-  export type NestedFloatNullableFilter<$PrismaModel = never> = {
-    equals?: number | FloatFieldRefInput<$PrismaModel> | null
-    in?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
-    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
-    lt?: number | FloatFieldRefInput<$PrismaModel>
-    lte?: number | FloatFieldRefInput<$PrismaModel>
-    gt?: number | FloatFieldRefInput<$PrismaModel>
-    gte?: number | FloatFieldRefInput<$PrismaModel>
-    not?: NestedFloatNullableFilter<$PrismaModel> | number | null
   }
 
 

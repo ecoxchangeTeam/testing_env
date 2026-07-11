@@ -7,29 +7,16 @@ datasource db {
   provider = "postgresql"
 }
 
-model QRRecord {
-  id            String    @id @default(cuid())
-  dppId         String    @unique
-  productId     String
-  activationUrl String
-  generatedBy   String?
-  generatedAt   DateTime  @default(now())
-  status        String
-  scanCount     Int       @default(0)
-  lastScannedAt DateTime?
-  qrHash        String
-}
-
 model ActivationRecord {
   id          String   @id @default(cuid())
   dppId       String
   productId   String
-  qrRecordId  String?
-  activatedBy String?
+  status      String
   activatedAt DateTime @default(now())
   ipAddress   String?
   deviceInfo  String?
-  status      String
+  activatedBy String?
+  qrRecordId  String?
 }
 
 model ProductSnapshot {
@@ -41,10 +28,40 @@ model ProductSnapshot {
   brand          String?
   model          String?
   serialNumber   String?
-  owner          String?
-  trustScore     Int?
-  conditionScore Int?
   status         String
   createdAt      DateTime @default(now())
+  conditionScore Int?
+  owner          String?
+  trustScore     Int?
   updatedAt      DateTime @updatedAt
+}
+
+model QRRecord {
+  id            String    @id @default(cuid())
+  dppId         String    @unique
+  productId     String
+  activationUrl String
+  status        String
+  scanCount     Int       @default(0)
+  generatedAt   DateTime  @default(now())
+  lastScannedAt DateTime?
+  qrHash        String
+  generatedBy   String?
+}
+
+model QRInventory {
+  id String @id @default(cuid())
+
+  dppId  String @unique
+  status String
+
+  category String?
+  name     String?
+  brand    String?
+  model    String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("qr_inventory")
 }

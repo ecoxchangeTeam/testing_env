@@ -120,29 +120,16 @@ exports.Prisma.TransactionIsolationLevel = makeStrictEnum({
   Serializable: 'Serializable'
 });
 
-exports.Prisma.QRRecordScalarFieldEnum = {
-  id: 'id',
-  dppId: 'dppId',
-  productId: 'productId',
-  activationUrl: 'activationUrl',
-  generatedBy: 'generatedBy',
-  generatedAt: 'generatedAt',
-  status: 'status',
-  scanCount: 'scanCount',
-  lastScannedAt: 'lastScannedAt',
-  qrHash: 'qrHash'
-};
-
 exports.Prisma.ActivationRecordScalarFieldEnum = {
   id: 'id',
   dppId: 'dppId',
   productId: 'productId',
-  qrRecordId: 'qrRecordId',
-  activatedBy: 'activatedBy',
+  status: 'status',
   activatedAt: 'activatedAt',
   ipAddress: 'ipAddress',
   deviceInfo: 'deviceInfo',
-  status: 'status'
+  activatedBy: 'activatedBy',
+  qrRecordId: 'qrRecordId'
 };
 
 exports.Prisma.ProductSnapshotScalarFieldEnum = {
@@ -154,10 +141,35 @@ exports.Prisma.ProductSnapshotScalarFieldEnum = {
   brand: 'brand',
   model: 'model',
   serialNumber: 'serialNumber',
+  status: 'status',
+  createdAt: 'createdAt',
+  conditionScore: 'conditionScore',
   owner: 'owner',
   trustScore: 'trustScore',
-  conditionScore: 'conditionScore',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.QRRecordScalarFieldEnum = {
+  id: 'id',
+  dppId: 'dppId',
+  productId: 'productId',
+  activationUrl: 'activationUrl',
   status: 'status',
+  scanCount: 'scanCount',
+  generatedAt: 'generatedAt',
+  lastScannedAt: 'lastScannedAt',
+  qrHash: 'qrHash',
+  generatedBy: 'generatedBy'
+};
+
+exports.Prisma.QRInventoryScalarFieldEnum = {
+  id: 'id',
+  dppId: 'dppId',
+  status: 'status',
+  category: 'category',
+  name: 'name',
+  brand: 'brand',
+  model: 'model',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 };
@@ -179,9 +191,10 @@ exports.Prisma.NullsOrder = {
 
 
 exports.Prisma.ModelName = {
-  QRRecord: 'QRRecord',
   ActivationRecord: 'ActivationRecord',
-  ProductSnapshot: 'ProductSnapshot'
+  ProductSnapshot: 'ProductSnapshot',
+  QRRecord: 'QRRecord',
+  QRInventory: 'QRInventory'
 };
 
 /**

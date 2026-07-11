@@ -51,14 +51,44 @@ export default function ActivatePage({
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState("");
 
+  const [linking, setLinking] = useState(false);
+
+  const [category, setCategory] = useState(product?.category ?? "OTHER");
+  const [name, setName] = useState("");
+  const [brand, setBrand] = useState("");
+  const [model, setModel] = useState("");
+  const [serialNumber, setSerialNumber] = useState("");
+
   useEffect(() => {
     async function fetchProduct() {
       try {
         const res = await fetch(`/api/products/activate?dppId=${dppId}`);
-        if (res.status === 404) { setNotFound(true); setLoading(false); return; }
+
+        if (res.status === 404) {
+          setNotFound(true);
+          return;
+        }
+
         const data = await res.json();
-        setProduct(data.product);
-        if (data.product.status !== "UNCLAIMED") setAlreadyClaimed(true);
+
+        // Blank QR
+        if (data.type === "BLANK") {
+          if (data.canLink) {
+            router.replace(`/admin/link-product/${dppId}`);
+          } else {
+            router.replace(`/unlinked?dppId=${dppId}`);
+          }
+          return;
+        }
+
+        // Linked product
+        if (data.type === "PRODUCT") {
+          setProduct(data.product);
+
+          if (data.product.status !== "UNCLAIMED") {
+            setAlreadyClaimed(true);
+          }
+        }
       } catch {
         setNotFound(true);
       } finally {
@@ -66,7 +96,7 @@ export default function ActivatePage({
       }
     }
     fetchProduct();
-  }, [dppId]);
+  }, [dppId, session, router]);
 
   const handleActivate = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -237,6 +267,8 @@ export default function ActivatePage({
           </div>
         )}
 
+
+
         {/* Activation Form */}
         {!alreadyClaimed && (
           <>
@@ -306,11 +338,10 @@ export default function ActivatePage({
                 </label>
                 <label
                   htmlFor="invoice-upload"
-                  className={`flex flex-col items-center gap-2 p-6 rounded-xl border-2 border-dashed cursor-pointer transition-all ${
-                    invoiceFile
-                      ? "border-emerald-500/40 bg-emerald-500/5"
-                      : "border-[#2a2a2a] hover:border-[#3a3a3a] hover:bg-[#141414]"
-                  }`}
+                  className={`flex flex-col items-center gap-2 p-6 rounded-xl border-2 border-dashed cursor-pointer transition-all ${invoiceFile
+                    ? "border-emerald-500/40 bg-emerald-500/5"
+                    : "border-[#2a2a2a] hover:border-[#3a3a3a] hover:bg-[#141414]"
+                    }`}
                 >
                   {invoiceFile ? (
                     <>
@@ -358,13 +389,14 @@ export default function ActivatePage({
                 type="submit"
                 disabled={submitting || !session}
                 className="w-full flex items-center justify-center gap-2 py-3 px-4 rounded-xl bg-emerald-500 text-black font-semibold text-[14px] hover:bg-emerald-400 transition-all disabled:opacity-60 disabled:cursor-not-allowed"
-                id="activate-btn"
               >
                 {submitting ? (
                   <Loader2 className="w-4 h-4 animate-spin" />
                 ) : (
                   <>
-                    Activate Product & Create Passport
+                    {product?.id === ""
+                      ? "Link Product"
+                      : "Activate Product & Create Passport"}
                     <ArrowRight className="w-4 h-4" />
                   </>
                 )}

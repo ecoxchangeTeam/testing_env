@@ -37,6 +37,11 @@ enum ProductCategory {
   OTHER
 }
 
+enum QRInventoryStatus {
+  UNASSIGNED
+  ASSIGNED
+}
+
 enum DocumentType {
   INVOICE
   WARRANTY
@@ -408,4 +413,18 @@ model LostProduct {
   @@index([status])
 
   @@map("lost_products")
+}
+
+model QRInventory {
+  id        String   @id @default(cuid())
+  dppId     String   @unique
+  status    String
+  category  String?
+  name      String?
+  brand     String?
+  model     String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("qr_inventory")
 }

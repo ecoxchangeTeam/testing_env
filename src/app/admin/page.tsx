@@ -101,6 +101,11 @@ const INSTRUMENT_SUBTYPES = ["CALCULATOR", "DRAFTER", "SHEET_HOLDER", "ROLLING_S
 
 export default function AdminDashboardPage() {
   const { data: session, status } = useSession();
+  useEffect(() => {
+    console.log("STATUS:", status);
+    console.log("SESSION:", session);
+    console.log("isAdmin:", session?.user?.isAdmin);
+  }, [status, session]);
   const router = useRouter();
   const [data, setData] = useState<AdminData | null>(null);
   const [loading, setLoading] = useState(true);
@@ -175,6 +180,10 @@ export default function AdminDashboardPage() {
   }
 
   const validateForm = () => {
+    if (newQr.category === "BLANK_QR") {
+      setFormErrors({});
+      return true;
+    }
     const errors: Record<string, string> = {};
     if (!newQr.name.trim()) {
       errors.name = "Product Name is required";
@@ -193,6 +202,33 @@ export default function AdminDashboardPage() {
     if (!validateForm()) return;
     setGeneratingQr(true);
     try {
+      // Blank QR flow
+      if (newQr.category === "BLANK_QR") {
+        const res = await fetch("/api/qr/blank", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
+
+        const d = await res.json();
+
+        if (res.ok) {
+          console.log(d);
+
+          setGeneratedQr({
+            qrSticker: d.qrSticker,
+            dppId: d.dppId,
+            qrPng: d.qrPng,
+          });
+
+          await fetchData();
+          return;
+        }
+
+        setQrError(d.error || "Failed to generate Blank QR");
+        return;
+      }
       const isAcademic = newQr.category === "ACADEMIC_EQUIPMENT";
       const isBook = isAcademic && newQr.subType === "BOOK";
       const isCycle = newQr.category === "CYCLE";
@@ -227,8 +263,9 @@ export default function AdminDashboardPage() {
       } else {
         setQrError(d.error || "Failed to generate QR");
       }
-    } catch {
-      setQrError("A network error occurred. Please try again.");
+    } catch (err) {
+      console.error(err);
+      setQrError(err instanceof Error ? err.message : "Unknown error");
     } finally {
       setGeneratingQr(false);
     }
@@ -254,13 +291,13 @@ export default function AdminDashboardPage() {
 
   const getNamePlaceholder = () => {
     if (newQr.category === "ACADEMIC_EQUIPMENT") {
-      if (newQr.subType === "BOOK")         return "e.g. Data Structures and Algorithms";
-      if (newQr.subType === "CALCULATOR")   return "e.g. Casio FX-991ES Plus";
-      if (newQr.subType === "DRAFTER")      return "e.g. Staedtler Mars 550 Drafter";
+      if (newQr.subType === "BOOK") return "e.g. Data Structures and Algorithms";
+      if (newQr.subType === "CALCULATOR") return "e.g. Casio FX-991ES Plus";
+      if (newQr.subType === "DRAFTER") return "e.g. Staedtler Mars 550 Drafter";
       if (newQr.subType === "SHEET_HOLDER") return "e.g. A1 Magnetic Sheet Holder";
       if (newQr.subType === "ROLLING_SCALE") return "e.g. Rotring Rolling Ruler 60cm";
     }
-    if (newQr.category === "CYCLE")  return "e.g. Trek Marlin 7";
+    if (newQr.category === "CYCLE") return "e.g. Trek Marlin 7";
     if (newQr.category === "LAPTOP") return "e.g. MacBook Air M2";
     return "e.g. Sony WH-1000XM5";
   };
@@ -280,19 +317,19 @@ export default function AdminDashboardPage() {
   }
 
   const navItems = [
-    { id: "overview", label: "Overview",    icon: BarChart3 },
-    { id: "products", label: "Products",    icon: Package },
-    { id: "users",    label: "Users",       icon: Users },
-    { id: "qr",       label: "QR Issuance", icon: QrCode },
+    { id: "overview", label: "Overview", icon: BarChart3 },
+    { id: "products", label: "Products", icon: Package },
+    { id: "users", label: "Users", icon: Users },
+    { id: "qr", label: "QR Issuance", icon: QrCode },
   ] as const;
 
   const filteredProducts = productSearch
     ? data.recentProducts.filter(
-        (p) =>
-          p.dppId.toLowerCase().includes(productSearch.toLowerCase()) ||
-          p.brand?.toLowerCase().includes(productSearch.toLowerCase()) ||
-          p.model?.toLowerCase().includes(productSearch.toLowerCase())
-      )
+      (p) =>
+        p.dppId.toLowerCase().includes(productSearch.toLowerCase()) ||
+        p.brand?.toLowerCase().includes(productSearch.toLowerCase()) ||
+        p.model?.toLowerCase().includes(productSearch.toLowerCase())
+    )
     : data.recentProducts;
 
   return (
@@ -321,11 +358,10 @@ export default function AdminDashboardPage() {
                 <button
                   key={item.id}
                   onClick={() => setActiveSection(item.id)}
-                  className={`flex min-h-10 flex-shrink-0 items-center gap-2 px-3 py-2 rounded-lg text-sm transition-all lg:w-full ${
-                    activeSection === item.id
-                      ? "bg-white/5 text-white"
-                      : "text-zinc-500 hover:text-zinc-300 hover:bg-white/3"
-                  }`}
+                  className={`flex min-h-10 flex-shrink-0 items-center gap-2 px-3 py-2 rounded-lg text-sm transition-all lg:w-full ${activeSection === item.id
+                    ? "bg-white/5 text-white"
+                    : "text-zinc-500 hover:text-zinc-300 hover:bg-white/3"
+                    }`}
                 >
                   <item.icon className="w-3.5 h-3.5" />
                   {item.label}
@@ -341,14 +377,14 @@ export default function AdminDashboardPage() {
             {activeSection === "overview" && (
               <div className="space-y-6">
                 <div className="grid grid-cols-1 min-[420px]:grid-cols-2 xl:grid-cols-4 gap-3">
-                  <StatCard label="Total Users"     value={data.stats.totalUsers}      icon={Users}      color="bg-blue-500/10 text-blue-400" />
-                  <StatCard label="Total Products"  value={data.stats.totalProducts}   icon={Package}    color="bg-emerald-500/10 text-emerald-400" />
-                  <StatCard label="Active Products" value={data.stats.activeProducts}  icon={Activity}   color="bg-emerald-500/10 text-emerald-400" sub={data.stats.listedProducts + " listed"} />
-                  <StatCard label="Total Transfers" value={data.stats.totalTransfers}  icon={TrendingUp} color="bg-violet-500/10 text-violet-400" />
-                  <StatCard label="Unclaimed"       value={data.stats.unclaimedProducts} icon={Clock}   color="bg-zinc-500/10 text-zinc-400" />
-                  <StatCard label="Repair Logs"     value={data.stats.totalRepairs}    icon={Settings}   color="bg-orange-500/10 text-orange-400" />
-                  <StatCard label="Listings"        value={data.stats.totalListings}   icon={BarChart3}  color="bg-blue-500/10 text-blue-400" />
-                  <StatCard label="Total Revenue"   value="₹—"                         icon={Database}   color="bg-amber-500/10 text-amber-400" sub="Marketplace volume" />
+                  <StatCard label="Total Users" value={data.stats.totalUsers} icon={Users} color="bg-blue-500/10 text-blue-400" />
+                  <StatCard label="Total Products" value={data.stats.totalProducts} icon={Package} color="bg-emerald-500/10 text-emerald-400" />
+                  <StatCard label="Active Products" value={data.stats.activeProducts} icon={Activity} color="bg-emerald-500/10 text-emerald-400" sub={data.stats.listedProducts + " listed"} />
+                  <StatCard label="Total Transfers" value={data.stats.totalTransfers} icon={TrendingUp} color="bg-violet-500/10 text-violet-400" />
+                  <StatCard label="Unclaimed" value={data.stats.unclaimedProducts} icon={Clock} color="bg-zinc-500/10 text-zinc-400" />
+                  <StatCard label="Repair Logs" value={data.stats.totalRepairs} icon={Settings} color="bg-orange-500/10 text-orange-400" />
+                  <StatCard label="Listings" value={data.stats.totalListings} icon={BarChart3} color="bg-blue-500/10 text-blue-400" />
+                  <StatCard label="Total Revenue" value="₹—" icon={Database} color="bg-amber-500/10 text-amber-400" sub="Marketplace volume" />
                 </div>
 
                 <div className="grid lg:grid-cols-2 gap-4">
@@ -380,11 +416,11 @@ export default function AdminDashboardPage() {
                       {data.statusBreakdown.map((item) => {
                         const pct = Math.round((item._count.status / data.stats.totalProducts) * 100) || 0;
                         const color = ({
-                          ACTIVE:      "bg-emerald-500/60",
-                          LISTED:      "bg-blue-500/60",
-                          UNCLAIMED:   "bg-zinc-500/40",
+                          ACTIVE: "bg-emerald-500/60",
+                          LISTED: "bg-blue-500/60",
+                          UNCLAIMED: "bg-zinc-500/40",
                           TRANSFERRED: "bg-violet-500/60",
-                          RETIRED:     "bg-red-500/60",
+                          RETIRED: "bg-red-500/60",
                         } as Record<string, string>)[item.status] ?? "bg-zinc-500/40";
                         return (
                           <div key={item.status}>
@@ -409,10 +445,9 @@ export default function AdminDashboardPage() {
                   <div className="divide-y divide-[#141414]">
                     {data.recentActions.map((action) => (
                       <div key={action.id} className="px-4 sm:px-5 py-3 flex items-start gap-3">
-                        <div className={`w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 ${
-                          action.actionType === "PRODUCT_VERIFIED" ? "bg-emerald-500/10" :
-                          action.actionType === "PRODUCT_FLAGGED"  ? "bg-red-500/10"     : "bg-zinc-500/10"
-                        }`}>
+                        <div className={`w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 ${action.actionType === "PRODUCT_VERIFIED" ? "bg-emerald-500/10" :
+                          action.actionType === "PRODUCT_FLAGGED" ? "bg-red-500/10" : "bg-zinc-500/10"
+                          }`}>
                           {action.actionType === "PRODUCT_VERIFIED" ? (
                             <CheckCircle2 className="w-3 h-3 text-emerald-400" />
                           ) : action.actionType === "PRODUCT_FLAGGED" ? (
@@ -483,9 +518,9 @@ export default function AdminDashboardPage() {
                           </td>
                           <td>
                             <span className={"badge " + (
-                              product.status === "ACTIVE"      ? "badge-active"      :
-                              product.status === "LISTED"      ? "badge-listed"      :
-                              product.status === "UNCLAIMED"   ? "badge-unclaimed"   : "badge-transferred"
+                              product.status === "ACTIVE" ? "badge-active" :
+                                product.status === "LISTED" ? "badge-listed" :
+                                  product.status === "UNCLAIMED" ? "badge-unclaimed" : "badge-transferred"
                             )}>
                               {product.status}
                             </span>
@@ -604,8 +639,19 @@ export default function AdminDashboardPage() {
                         }}
                         className="input-base text-sm"
                       >
-                        {["LAPTOP", "PHONE", "GAMING_CONSOLE", "CYCLE", "APPLIANCE", "ACADEMIC_EQUIPMENT", "OTHER"].map((c) => (
-                          <option key={c} value={c}>{c.replace(/_/g, " ")}</option>
+                        {[
+                          "BLANK_QR",
+                          "LAPTOP",
+                          "PHONE",
+                          "GAMING_CONSOLE",
+                          "CYCLE",
+                          "APPLIANCE",
+                          "ACADEMIC_EQUIPMENT",
+                          "OTHER",
+                        ].map((c) => (
+                          <option key={c} value={c}>
+                            {c === "BLANK_QR" ? "Blank QR" : c.replace(/_/g, " ")}
+                          </option>
                         ))}
                       </select>
                     </div>
@@ -633,33 +679,35 @@ export default function AdminDashboardPage() {
                     )}
 
                     {/* Product Name */}
-                    <div className="sm:col-span-2">
-                      <label className="block text-xs font-semibold text-zinc-400 mb-2">{getNameLabel()}</label>
-                      <input
-                        type="text"
-                        value={newQr.name}
-                        onChange={(e) => {
-                          setNewQr({ ...newQr, name: e.target.value });
-                          if (formErrors.name) setFormErrors({ ...formErrors, name: "" });
-                        }}
-                        placeholder={getNamePlaceholder()}
-                        className={"input-base text-sm " + (formErrors.name ? "border-red-500/40 focus:border-red-500" : "")}
-                      />
-                      {formErrors.name ? (
-                        <p className="text-[11px] text-red-400 mt-1.5 flex items-center gap-1">
-                          <AlertTriangle className="w-3 h-3" />
-                          {formErrors.name}
-                        </p>
-                      ) : (
-                        <p className="text-[11px] text-zinc-600 mt-1.5">
-                          {newQr.category === "ACADEMIC_EQUIPMENT" && newQr.subType === "BOOK"
-                            ? "Enter the full title of the textbook."
-                            : newQr.category === "CYCLE"
-                            ? "Enter the complete brand and model name of the bicycle."
-                            : "This is the primary identity of the product across EcoXchange."}
-                        </p>
-                      )}
-                    </div>
+                    {newQr.category !== "BLANK_QR" && (
+                      <div className="sm:col-span-2">
+                        <label className="block text-xs font-semibold text-zinc-400 mb-2">{getNameLabel()}</label>
+                        <input
+                          type="text"
+                          value={newQr.name}
+                          onChange={(e) => {
+                            setNewQr({ ...newQr, name: e.target.value });
+                            if (formErrors.name) setFormErrors({ ...formErrors, name: "" });
+                          }}
+                          placeholder={getNamePlaceholder()}
+                          className={"input-base text-sm " + (formErrors.name ? "border-red-500/40 focus:border-red-500" : "")}
+                        />
+                        {formErrors.name ? (
+                          <p className="text-[11px] text-red-400 mt-1.5 flex items-center gap-1">
+                            <AlertTriangle className="w-3 h-3" />
+                            {formErrors.name}
+                          </p>
+                        ) : (
+                          <p className="text-[11px] text-zinc-600 mt-1.5">
+                            {newQr.category === "ACADEMIC_EQUIPMENT" && newQr.subType === "BOOK"
+                              ? "Enter the full title of the textbook."
+                              : newQr.category === "CYCLE"
+                                ? "Enter the complete brand and model name of the bicycle."
+                                : "This is the primary identity of the product across EcoXchange."}
+                          </p>
+                        )}
+                      </div>
+                    )}
 
                     {/* Laptop Fields */}
                     {newQr.category === "LAPTOP" && (
@@ -718,45 +766,45 @@ export default function AdminDashboardPage() {
                     {/* Instruments Fields: Calculator, Drafter, Sheet Holder, Rolling Scale + Phone/Gaming/Appliance/Other */}
                     {(["PHONE", "GAMING_CONSOLE", "APPLIANCE", "OTHER"].includes(newQr.category) ||
                       (newQr.category === "ACADEMIC_EQUIPMENT" && INSTRUMENT_SUBTYPES.includes(newQr.subType) && newQr.subType !== "BOOK")) && (
-                      <>
-                        <div className="animate-fade-in">
-                          <label className="block text-xs font-semibold text-zinc-400 mb-2">Brand</label>
-                          <input
-                            type="text"
-                            value={newQr.brand}
-                            onChange={(e) => setNewQr({ ...newQr, brand: e.target.value })}
-                            placeholder={
-                              newQr.subType === "DRAFTER"       ? "e.g. Staedtler, Rotring" :
-                              newQr.subType === "SHEET_HOLDER"  ? "e.g. Aristo, Helix" :
-                              newQr.subType === "ROLLING_SCALE" ? "e.g. Rotring, Staedtler" :
-                              "e.g. Sony, JBL, Casio"
-                            }
-                            className="input-base text-sm"
-                          />
-                        </div>
-                        <div className="animate-fade-in">
-                          <label className="block text-xs font-semibold text-zinc-400 mb-2">Model</label>
-                          <input
-                            type="text"
-                            value={newQr.model}
-                            onChange={(e) => setNewQr({ ...newQr, model: e.target.value })}
-                            placeholder={
-                              newQr.subType === "DRAFTER"       ? "e.g. Mars 550, TZ-12" :
-                              newQr.subType === "SHEET_HOLDER"  ? "e.g. A1 Portrait Holder" :
-                              newQr.subType === "ROLLING_SCALE" ? "e.g. 60cm Parallel Ruler" :
-                              "e.g. WH-1000XM5, Flip 6, FX-991ES"
-                            }
-                            className="input-base text-sm"
-                          />
-                        </div>
-                        {newQr.category !== "ACADEMIC_EQUIPMENT" && (
-                          <div className="sm:col-span-2 animate-fade-in">
-                            <label className="block text-xs font-semibold text-zinc-400 mb-2">Warranty Info</label>
-                            <input type="text" value={newQr.warranty} onChange={(e) => setNewQr({ ...newQr, warranty: e.target.value })} placeholder="e.g. 1 Year Seller Warranty" className="input-base text-sm" />
+                        <>
+                          <div className="animate-fade-in">
+                            <label className="block text-xs font-semibold text-zinc-400 mb-2">Brand</label>
+                            <input
+                              type="text"
+                              value={newQr.brand}
+                              onChange={(e) => setNewQr({ ...newQr, brand: e.target.value })}
+                              placeholder={
+                                newQr.subType === "DRAFTER" ? "e.g. Staedtler, Rotring" :
+                                  newQr.subType === "SHEET_HOLDER" ? "e.g. Aristo, Helix" :
+                                    newQr.subType === "ROLLING_SCALE" ? "e.g. Rotring, Staedtler" :
+                                      "e.g. Sony, JBL, Casio"
+                              }
+                              className="input-base text-sm"
+                            />
                           </div>
-                        )}
-                      </>
-                    )}
+                          <div className="animate-fade-in">
+                            <label className="block text-xs font-semibold text-zinc-400 mb-2">Model</label>
+                            <input
+                              type="text"
+                              value={newQr.model}
+                              onChange={(e) => setNewQr({ ...newQr, model: e.target.value })}
+                              placeholder={
+                                newQr.subType === "DRAFTER" ? "e.g. Mars 550, TZ-12" :
+                                  newQr.subType === "SHEET_HOLDER" ? "e.g. A1 Portrait Holder" :
+                                    newQr.subType === "ROLLING_SCALE" ? "e.g. 60cm Parallel Ruler" :
+                                      "e.g. WH-1000XM5, Flip 6, FX-991ES"
+                              }
+                              className="input-base text-sm"
+                            />
+                          </div>
+                          {newQr.category !== "ACADEMIC_EQUIPMENT" && (
+                            <div className="sm:col-span-2 animate-fade-in">
+                              <label className="block text-xs font-semibold text-zinc-400 mb-2">Warranty Info</label>
+                              <input type="text" value={newQr.warranty} onChange={(e) => setNewQr({ ...newQr, warranty: e.target.value })} placeholder="e.g. 1 Year Seller Warranty" className="input-base text-sm" />
+                            </div>
+                          )}
+                        </>
+                      )}
                   </div>
 
                   <button
@@ -766,7 +814,9 @@ export default function AdminDashboardPage() {
                     id="generate-qr-btn"
                   >
                     {generatingQr ? <Loader2 className="w-4 h-4 animate-spin" /> : <QrCode className="w-4 h-4" />}
-                    Generate QR + DPP-ID
+                    {newQr.category === "BLANK_QR"
+                      ? "Generate Blank QR"
+                      : "Generate QR + DPP-ID"}
                   </button>
                 </div>
 
@@ -814,6 +864,6 @@ export default function AdminDashboardPage() {
           </div>
         </div>
       </div>
-    </div>
+    </div >
   );
 }

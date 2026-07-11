@@ -1,10 +1,14 @@
+import "dotenv/config";
 import { defineConfig } from "prisma/config";
 
-// Used by Prisma CLI only (db push, migrate, generate)
-// Runtime client reads URL via PrismaPg adapter in src/lib/prisma.ts
+const schema = process.env.PRISMA_SCHEMA ?? "prisma/schema.prisma";
+
 export default defineConfig({
-  schema: "prisma/schema.prisma",
+  schema,
   datasource: {
-    url: process.env.DIRECT_URL ?? process.env.DATABASE_URL ?? "postgresql://postgres.cjinnwjtxlxyhrbbkutz:Ankitech%40999@aws-1-ap-south-1.pooler.supabase.com:5432/postgres",
+    url:
+      schema === "prisma/qr-schema.prisma"
+        ? process.env.QR_DIRECT_URL ?? process.env.QR_DATABASE_URL ?? ""
+        : process.env.DIRECT_URL ?? process.env.DATABASE_URL ?? "",
   },
 });
