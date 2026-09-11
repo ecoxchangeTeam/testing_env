@@ -604,21 +604,154 @@ function CtaSection() {
 }
 
 // ─────────────────────────────────────────────
+// SOCIAL ICONS (lucide-react 1.0 removed brand icons)
+// ─────────────────────────────────────────────
+function InstagramIcon({ className }: { className?: string }) {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className={className}
+    >
+      <rect x="2" y="2" width="20" height="20" rx="5" ry="5" />
+      <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" />
+      <line x1="17.5" y1="6.5" x2="17.51" y2="6.5" />
+    </svg>
+  );
+}
+
+function LinkedinIcon({ className }: { className?: string }) {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className={className}
+    >
+      <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z" />
+      <rect x="2" y="9" width="4" height="12" />
+      <circle cx="4" cy="4" r="2" />
+    </svg>
+  );
+}
+
+// ─────────────────────────────────────────────
 // FOOTER
 // ─────────────────────────────────────────────
 function Footer() {
+  const columns = [
+    {
+      title: "About",
+      links: [
+        { label: "Our Story", href: "/#how-it-works" },
+        { label: "How It Works", href: "/#how-it-works" },
+        { label: "Trust Score", href: "/verified" },
+        { label: "Careers", href: "mailto:hello@ecoxchange.app" },
+      ],
+    },
+    {
+      title: "Campus Network",
+      links: [
+        { label: "DTU", href: "/marketplace" },
+        { label: "NSUT", href: "/marketplace" },
+        { label: "CampusKartt", href: "https://www.campuskartt.in" },
+      ],
+    },
+    {
+      title: "Help",
+      links: [
+        { label: "Marketplace", href: "/marketplace" },
+        { label: "Repairs", href: "/repairs" },
+        { label: "Lost Products", href: "/lost-products" },
+        { label: "FAQ", href: "/#how-it-works" },
+      ],
+    },
+    {
+      title: "Policy",
+      links: [
+        { label: "EcoX Verified", href: "/verified" },
+        { label: "Terms Of Use", href: "/terms" },
+        { label: "Privacy", href: "/privacy" },
+        { label: "Passport Lookup", href: "/passport" },
+      ],
+    },
+  ];
+
   return (
-    <footer className="border-t border-[#141414] py-12">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
-          <div className="flex items-center gap-4">
-            <Logo height={22} />
-            <span className="text-zinc-600 text-sm border-l border-zinc-800 pl-4 py-0.5">
-              Digital Product Passport Infrastructure
-            </span>
+    <footer className="border-t border-[#141414] bg-[#050505]">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-14">
+        <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-6 gap-10">
+          {columns.map((col) => (
+            <div key={col.title}>
+              <h4 className="mono-tag text-zinc-600 mb-4">{col.title}</h4>
+              <ul className="space-y-2.5">
+                {col.links.map((link) => (
+                  <li key={link.label}>
+                    <Link
+                      href={link.href}
+                      className="text-sm text-zinc-400 hover:text-emerald-400 transition-colors"
+                    >
+                      {link.label}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))}
+
+          <div className="col-span-2">
+            <h4 className="mono-tag text-zinc-600 mb-4">Mail Us</h4>
+            <p className="text-sm text-zinc-400 leading-relaxed">
+              EcoXchange,
+              <br />
+              New Delhi, India
+            </p>
+            <a
+              href="mailto:ecoxchangeTeam@gmail.com"
+              className="text-sm text-zinc-400 hover:text-emerald-400 transition-colors mt-2 inline-block"
+            >
+              founder@ecoxchange.co.in
+            </a>
           </div>
-          <div className="text-zinc-600 text-xs">
-            © 2024 EcoXchange. Built for DTU & NSUT campus ecosystems.
+
+          <div className="col-span-2">
+            <h4 className="mono-tag text-zinc-600 mb-4">Connect</h4>
+            <div className="flex items-center gap-3">
+              {[
+                { Icon: InstagramIcon, href: "https://www.instagram.com/ecoxchange.pvt.ltd/" },
+                { Icon: LinkedinIcon, href: "https://www.linkedin.com/company/ecoxchange-%E2%80%93-dpp-infrastructure/" },
+                { Icon: Globe, href: "https://www.campuskartt.in" },
+               
+              ].map(({ Icon, href }, i) => (
+                <a
+                  key={i}
+                  href={href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-8 h-8 rounded-full border border-zinc-800 flex items-center justify-center text-zinc-500 hover:text-emerald-400 hover:border-emerald-500/40 transition-colors"
+                >
+                  <Icon className="w-4 h-4" />
+                </a>
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div className="border-t border-[#141414]">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 flex flex-col sm:flex-row items-center justify-between gap-4">
+          <Link href="/" className="flex items-center">
+            <Logo height={20} />
+          </Link>
+          <div className="text-zinc-600 text-xs text-center">
+            © 2024 EcoXchange.
           </div>
         </div>
       </div>

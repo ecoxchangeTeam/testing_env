@@ -1,6 +1,7 @@
 import NextAuth from "next-auth";
 import { PrismaAdapter } from "@auth/prisma-adapter";
 import CredentialsProvider from "next-auth/providers/credentials";
+import GoogleProvider from "next-auth/providers/google";
 import { prisma } from "@/lib/prisma";
 import { compare, hash } from "bcryptjs";
 import type { NextAuthOptions } from "next-auth";
@@ -14,6 +15,15 @@ export const authOptions: NextAuthOptions = {
     error: "/sign-in",
   },
   providers: [
+    GoogleProvider({
+      clientId: process.env.GOOGLE_CLIENT_ID as string,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET as string,
+      // A user who originally signed up with email/password and later hits
+      // "Continue with Google" using the same address gets linked to their
+      // existing account instead of a blocked "account not linked" error.
+      // Safe here because Google only reports emails it has verified.
+      allowDangerousEmailAccountLinking: true,
+    }),
     CredentialsProvider({
       name: "credentials",
       credentials: {
@@ -79,6 +89,18 @@ export const authOptions: NextAuthOptions = {
     }),
   ],
   callbacks: {
+    async signIn({ user, account }) {
+      // Credentials provider already checks suspension inside authorize().
+      // For OAuth providers (Google), enforce it here too.
+      if (account?.provider === "google") {
+        const existing = await prisma.user.findUnique({
+          where: { email: user.email as string },
+          select: { isSuspended: true },
+        });
+        if (existing?.isSuspended) return false;
+      }
+      return true;
+    },
     async jwt({ token, user }) {
       if (user) {
         token.id = user.id;

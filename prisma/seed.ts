@@ -1,3 +1,4 @@
+import "dotenv/config";
 import { PrismaClient } from "@prisma/client";
 import type { ProductCategory as PrismaProductCategory } from "@prisma/client";
 const ProductCategory = {

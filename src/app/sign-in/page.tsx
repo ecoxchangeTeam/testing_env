@@ -27,6 +27,8 @@ function SignInForm() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
+  const [googleLoading, setGoogleLoading] = useState(false);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
@@ -52,6 +54,11 @@ function SignInForm() {
     }
   };
 
+  const handleGoogleSignIn = () => {
+    setGoogleLoading(true);
+    signIn("google", { callbackUrl });
+  };
+
   return (
     <div className="min-h-[100svh] flex items-center justify-center px-4 py-10 dot-grid">
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
@@ -72,6 +79,46 @@ function SignInForm() {
             <p className="text-sm text-zinc-500">
               Sign in to your EcoXchange account
             </p>
+          </div>
+
+          <button
+            type="button"
+            onClick={handleGoogleSignIn}
+            disabled={googleLoading}
+            className="w-full flex items-center justify-center gap-2 py-2.5 px-4 rounded-lg bg-white text-black font-semibold text-[14px] hover:bg-zinc-100 transition-all disabled:opacity-60 disabled:cursor-not-allowed"
+            id="google-sign-in-btn"
+          >
+            {googleLoading ? (
+              <Loader2 className="w-4 h-4 animate-spin" />
+            ) : (
+              <>
+                <svg className="w-4 h-4" viewBox="0 0 24 24">
+                  <path
+                    fill="#4285F4"
+                    d="M23.52 12.27c0-.82-.07-1.6-.2-2.36H12v4.47h6.47c-.28 1.5-1.13 2.78-2.4 3.63v3.02h3.88c2.27-2.09 3.57-5.17 3.57-8.76z"
+                  />
+                  <path
+                    fill="#34A853"
+                    d="M12 24c3.24 0 5.96-1.07 7.95-2.9l-3.88-3.02c-1.08.72-2.45 1.15-4.07 1.15-3.13 0-5.78-2.11-6.73-4.96H1.26v3.11C3.24 21.3 7.3 24 12 24z"
+                  />
+                  <path
+                    fill="#FBBC05"
+                    d="M5.27 14.27a7.2 7.2 0 0 1 0-4.54V6.62H1.26a12 12 0 0 0 0 10.76l4.01-3.11z"
+                  />
+                  <path
+                    fill="#EA4335"
+                    d="M12 4.77c1.76 0 3.35.61 4.6 1.8l3.44-3.44C17.95 1.19 15.24 0 12 0 7.3 0 3.24 2.7 1.26 6.62l4.01 3.11C6.22 6.88 8.87 4.77 12 4.77z"
+                  />
+                </svg>
+                Continue with Google
+              </>
+            )}
+          </button>
+
+          <div className="flex items-center gap-3 my-5">
+            <div className="h-px flex-1 bg-[#1f1f1f]" />
+            <span className="text-xs text-zinc-600">or</span>
+            <div className="h-px flex-1 bg-[#1f1f1f]" />
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-4">
