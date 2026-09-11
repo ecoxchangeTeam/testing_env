@@ -222,3 +222,4 @@ In Supabase Dashboard → Storage, create these public buckets:
 - Same QR persists forever — even after ownership transfers  
 - Trust score calculated from: verified invoice + admin check + repair transparency + ownership count  
 - Ownership history is append-only — nothing can be deleted
+"# testing_env" 
