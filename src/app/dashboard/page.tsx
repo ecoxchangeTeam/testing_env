@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
@@ -17,6 +17,7 @@ import {
 } from "lucide-react";
 
 import { Navbar } from "@/components/layout/navbar";
+import { AddProductWizard } from "@/components/dashboard/add-product-flow/add-product-wizard";
 import {
   formatDate,
   formatCurrency,
@@ -48,25 +49,39 @@ export default function DashboardPage() {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
 
+  const [isAddProductOpen, setIsAddProductOpen] = useState(false);
+
   useEffect(() => {
-    if (status === "unauthenticated") router.push("/sign-in");
+    if (status === "unauthenticated") {
+      router.replace("/sign-in");
+    }
   }, [status, router]);
 
   useEffect(() => {
-    if (!session?.user?.id) return;
-    async function fetchProducts() {
-      try {
-        const res = await fetch("/api/user/products");
-        if (res.ok) {
-          const data = await res.json();
-          setProducts(data.products);
-        }
-      } finally {
-        setLoading(false);
+    if (typeof window !== "undefined") {
+      const hash = window.location.hash;
+      if (hash.startsWith("#add-") || hash.startsWith("#step-")) {
+        setIsAddProductOpen(true);
       }
     }
+  }, []);
+
+  const fetchProducts = useCallback(async () => {
+    if (!session?.user?.id) return;
+    try {
+      const res = await fetch("/api/user/products");
+      if (res.ok) {
+        const data = await res.json();
+        setProducts(data.products);
+      }
+    } finally {
+      setLoading(false);
+    }
+  }, [session?.user?.id]);
+
+  useEffect(() => {
     fetchProducts();
-  }, [session]);
+  }, [fetchProducts]);
 
   if (status === "loading" || loading) {
     return (
@@ -93,13 +108,14 @@ export default function DashboardPage() {
               Manage your digital product passports
             </p>
           </div>
-          <Link
-            href="/admin?section=qr"
-            className="flex items-center justify-center gap-2 px-4 py-2 rounded-xl border border-dashed border-[#2a2a2a] text-zinc-500 hover:border-zinc-600 hover:text-zinc-300 text-sm transition-all sm:w-auto"
+          <button
+            type="button"
+            onClick={() => setIsAddProductOpen(true)}
+            className="flex items-center justify-center gap-2 px-4 py-2 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 hover:bg-emerald-500/20 hover:border-emerald-500/50 text-sm font-medium transition-all shadow-[0_0_15px_rgba(16,185,129,0.15)] sm:w-auto"
           >
             <Plus className="w-4 h-4" />
             Scan / Add Product
-          </Link>
+          </button>
         </div>
 
         {/* Stats row */}
@@ -271,6 +287,12 @@ export default function DashboardPage() {
           </div>
         )}
       </div>
+
+      <AddProductWizard
+        isOpen={isAddProductOpen}
+        onClose={() => setIsAddProductOpen(false)}
+        onProductCreated={fetchProducts}
+      />
     </div>
   );
 }

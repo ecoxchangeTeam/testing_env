@@ -50,16 +50,13 @@ model QRRecord {
 }
 
 model QRInventory {
-  id String @id @default(cuid())
-
-  dppId  String @unique
-  status String
-
-  category String?
-  name     String?
-  brand    String?
-  model    String?
-
+  id        String   @id @default(cuid())
+  dppId     String   @unique
+  status    String
+  category  String?
+  name      String?
+  brand     String?
+  model     String?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
