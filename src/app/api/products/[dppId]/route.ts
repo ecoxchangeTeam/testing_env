@@ -35,5 +35,28 @@ export async function GET(
     return NextResponse.json({ error: "Product not found" }, { status: 404 });
   }
 
-  return NextResponse.json({ product });
+  let parsedMlEvaluation = product.mlEvaluation;
+  if (typeof parsedMlEvaluation === "string") {
+    try {
+      parsedMlEvaluation = JSON.parse(parsedMlEvaluation);
+    } catch {
+      // keep as is
+    }
+  }
+  if (
+    parsedMlEvaluation &&
+    typeof parsedMlEvaluation === "object" &&
+    (parsedMlEvaluation as any).mlEvaluation
+  ) {
+    parsedMlEvaluation = (parsedMlEvaluation as any).mlEvaluation;
+  }
+
+  const formattedProduct = {
+    ...product,
+    totalRamMb: product.totalRamMb ? Number(product.totalRamMb) : null,
+    availableRamMb: product.availableRamMb ? Number(product.availableRamMb) : null,
+    mlEvaluation: parsedMlEvaluation,
+  };
+
+  return NextResponse.json({ product: formattedProduct });
 }

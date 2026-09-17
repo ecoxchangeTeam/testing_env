@@ -67,6 +67,7 @@ export interface AddProductFormData {
   receiptAvailability: ReceiptAvailability | "";
   serviceRecordFile?: File | null;
   serviceRecordFileName?: string;
+  productImages?: File[];
 
   // Step 3 Section C: Device Diagnostics & Defects
   selectedDefects: string[];
@@ -78,4 +79,12 @@ export interface AddProductFormData {
   qrSvgContent?: string;
   timestamp?: string;
   hash?: string;
+
+  // ML Evaluation Intelligence
+  appVerified?: boolean;
+  riskLevel?: "LOW" | "MEDIUM" | "HIGH" | string;
+  estimatedPrice?: number;
+  manualVerificationReq?: boolean;
+  mlEvaluation?: Record<string, any> | null;
+  evaluationError?: string | null;
 }

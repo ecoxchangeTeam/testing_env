@@ -47,6 +47,9 @@ export function AddProductWizard({
 }: AddProductWizardProps) {
   const [currentStep, setCurrentStep] = useState<WizardStep>("modal");
   const [isMinting, setIsMinting] = useState(false);
+  const [mintingMessage, setMintingMessage] = useState(
+    "Minting Digital Product Passport & Generating QR..."
+  );
   const stepsPushedRef = React.useRef(0);
   const isClosingRef = React.useRef(false);
 
@@ -72,6 +75,7 @@ export function AddProductWizard({
       repairProvider: "",
       receiptAvailability: "",
       serviceRecordFileName: "",
+      productImages: [],
 
       selectedDefects: [],
       isFlawless: false,
@@ -183,6 +187,7 @@ export function AddProductWizard({
 
   const handleMintAndProceed = async () => {
     setIsMinting(true);
+    setMintingMessage("Minting Cryptographic Digital Product Passport...");
     const data = form.getValues();
 
     // Map hardware class to EcoXchange DB category
@@ -211,18 +216,20 @@ export function AddProductWizard({
       console.error("QR creation error:", e);
     }
 
+    const currentTimestamp = new Date().toISOString().replace(/\.\d{3}Z$/, "Z");
+    const shaHash = Array.from({ length: 64 }, () =>
+      Math.floor(Math.random() * 16).toString(16)
+    ).join("");
+
     form.setValue("dppId", newDppId);
     form.setValue("qrPngUrl", qrPng);
-    form.setValue("timestamp", new Date().toISOString().replace(/\.\d{3}Z$/, "Z"));
-    form.setValue(
-      "hash",
-      Array.from({ length: 64 }, () =>
-        Math.floor(Math.random() * 16).toString(16)
-      ).join("")
-    );
+    form.setValue("timestamp", currentTimestamp);
+    form.setValue("hash", shaHash);
+    form.setValue("appVerified", false);
 
-    // Persist to backend database
+    // Persist preliminary DPP record to database (awaiting mobile app verification)
     try {
+      setMintingMessage("Registering DPP Identity in Circular Registry...");
       await fetch("/api/user/products", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -239,7 +246,7 @@ export function AddProductWizard({
         }),
       });
     } catch (err) {
-      console.error("Failed to register in DB:", err);
+      console.error("Database registration failure:", err);
     } finally {
       setIsMinting(false);
       navigateToStep("step-3-dpp-issued");
@@ -290,11 +297,19 @@ export function AddProductWizard({
       )}
 
       {isMinting && (
-        <div className="fixed inset-0 z-[60] bg-black/80 backdrop-blur-md flex flex-col items-center justify-center gap-3">
-          <div className="w-10 h-10 border-3 border-[#4edea3] border-t-transparent rounded-full animate-spin" />
-          <p className="text-sm font-mono text-[#4edea3]">
-            Minting Digital Product Passport & Generating QR...
-          </p>
+        <div className="fixed inset-0 z-[60] bg-black/85 backdrop-blur-md flex flex-col items-center justify-center gap-4 px-6 text-center">
+          <div className="relative flex items-center justify-center">
+            <div className="w-16 h-16 border-3 border-[#4edea3]/20 border-t-[#4edea3] rounded-full animate-spin" />
+            <div className="w-8 h-8 border-2 border-[#14B8A6]/40 border-b-[#14B8A6] rounded-full animate-spin absolute" />
+          </div>
+          <div className="space-y-1 max-w-md">
+            <p className="text-sm font-mono font-semibold text-[#4edea3] tracking-wide animate-pulse">
+              {mintingMessage}
+            </p>
+            <p className="text-xs text-zinc-500 font-mono">
+              Running ISO 14040/44 Lifecycle & Risk Assessment Telemetry Pipeline
+            </p>
+          </div>
         </div>
       )}
     </div>

@@ -1,6 +1,3 @@
-// EcoXchange — Digital Product Passport Platform
-// Prisma Schema v1.0
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -9,9 +6,326 @@ datasource db {
   provider = "postgresql"
 }
 
-// ─────────────────────────────────────────────
-// ENUMS
-// ─────────────────────────────────────────────
+model User {
+  id               String               @id @default(cuid())
+  name             String
+  email            String               @unique
+  emailVerified    DateTime?
+  image            String?
+  college          String?
+  phone            String?
+  trustScore       Float                @default(50.0)
+  isAdmin          Boolean              @default(false)
+  isSuspended      Boolean              @default(false)
+  createdAt        DateTime             @default(now())
+  updatedAt        DateTime             @updatedAt
+  accounts         Account[]
+  adminActions     AdminAction[]        @relation("AdminUser")
+  lostProducts     LostProduct[]
+  sellerListings   MarketplaceListing[] @relation("SellerListings")
+  ownershipHistory OwnershipHistory[]   @relation("HistoryOwner")
+  ownedProducts    Product[]            @relation("CurrentOwner")
+  repairLogsAdded  RepairLog[]
+  sessions         Session[]
+  transfersTo      TransferRequest[]    @relation("TransferBuyer")
+  transfersFrom    TransferRequest[]    @relation("TransferSeller")
+
+  @@index([email])
+  @@index([trustScore])
+  @@map("users")
+}
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String?
+  access_token      String?
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?
+  session_state     String?
+  user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+  @@map("accounts")
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("sessions")
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+  @@map("verification_tokens")
+}
+
+model Product {
+  id                    String               @id @default(cuid())
+  dppId                 String               @unique
+  qrCodeUrl             String?
+  qrCodeSvg             String?
+  category              ProductCategory
+  name                  String               @default("")
+  brand                 String?
+  model                 String?
+  serialNumber          String?
+  color                 String?
+  yearOfPurchase        Int?
+  author                String?
+  edition               String?
+  isbn                  String?
+  warranty              String?
+  frameNumber           String?
+  status                ProductStatus        @default(UNCLAIMED)
+  conditionScore        Float                @default(100.0)
+  trustScore            Float                @default(0.0)
+  isVerified            Boolean              @default(false)
+  isFlagged             Boolean              @default(false)
+  currentOwnerId        String?
+  activatedAt           DateTime?
+  createdAt             DateTime             @default(now())
+  updatedAt             DateTime             @updatedAt
+  estimatedPrice        Float?
+  manualVerificationReq Boolean              @default(false)
+  mlEvaluation          Json?
+  riskLevel             String?
+
+  // Mobile App Verification & Telemetry
+  appVerified           Boolean              @default(false) @map("app_verified")
+  appVerifiedAt         DateTime?            @map("app_verified_at")
+  verifiedBy            String?              @map("verified_by")
+
+  // Device Identity
+  deviceManufacturer    String?              @map("device_manufacturer")
+  deviceBrand           String?              @map("device_brand")
+  deviceModelNo         String?              @map("device_model_no")
+  deviceCodename        String?              @map("device_codename")
+  androidVersion        String?              @map("android_version")
+  sdkVersion            Int?                 @map("sdk_version")
+  securityPatch         String?              @map("security_patch")
+  buildFingerprint      String?              @map("build_fingerprint")
+  buildType             String?              @map("build_type")
+
+  // CPU
+  cpuArchitecture       String?              @map("cpu_architecture")
+  cpuCores              Int?                 @map("cpu_cores")
+
+  // Memory
+  totalRamMb            BigInt?              @map("total_ram_mb")
+  availableRamMb        BigInt?              @map("available_ram_mb")
+
+  // Storage
+  totalStorageGb        Float?               @map("total_storage_gb")
+  availableStorageGb    Float?               @map("available_storage_gb")
+
+  // Display
+  screenWidthPx         Int?                 @map("screen_width_px")
+  screenHeightPx        Int?                 @map("screen_height_px")
+  screenDensityDpi      Int?                 @map("screen_density_dpi")
+
+  // Battery
+  batteryPct            Int?                 @map("battery_pct")
+  batteryHealth         String?              @map("battery_health")
+  batteryTempC          Float?               @map("battery_temp_c")
+  batteryVoltageMv      Int?                 @map("battery_voltage_mv")
+  chargingStatus        String?              @map("charging_status")
+  batteryTechnology     String?              @map("battery_technology")
+
+  // Network
+  connectionType        String?              @map("connection_type")
+  wifiEnabled           Boolean?             @map("wifi_enabled")
+  adminActions          AdminAction[]
+  lostRecords           LostProduct[]
+  listings              MarketplaceListing[]
+  ownershipHistory      OwnershipHistory[]
+  documents             ProductDocument[]
+  currentOwner          User?                @relation("CurrentOwner", fields: [currentOwnerId], references: [id])
+  repairLogs            RepairLog[]
+  transferRequests      TransferRequest[]
+
+  @@index([dppId])
+  @@index([status])
+  @@index([category])
+  @@index([currentOwnerId])
+  @@index([trustScore])
+  @@map("products")
+}
+
+model OwnershipHistory {
+  id              String   @id @default(cuid())
+  productId       String
+  previousOwnerId String?
+  newOwnerId      String
+  transferType    String   @default("ACTIVATION")
+  transferDate    DateTime @default(now())
+  notes           String?
+  transactionRef  String?
+  newOwner        User     @relation("HistoryOwner", fields: [newOwnerId], references: [id])
+  product         Product  @relation(fields: [productId], references: [id])
+
+  @@index([productId])
+  @@index([transferDate])
+  @@map("ownership_history")
+}
+
+model RepairLog {
+  id             String     @id @default(cuid())
+  productId      String
+  loggedById     String
+  repairType     RepairType
+  repairShop     String?
+  technicianName String?
+  repairNotes    String?
+  repairCost     Float?
+  receiptUrl     String?
+  isVerified     Boolean    @default(false)
+  createdAt      DateTime   @default(now())
+  loggedBy       User       @relation(fields: [loggedById], references: [id])
+  product        Product    @relation(fields: [productId], references: [id])
+
+  @@index([productId])
+  @@index([createdAt])
+  @@map("repair_logs")
+}
+
+model ProductDocument {
+  id           String       @id @default(cuid())
+  productId    String
+  documentType DocumentType
+  documentUrl  String
+  fileName     String?
+  fileSize     Int?
+  isVerified   Boolean      @default(false)
+  uploadedAt   DateTime     @default(now())
+  product      Product      @relation(fields: [productId], references: [id])
+
+  @@index([productId])
+  @@map("product_documents")
+}
+
+model MarketplaceListing {
+  id                 String           @id @default(cuid())
+  productId          String
+  sellerId           String?
+  askingPrice        Float
+  originalPrice      Float?
+  description        String?
+  condition          String?
+  listingStatus      ListingStatus    @default(ACTIVE)
+  viewCount          Int              @default(0)
+  createdAt          DateTime         @default(now())
+  updatedAt          DateTime         @updatedAt
+  expiresAt          DateTime?
+  soldAt             DateTime?
+  source             ListingSource    @default(ECOXCHANGE)
+  externalId         String?
+  externalUrl        String?
+  externalImage      String?
+  sellerLabel        String?
+  externalTrustScore Float?
+  product            Product          @relation(fields: [productId], references: [id])
+  seller             User?            @relation("SellerListings", fields: [sellerId], references: [id])
+  transfer           TransferRequest?
+
+  @@index([listingStatus])
+  @@index([productId])
+  @@index([sellerId])
+  @@index([createdAt])
+  @@map("marketplace_listings")
+}
+
+model TransferRequest {
+  id                String              @id @default(cuid())
+  productId         String
+  listingId         String?             @unique
+  sellerId          String
+  buyerId           String
+  status            TransferStatus      @default(PENDING)
+  offeredPrice      Float?
+  sellerConfirmedAt DateTime?
+  buyerConfirmedAt  DateTime?
+  expiresAt         DateTime
+  createdAt         DateTime            @default(now())
+  updatedAt         DateTime            @updatedAt
+  buyer             User                @relation("TransferBuyer", fields: [buyerId], references: [id])
+  listing           MarketplaceListing? @relation(fields: [listingId], references: [id])
+  product           Product             @relation(fields: [productId], references: [id])
+  seller            User                @relation("TransferSeller", fields: [sellerId], references: [id])
+
+  @@index([productId])
+  @@index([status])
+  @@index([sellerId])
+  @@index([buyerId])
+  @@map("transfer_requests")
+}
+
+model AdminAction {
+  id         String          @id @default(cuid())
+  adminId    String
+  productId  String?
+  actionType AdminActionType
+  notes      String?
+  metadata   Json?
+  createdAt  DateTime        @default(now())
+  admin      User            @relation("AdminUser", fields: [adminId], references: [id])
+  product    Product?        @relation(fields: [productId], references: [id])
+
+  @@index([adminId])
+  @@index([productId])
+  @@index([actionType])
+  @@index([createdAt])
+  @@map("admin_actions")
+}
+
+model LostProduct {
+  id          String            @id @default(cuid())
+  productId   String
+  ownerId     String
+  status      LostProductStatus @default(LOST)
+  lostAt      DateTime          @default(now())
+  foundAt     DateTime?
+  recoveredAt DateTime?
+  finderName  String?
+  finderEmail String?
+  finderPhone String?
+  notes       String?
+  createdAt   DateTime          @default(now())
+  updatedAt   DateTime          @updatedAt
+  owner       User              @relation(fields: [ownerId], references: [id])
+  product     Product           @relation(fields: [productId], references: [id])
+
+  @@index([productId])
+  @@index([status])
+  @@map("lost_products")
+}
+
+model QRInventory {
+  id        String   @id @default(cuid())
+  dppId     String   @unique
+  status    String
+  category  String?
+  name      String?
+  brand     String?
+  model     String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("qr_inventory")
+}
 
 enum ProductStatus {
   UNCLAIMED
@@ -86,345 +400,4 @@ enum RepairType {
   SCREEN
   WATER_DAMAGE
   OTHER
-}
-
-// ─────────────────────────────────────────────
-// USER
-// ─────────────────────────────────────────────
-
-model User {
-  id            String    @id @default(cuid())
-  name          String
-  email         String    @unique
-  emailVerified DateTime?
-  image         String?
-  college       String?
-  phone         String?
-  trustScore    Float     @default(50.0)
-  isAdmin       Boolean   @default(false)
-  isSuspended   Boolean   @default(false)
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
-
-  // Relations
-  accounts         Account[]
-  sessions         Session[]
-  ownedProducts    Product[]         @relation("CurrentOwner")
-  sellerListings   MarketplaceListing[] @relation("SellerListings")
-  transfersFrom    TransferRequest[] @relation("TransferSeller")
-  transfersTo      TransferRequest[] @relation("TransferBuyer")
-  repairLogsAdded  RepairLog[]
-  adminActions     AdminAction[]     @relation("AdminUser")
-  ownershipHistory OwnershipHistory[] @relation("HistoryOwner")
-
-  lostProducts LostProduct[]
-
-  @@index([email])
-  @@index([trustScore])
-  @@map("users")
-}
-
-// ─────────────────────────────────────────────
-// NEXTAUTH TABLES
-// ─────────────────────────────────────────────
-
-model Account {
-  id                String  @id @default(cuid())
-  userId            String
-  type              String
-  provider          String
-  providerAccountId String
-  refresh_token     String? @db.Text
-  access_token      String? @db.Text
-  expires_at        Int?
-  token_type        String?
-  scope             String?
-  id_token          String? @db.Text
-  session_state     String?
-
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  @@unique([provider, providerAccountId])
-  @@map("accounts")
-}
-
-model Session {
-  id           String   @id @default(cuid())
-  sessionToken String   @unique
-  userId       String
-  expires      DateTime
-
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  @@map("sessions")
-}
-
-model VerificationToken {
-  identifier String
-  token      String   @unique
-  expires    DateTime
-
-  @@unique([identifier, token])
-  @@map("verification_tokens")
-}
-
-// ─────────────────────────────────────────────
-// PRODUCT (Core Identity)
-// ─────────────────────────────────────────────
-
-model Product {
-  id             String          @id @default(cuid())
-  dppId          String          @unique  // ECO-LPT-2024-XXXXX
-  qrCodeUrl      String?                  // Immutable once set
-  qrCodeSvg      String?         @db.Text // SVG data stored inline
-  
-  // Product Details
-  category       ProductCategory
-  name           String          @default("")
-  brand          String?
-  model          String?
-  serialNumber   String?
-  color          String?
-  yearOfPurchase Int?
-  
-  // Category-specific details
-  author         String?
-  edition        String?
-  isbn           String?
-  warranty       String?
-  frameNumber    String?
-  
-  // Status & Scoring
-  status         ProductStatus   @default(UNCLAIMED)
-  conditionScore Float           @default(100.0)  // 0-100
-  trustScore     Float           @default(0.0)    // 0-100
-  isVerified     Boolean         @default(false)
-  isFlagged      Boolean         @default(false)
-  
-  // Ownership
-  currentOwnerId String?
-  currentOwner   User?           @relation("CurrentOwner", fields: [currentOwnerId], references: [id])
-  
-  activatedAt    DateTime?
-  createdAt      DateTime        @default(now())
-  updatedAt      DateTime        @updatedAt
-
-  // Relations
-  ownershipHistory   OwnershipHistory[]
-  repairLogs         RepairLog[]
-  documents          ProductDocument[]
-  listings           MarketplaceListing[]
-  transferRequests   TransferRequest[]
-  adminActions       AdminAction[]
-
-  lostRecords LostProduct[]
-
-  @@index([dppId])
-  @@index([status])
-  @@index([category])
-  @@index([currentOwnerId])
-  @@index([trustScore])
-  @@map("products")
-}
-
-// ─────────────────────────────────────────────
-// OWNERSHIP HISTORY (Append-only ledger)
-// ─────────────────────────────────────────────
-
-model OwnershipHistory {
-  id              String   @id @default(cuid())
-  productId       String
-  previousOwnerId String?
-  newOwnerId      String
-  transferType    String   @default("ACTIVATION")  // ACTIVATION | SALE | GIFT | ADMIN
-  transferDate    DateTime @default(now())
-  notes           String?
-  transactionRef  String?  // Listing ID if via marketplace
-
-  product       Product @relation(fields: [productId], references: [id])
-  newOwner      User    @relation("HistoryOwner", fields: [newOwnerId], references: [id])
-
-  @@index([productId])
-  @@index([transferDate])
-  @@map("ownership_history")
-}
-
-// ─────────────────────────────────────────────
-// REPAIR LOGS
-// ─────────────────────────────────────────────
-
-model RepairLog {
-  id          String     @id @default(cuid())
-  productId   String
-  loggedById  String
-  repairType  RepairType
-  repairShop  String?
-  technicianName String?
-  repairNotes String?    @db.Text
-  repairCost  Float?
-  receiptUrl  String?
-  isVerified  Boolean    @default(false)
-  createdAt   DateTime   @default(now())
-
-  product   Product @relation(fields: [productId], references: [id])
-  loggedBy  User    @relation(fields: [loggedById], references: [id])
-
-  @@index([productId])
-  @@index([createdAt])
-  @@map("repair_logs")
-}
-
-// ─────────────────────────────────────────────
-// PRODUCT DOCUMENTS
-// ─────────────────────────────────────────────
-
-model ProductDocument {
-  id           String       @id @default(cuid())
-  productId    String
-  documentType DocumentType
-  documentUrl  String
-  fileName     String?
-  fileSize     Int?
-  isVerified   Boolean      @default(false)
-  uploadedAt   DateTime     @default(now())
-
-  product Product @relation(fields: [productId], references: [id])
-
-  @@index([productId])
-  @@map("product_documents")
-}
-
-// ─────────────────────────────────────────────
-// MARKETPLACE LISTINGS
-// ─────────────────────────────────────────────
-
-model MarketplaceListing {
-  id             String        @id @default(cuid())
-  productId      String
-  sellerId       String?
-  askingPrice    Float
-  originalPrice  Float?
-  description    String?       @db.Text
-  condition      String?
-  listingStatus  ListingStatus @default(ACTIVE)
-  viewCount      Int           @default(0)
-  createdAt      DateTime      @default(now())
-  updatedAt      DateTime      @updatedAt
-  expiresAt      DateTime?
-  soldAt         DateTime?
-
-  // CampusKartt integration fields
-  source              ListingSource @default(ECOXCHANGE)
-  externalId          String?       // CampusKartt listing ID
-  externalUrl         String?       // Link to CampusKartt listing page
-  externalImage       String?       // Cloudinary image URL from CampusKartt
-  sellerLabel         String?       // "CampusKartt" for external listings
-  externalTrustScore  Float?        // Computed trust score for external listings
-
-  product  Product  @relation(fields: [productId], references: [id])
-  seller   User?    @relation("SellerListings", fields: [sellerId], references: [id])
-  transfer TransferRequest?
-
-  @@index([listingStatus])
-  @@index([productId])
-  @@index([sellerId])
-  @@index([createdAt])
-  @@map("marketplace_listings")
-}
-
-// ─────────────────────────────────────────────
-// TRANSFER REQUESTS
-// ─────────────────────────────────────────────
-
-model TransferRequest {
-  id          String         @id @default(cuid())
-  productId   String
-  listingId   String?        @unique
-  sellerId    String
-  buyerId     String
-  status      TransferStatus @default(PENDING)
-  offeredPrice Float?
-  sellerConfirmedAt DateTime?
-  buyerConfirmedAt  DateTime?
-  expiresAt   DateTime
-  createdAt   DateTime       @default(now())
-  updatedAt   DateTime       @updatedAt
-
-  product Product             @relation(fields: [productId], references: [id])
-  seller  User                @relation("TransferSeller", fields: [sellerId], references: [id])
-  buyer   User                @relation("TransferBuyer", fields: [buyerId], references: [id])
-  listing MarketplaceListing? @relation(fields: [listingId], references: [id])
-
-  @@index([productId])
-  @@index([status])
-  @@index([sellerId])
-  @@index([buyerId])
-  @@map("transfer_requests")
-}
-
-// ─────────────────────────────────────────────
-// ADMIN ACTIONS (Audit Log)
-// ─────────────────────────────────────────────
-
-model AdminAction {
-  id         String          @id @default(cuid())
-  adminId    String
-  productId  String?
-  actionType AdminActionType
-  notes      String?
-  metadata   Json?
-  createdAt  DateTime        @default(now())
-
-  admin   User     @relation("AdminUser", fields: [adminId], references: [id])
-  product Product? @relation(fields: [productId], references: [id])
-
-  @@index([adminId])
-  @@index([productId])
-  @@index([actionType])
-  @@index([createdAt])
-  @@map("admin_actions")
-}
-
-model LostProduct {
-  id            String @id @default(cuid())
-
-  productId     String
-  ownerId       String
-
-  status        LostProductStatus @default(LOST)
-
-  lostAt        DateTime @default(now())
-  foundAt       DateTime?
-  recoveredAt   DateTime?
-
-  finderName    String?
-  finderEmail   String?
-  finderPhone   String?
-
-  notes         String?
-
-  product       Product @relation(fields: [productId], references: [id])
-  owner         User @relation(fields: [ownerId], references: [id])
-
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
-
-  @@index([productId])
-  @@index([status])
-
-  @@map("lost_products")
-}
-
-model QRInventory {
-  id        String   @id @default(cuid())
-  dppId     String   @unique
-  status    String
-  category  String?
-  name      String?
-  brand     String?
-  model     String?
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  @@map("qr_inventory")
 }

@@ -1,5 +1,11 @@
 import { PrismaClient } from "@prisma/client";
 import { PrismaPg } from "@prisma/adapter-pg";
+// Ensure BigInt values (e.g. totalRamMb, availableRamMb) can be serialized to JSON safely
+if (typeof BigInt !== "undefined" && !(BigInt.prototype as any).toJSON) {
+  (BigInt.prototype as any).toJSON = function () {
+    return Number(this);
+  };
+}
 
 function createPrismaClient() {
   // Transaction pooler (port 6543) — required for Vercel serverless functions

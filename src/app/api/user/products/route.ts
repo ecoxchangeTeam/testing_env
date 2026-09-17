@@ -54,6 +54,44 @@ export async function POST(request: Request) {
   }
 
   try {
+    // Safely resolve valid user owner to avoid foreign key constraint violations
+    let validUserId: string | null = null;
+    if (session.user.id) {
+      const userById = await prisma.user.findUnique({
+        where: { id: session.user.id },
+        select: { id: true },
+      });
+      if (userById) validUserId = userById.id;
+    }
+
+    if (!validUserId && session.user.email) {
+      const userByEmail = await prisma.user.findUnique({
+        where: { email: session.user.email },
+        select: { id: true },
+      });
+      if (userByEmail) {
+        validUserId = userByEmail.id;
+      } else {
+        try {
+          const createdUser = await prisma.user.create({
+            data: {
+              id: session.user.id || undefined,
+              email: session.user.email,
+              name: session.user.name || "EcoXchange Member",
+            },
+            select: { id: true },
+          });
+          validUserId = createdUser.id;
+        } catch {
+          const retryUser = await prisma.user.findUnique({
+            where: { email: session.user.email },
+            select: { id: true },
+          });
+          if (retryUser) validUserId = retryUser.id;
+        }
+      }
+    }
+
     const body = await request.json();
     const {
       name,
@@ -91,20 +129,22 @@ export async function POST(request: Request) {
           status: "ACTIVE",
           conditionScore: typeof conditionScore === "number" ? conditionScore : 92.4,
           trustScore: typeof trustScore === "number" ? trustScore : 88.0,
-          currentOwnerId: session.user.id,
+          currentOwnerId: validUserId,
           activatedAt: new Date(),
           qrCodeUrl: qrPng || null,
         },
       });
 
-      await tx.ownershipHistory.create({
-        data: {
-          productId: created.id,
-          newOwnerId: session.user.id,
-          transferType: "ACTIVATION",
-          notes: "Digital Product Passport issued via EcoXchange Intake Engine",
-        },
-      });
+      if (validUserId) {
+        await tx.ownershipHistory.create({
+          data: {
+            productId: created.id,
+            newOwnerId: validUserId,
+            transferType: "ACTIVATION",
+            notes: "Digital Product Passport issued via EcoXchange Intake Engine",
+          },
+        });
+      }
 
       return created;
     });

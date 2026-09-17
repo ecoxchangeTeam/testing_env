@@ -29,6 +29,9 @@ import {
   Hammer,
   UserCheck,
   Lock,
+  Image as ImageIcon,
+  Plus,
+  X,
 } from "lucide-react";
 import {
   AddProductFormData,
@@ -58,9 +61,64 @@ export function Step2RepairHistory({
   const receiptAvailability = watch("receiptAvailability") || "";
   const serviceRecordFileName = watch("serviceRecordFileName") || "";
   const serviceRecordFile = watch("serviceRecordFile");
+  const productImages = (watch("productImages") as File[] | undefined) || [];
 
   const [isDragging, setIsDragging] = React.useState(false);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
+
+  const [isDraggingImages, setIsDraggingImages] = React.useState(false);
+  const imageInputRef = useRef<HTMLInputElement | null>(null);
+  const [imagePreviews, setImagePreviews] = React.useState<string[]>([]);
+
+  React.useEffect(() => {
+    if (!productImages || productImages.length === 0) {
+      setImagePreviews([]);
+      return;
+    }
+    const urls = productImages.map((file) => URL.createObjectURL(file));
+    setImagePreviews(urls);
+
+    return () => {
+      urls.forEach((url) => URL.revokeObjectURL(url));
+    };
+  }, [productImages]);
+
+  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = Array.from(e.target.files || []).filter((f) =>
+      f.type.startsWith("image/")
+    );
+    if (files.length > 0) {
+      setValue("productImages", [...productImages, ...files]);
+    }
+    if (e.target) {
+      e.target.value = "";
+    }
+  };
+
+  const handleImageDrop = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    setIsDraggingImages(false);
+    const files = Array.from(e.dataTransfer.files || []).filter((f) =>
+      f.type.startsWith("image/")
+    );
+    if (files.length > 0) {
+      setValue("productImages", [...productImages, ...files]);
+    }
+  };
+
+  const removeImage = (indexToRemove: number) => {
+    setValue(
+      "productImages",
+      productImages.filter((_, idx) => idx !== indexToRemove)
+    );
+  };
+
+  const clearAllImages = () => {
+    setValue("productImages", []);
+    if (imageInputRef.current) {
+      imageInputRef.current.value = "";
+    }
+  };
 
   const toggleComponent = (comp: string) => {
     if (repairedComponents.includes(comp)) {
@@ -745,6 +803,154 @@ export function Step2RepairHistory({
             )}
           </section>
         )}
+
+        {/* QUERY 2.5: PRODUCT PHOTOS / DEVICE IMAGES */}
+        <section className="bg-[#121212] border border-[#27272A] rounded-2xl p-6 shadow-xl space-y-4">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+            <div>
+              <div className="flex items-center gap-2 text-xs font-mono text-[#4edea3] uppercase tracking-wider mb-1">
+                <span>Query 2.5</span>
+                <span className="w-1 h-1 rounded-full bg-zinc-600" />
+                <span className="text-zinc-400">Physical Verification</span>
+              </div>
+              <h3 className="text-base sm:text-lg font-semibold text-white">
+                Upload Product Photos
+              </h3>
+              <p className="text-xs text-zinc-400">
+                Upload images of your device (front, back, sides, and display) to document visual condition.
+              </p>
+            </div>
+            <div className="flex items-center gap-2 self-start sm:self-auto bg-[#1c1b1b] border border-[#27272A] px-3 py-1.5 rounded-lg text-xs font-mono">
+              <span className={`${productImages.length > 0 ? "text-[#4edea3] font-bold" : "text-zinc-500"}`}>
+                {productImages.length} {productImages.length === 1 ? "photo" : "photos"}
+              </span>
+              <span className="text-zinc-400">uploaded</span>
+            </div>
+          </div>
+
+          <input
+            ref={imageInputRef}
+            type="file"
+            className="hidden"
+            accept="image/*"
+            multiple
+            onChange={handleImageUpload}
+          />
+
+          {productImages.length === 0 ? (
+            <div
+              onClick={() => imageInputRef.current?.click()}
+              onDragOver={(e) => {
+                e.preventDefault();
+                setIsDraggingImages(true);
+              }}
+              onDragLeave={() => setIsDraggingImages(false)}
+              onDrop={handleImageDrop}
+              className={`border-2 border-dashed rounded-2xl p-8 text-center transition-all cursor-pointer ${
+                isDraggingImages
+                  ? "border-[#4edea3] bg-[#4edea3]/5"
+                  : "border-[#27272A] hover:border-[#4edea3]/60 bg-[#18181B]/40 hover:bg-[#18181B]"
+              }`}
+            >
+              <div className="w-14 h-14 rounded-2xl bg-[#201f1f] mx-auto mb-3 flex items-center justify-center text-[#4edea3] border border-[#27272A]">
+                <ImageIcon className="w-7 h-7" />
+              </div>
+              <p className="text-sm font-medium text-white mb-1">
+                Drag and drop product photos here, or{" "}
+                <span className="text-[#4edea3] underline font-semibold">
+                  Browse Files
+                </span>
+              </p>
+              <p className="text-xs text-zinc-500 font-mono">
+                Supports JPG, PNG, WEBP (multiple images accepted). Recommended: Front display, back panel, and side edges.
+              </p>
+            </div>
+          ) : (
+            <div className="space-y-4">
+              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
+                {productImages.map((file, idx) => {
+                  const previewUrl = imagePreviews[idx];
+                  return (
+                    <div
+                      key={idx}
+                      className="group relative rounded-xl overflow-hidden border border-[#27272A] bg-[#18181B] aspect-square flex flex-col"
+                    >
+                      {previewUrl ? (
+                        <img
+                          src={previewUrl}
+                          alt={file.name || `Device Photo ${idx + 1}`}
+                          className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                        />
+                      ) : (
+                        <div className="w-full h-full flex items-center justify-center bg-[#201f1f] text-zinc-500">
+                          <ImageIcon className="w-8 h-8" />
+                        </div>
+                      )}
+
+                      {/* Top Action Overlay */}
+                      <div className="absolute top-2 right-2 z-10">
+                        <button
+                          type="button"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            removeImage(idx);
+                          }}
+                          className="w-7 h-7 rounded-lg bg-black/70 hover:bg-red-500 text-white flex items-center justify-center backdrop-blur-sm transition-colors shadow-md"
+                          title="Remove image"
+                        >
+                          <Trash2 className="w-3.5 h-3.5" />
+                        </button>
+                      </div>
+
+                      {/* Bottom Info Bar */}
+                      <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/90 via-black/50 to-transparent p-2 text-left pointer-events-none">
+                        <p className="text-[11px] font-medium text-white truncate">
+                          {file.name}
+                        </p>
+                        <p className="text-[10px] font-mono text-zinc-400">
+                          {formatFileSize(file)}
+                        </p>
+                      </div>
+                    </div>
+                  );
+                })}
+
+                {/* Add More Slot */}
+                <div
+                  onClick={() => imageInputRef.current?.click()}
+                  className="rounded-xl border-2 border-dashed border-[#27272A] hover:border-[#4edea3]/60 bg-[#18181B]/40 hover:bg-[#18181B] aspect-square flex flex-col items-center justify-center cursor-pointer transition-all p-3 text-center group"
+                >
+                  <div className="w-10 h-10 rounded-full bg-[#201f1f] group-hover:bg-[#4edea3]/10 text-zinc-400 group-hover:text-[#4edea3] flex items-center justify-center transition-colors mb-1.5">
+                    <Plus className="w-5 h-5" />
+                  </div>
+                  <span className="text-xs font-medium text-zinc-300 group-hover:text-white">
+                    Add More
+                  </span>
+                  <span className="text-[10px] font-mono text-zinc-500">
+                    JPG, PNG, WEBP
+                  </span>
+                </div>
+              </div>
+
+              {/* Status footer for image upload */}
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pt-2 border-t border-[#27272A] text-xs">
+                <div className="flex items-center gap-2 text-zinc-400">
+                  <CheckCircle2 className="w-4 h-4 text-[#4edea3]" />
+                  <span>
+                    {productImages.length} {productImages.length === 1 ? "photo" : "photos"} staged for visual documentation.
+                  </span>
+                </div>
+                <button
+                  type="button"
+                  onClick={clearAllImages}
+                  className="text-[11px] font-mono text-zinc-500 hover:text-red-400 transition-colors self-start sm:self-auto"
+                >
+                  Clear all photos
+                </button>
+              </div>
+            </div>
+          )}
+        </section>
 
         {/* Circularity Impact Summary Capsule */}
         <div className="bg-[#18181B] border border-[#4edea3]/20 rounded-2xl p-4 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
